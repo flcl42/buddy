@@ -48,7 +48,12 @@ jobs:
         shell: pwsh
         run: |
           $installer = Join-Path $env:RUNNER_TEMP 'innosetup-6.7.3.exe'
-          Invoke-WebRequest -Uri 'https://files.jrsoftware.org/is/6/innosetup-6.7.3.exe' -OutFile $installer
+          Invoke-WebRequest -Uri 'https://github.com/jrsoftware/issrc/releases/download/is-6_7_3/innosetup-6.7.3.exe' -OutFile $installer
+          $signature = Get-AuthenticodeSignature -LiteralPath $installer
+          if ($signature.Status -ne 'Valid' -or
+              $signature.SignerCertificate.Subject -notmatch 'CN=Pyrsys B\.V\.') {
+            throw "Inno Setup signature verification failed: status=$($signature.Status), signer=$($signature.SignerCertificate.Subject)"
+          }
           $process = Start-Process -FilePath $installer -ArgumentList '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/CURRENTUSER' -Wait -PassThru
           if ($process.ExitCode -ne 0) {
             throw "Inno Setup installation failed with exit code $($process.ExitCode)."
