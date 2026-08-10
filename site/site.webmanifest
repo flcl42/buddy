@@ -1,0 +1,18 @@
+{
+  "name": "Buddy speech companion",
+  "short_name": "Buddy",
+  "description": "A private AI speech companion for Windows 11.",
+  "lang": "en",
+  "start_url": "./",
+  "display": "browser",
+  "background_color": "#ffffff",
+  "theme_color": "#5b46d8",
+  "icons": [
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

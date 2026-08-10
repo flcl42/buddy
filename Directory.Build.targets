@@ -1,0 +1,61 @@
+<Project>
+  <Target Name="ValidateBuddySingleFileConfiguration"
+          BeforeTargets="PrepareForBuild"
+          Condition="'$(MSBuildProjectName)' == 'Buddy.App' and '$(PublishSingleFile)' == 'true'">
+    <Error Condition="'$(WindowsPackageType)' != 'None'"
+           Text="Buddy single-file publishing requires WindowsPackageType=None." />
+    <Error Condition="'$(WindowsAppSDKSelfContained)' != 'true'"
+           Text="Buddy single-file publishing requires WindowsAppSDKSelfContained=true." />
+    <Error Condition="'$(SelfContained)' != 'true'"
+           Text="Buddy single-file publishing requires SelfContained=true." />
+    <Error Condition="'$(EnableMsixTooling)' != 'true'"
+           Text="Buddy single-file publishing requires EnableMsixTooling=true." />
+    <Error Condition="'$(IncludeAllContentForSelfExtract)' != 'true'"
+           Text="Buddy single-file publishing requires IncludeAllContentForSelfExtract=true." />
+  </Target>
+
+  <Target Name="PruneUnusedKokoroRuntimeContent"
+          AfterTargets="CopyContent"
+          Condition="Exists('$(OutputPath)voices')">
+    <ItemGroup>
+      <UnusedKokoroVoice Include="$(OutputPath)voices\*.npy"
+                         Exclude="$(OutputPath)voices\af_heart.npy;$(OutputPath)voices\am_michael.npy;$(OutputPath)voices\bf_emma.npy;$(OutputPath)voices\bm_george.npy" />
+      <UnusedEspeakBinary Include="$(OutputPath)espeak\espeak-ng-linux-*.dll;$(OutputPath)espeak\espeak-ng-macos-*.dll;$(OutputPath)espeak\espeak-ng-win-arm64.dll" />
+    </ItemGroup>
+    <Delete Files="@(UnusedKokoroVoice);@(UnusedEspeakBinary)" />
+    <RemoveDir Directories="$(OutputPath)voices\voices-zh" />
+  </Target>
+
+  <Target Name="PruneForeignWhisperRuntimes"
+          AfterTargets="CopyFilesToOutputDirectory"
+          Condition="'$(RuntimeIdentifier)' == 'win-x64'">
+    <RemoveDir Directories="$(OutputPath)runtimes\cuda\linux-x64;$(OutputPath)runtimes\win-arm64;$(OutputPath)runtimes\win-x86" />
+  </Target>
+
+  <Target Name="PrepareBuddySingleFileContent"
+          BeforeTargets="_HandleFileConflictsForPublish"
+          DependsOnTargets="CopyContent;PruneUnusedKokoroRuntimeContent"
+          Condition="'$(MSBuildProjectName)' == 'Buddy.App' and '$(RuntimeIdentifier)' == 'win-x64' and '$(PublishSingleFile)' == 'true'">
+    <ItemGroup>
+      <BuddyVoiceFile Include="$(OutputPath)voices\**\*" />
+      <BuddyEspeakFile Include="$(OutputPath)espeak\**\*" />
+      <BuddyUnsupportedRuntimeFile Include="@(ResolvedFileToPublish)"
+          Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(ResolvedFileToPublish.RelativePath)', '^(runtimes[\\/](win-arm64|win-x86)|runtimes[\\/]cuda[\\/]linux-x64)[\\/]'))" />
+      <BuddyPublishSymbol Include="@(ResolvedFileToPublish)"
+          Condition="'%(ResolvedFileToPublish.Extension)' == '.pdb'" />
+
+      <ResolvedFileToPublish Remove="@(BuddyUnsupportedRuntimeFile);@(BuddyPublishSymbol)" />
+      <ResolvedFileToPublish Include="@(BuddyVoiceFile)"
+          RelativePath="voices\%(RecursiveDir)%(Filename)%(Extension)"
+          CopyToPublishDirectory="PreserveNewest" />
+      <ResolvedFileToPublish Include="@(BuddyEspeakFile)"
+          RelativePath="espeak\%(RecursiveDir)%(Filename)%(Extension)"
+          CopyToPublishDirectory="PreserveNewest" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="RemoveResidualBuildOutputs"
+          AfterTargets="Clean">
+    <RemoveDir Directories="$(BaseOutputPath);$(BaseIntermediateOutputPath)" />
+  </Target>
+</Project>

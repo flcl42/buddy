@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="Buddy.App.Controls.DialogMessageCardView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:cards="clr-namespace:Buddy.App.ViewModels"
+    xmlns:controls="clr-namespace:Buddy.App.Controls"
+    x:DataType="cards:DialogMessageViewModel">
+    <Border
+        Margin="0,0,0,10"
+        Padding="14,12"
+        BackgroundColor="#F5F6FA"
+        Stroke="#E1E4EB"
+        StrokeShape="RoundRectangle 12">
+        <Border.Triggers>
+            <DataTrigger
+                Binding="{Binding IsUser}"
+                TargetType="Border"
+                Value="True">
+                <Setter Property="BackgroundColor" Value="#EFEEFF" />
+                <Setter Property="Stroke" Value="#DAD8FF" />
+            </DataTrigger>
+        </Border.Triggers>
+        <VerticalStackLayout Spacing="7">
+            <Grid ColumnDefinitions="*,Auto">
+                <Label
+                    FontFamily="Segoe UI Semibold"
+                    FontSize="11"
+                    Text="{Binding ProviderText}"
+                    TextColor="#5B5CE2" />
+                <Label
+                    Grid.Column="1"
+                    FontSize="10"
+                    Text="{Binding TimeText}"
+                    TextColor="#9296A6" />
+            </Grid>
+            <controls:MarkdownMessageView
+                CommandContext="{Binding .}"
+                Document="{Binding RenderedContent}"
+                WordClickedCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.LookupWordCommand}" />
+            <Border
+                Padding="11,9"
+                BackgroundColor="#FFFDF5"
+                IsVisible="{Binding IsWordLookupVisible}"
+                SemanticProperties.Description="Word pronunciation and contextual meaning"
+                Stroke="#DED8B7"
+                StrokeShape="RoundRectangle 9">
+                <VerticalStackLayout Spacing="6">
+                    <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                        <Label
+                            FontFamily="Segoe UI Semibold"
+                            FontSize="13"
+                            Text="{Binding SelectedWord}"
+                            TextColor="#303342" />
+                        <ActivityIndicator
+                            Grid.Column="1"
+                            Margin="0,0,7,0"
+                            HeightRequest="18"
+                            IsRunning="{Binding IsWordLookupLoading}"
+                            IsVisible="{Binding IsWordLookupLoading}"
+                            WidthRequest="18" />
+                        <controls:AudioTransportView
+                            Grid.Column="2"
+                            AutomationId="WordAudioTransport"
+                            CommandParameter="{Binding .}"
+                            IsEnabled="{Binding CanControlWordAudio}"
+                            Margin="0,0,5,0"
+                            PauseCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.PauseDialogAudioCommand}"
+                            PlayCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.PlayWordAudioCommand}"
+                            ResetCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.RestartDialogAudioCommand}"
+                            State="{Binding WordAudioState}"
+                            StopCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.StopDialogAudioCommand}"
+                            Subject="{Binding WordAudioSubject}" />
+                        <Button
+                            Grid.Column="3"
+                            AutomationId="DismissWordLookupButton"
+                            BackgroundColor="Transparent"
+                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.DismissWordLookupCommand}"
+                            CommandParameter="{Binding .}"
+                            FontSize="16"
+                            HeightRequest="24"
+                            Padding="3,0"
+                            Text="×"
+                            TextColor="#777B8D"
+                            WidthRequest="24" />
+                    </Grid>
+                    <HorizontalStackLayout Spacing="8">
+                        <Label
+                            FontFamily="Segoe UI"
+                            FontSize="12"
+                            Text="{Binding WordPhoneticText}"
+                            TextColor="#4F50C8" />
+                        <Label
+                            FontAttributes="Italic"
+                            FontSize="11"
+                            IsVisible="{Binding HasWordPartOfSpeech}"
+                            Text="{Binding WordPartOfSpeechText}"
+                            TextColor="#777B8D" />
+                    </HorizontalStackLayout>
+                    <Label
+                        FontSize="11"
+                        IsVisible="{Binding IsWordPhoneticLoading}"
+                        Text="Preparing phonetics locally…"
+                        TextColor="#777B8D" />
+                    <Label
+                        FontSize="12"
+                        IsVisible="{Binding HasWordDefinition}"
+                        LineBreakMode="WordWrap"
+                        Text="{Binding WordDefinitionText}"
+                        TextColor="#343746" />
+                    <Label
+                        FontSize="11"
+                        IsVisible="{Binding IsWordDefinitionLoading}"
+                        Text="Looking up its meaning in this sentence…"
+                        TextColor="#777B8D" />
+                    <Label
+                        FontSize="11"
+                        IsVisible="{Binding HasWordLookupError}"
+                        LineBreakMode="WordWrap"
+                        Text="{Binding WordLookupError}"
+                        TextColor="#B54736" />
+                </VerticalStackLayout>
+            </Border>
+            <Border
+                Padding="11,9"
+                BackgroundColor="#FAFAFD"
+                IsVisible="{Binding HasPronunciation}"
+                Stroke="#DFE1EA"
+                StrokeShape="RoundRectangle 9">
+                <VerticalStackLayout Spacing="7">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label
+                            FontFamily="Segoe UI Semibold"
+                            FontSize="10"
+                            Text="PRONUNCIATION"
+                            TextColor="#6668B8" />
+                        <Label
+                            Grid.Column="1"
+                            FontSize="9"
+                            Text="{Binding PronunciationSummary}"
+                            TextColor="#777C8F" />
+                    </Grid>
+                    <Label
+                        FontFamily="Segoe UI"
+                        FontSize="12"
+                        LineBreakMode="WordWrap"
+                        Text="{Binding PhoneticTranscriptText}"
+                        TextColor="#333647" />
+                    <FlexLayout
+                        BindableLayout.ItemsSource="{Binding PronunciationWords}"
+                        Direction="Row"
+                        IsVisible="{Binding HasPronunciationWords}"
+                        Wrap="Wrap">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="cards:PronunciationWordViewModel">
+                                <Border
+                                    Margin="0,0,5,5"
+                                    Padding="7,4"
+                                    BackgroundColor="#EDF8F0"
+                                    SemanticProperties.Description="{Binding AccessibilityText}"
+                                    Stroke="#B7DDC1"
+                                    StrokeShape="RoundRectangle 7"
+                                    ToolTipProperties.Text="{Binding TimingText}">
+                                    <Border.Triggers>
+                                        <DataTrigger
+                                            Binding="{Binding AttentionKey}"
+                                            TargetType="Border"
+                                            Value="Review">
+                                            <Setter Property="BackgroundColor" Value="#FFF7E3" />
+                                            <Setter Property="Stroke" Value="#E9C86C" />
+                                        </DataTrigger>
+                                        <DataTrigger
+                                            Binding="{Binding AttentionKey}"
+                                            TargetType="Border"
+                                            Value="LikelyIssue">
+                                            <Setter Property="BackgroundColor" Value="#FFF0F0" />
+                                            <Setter Property="Stroke" Value="#E99A9A" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <Label
+                                        FontSize="10"
+                                        Text="{Binding Text}"
+                                        TextColor="#303342" />
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </FlexLayout>
+                </VerticalStackLayout>
+            </Border>
+            <controls:AudioTransportView
+                AutomationId="MessageAudioTransport"
+                CommandParameter="{Binding .}"
+                HorizontalOptions="Start"
+                IsEnabled="{Binding CanControlMessageAudio}"
+                IsVisible="{Binding HasMessageAudioControl}"
+                PauseCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.PauseDialogAudioCommand}"
+                PlayCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.PlayMessageAudioCommand}"
+                ResetCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.RestartDialogAudioCommand}"
+                State="{Binding MessageAudioState}"
+                StopCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.StopDialogAudioCommand}"
+                Subject="{Binding MessageAudioSubject}" />
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

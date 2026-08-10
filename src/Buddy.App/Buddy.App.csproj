@@ -1,0 +1,97 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Buddy.App</RootNamespace>
+    <AssemblyName>Buddy</AssemblyName>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <MauiXamlInflator>SourceGen</MauiXamlInflator>
+    <ApplicationTitle>Buddy</ApplicationTitle>
+    <Product>Buddy</Product>
+    <Description>Private meeting recorder and speech trainer</Description>
+    <Company>Buddy</Company>
+    <ApplicationId>com.flcl.buddy</ApplicationId>
+    <ApplicationDisplayVersion>0.1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+    <WindowsPackageType>None</WindowsPackageType>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <WindowsAppSdkUndockedRegFreeWinRTInitialize>false</WindowsAppSdkUndockedRegFreeWinRTInitialize>
+    <WindowsAppSDKSingleFileVerifyConfiguration>false</WindowsAppSDKSingleFileVerifyConfiguration>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <PublishTrimmed>false</PublishTrimmed>
+    <PublishReadyToRun>false</PublishReadyToRun>
+    <PublishReadyToRunComposite>false</PublishReadyToRunComposite>
+    <UseAppHost>true</UseAppHost>
+    <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
+    <PublishDir Condition="'$(PublishDir)' == ''">C:\Programs\</PublishDir>
+    <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
+    <BuddyProxyEndpoint Condition="'$(BuddyProxyEndpoint)' == ''">https://rs.flcl.me:38472/v1/</BuddyProxyEndpoint>
+    <BuddyProxyCertSha256 Condition="'$(BuddyProxyCertSha256)' == ''">$(BUDDY_PROXY_CERT_SHA256)</BuddyProxyCertSha256>
+    <BuddyProxyClientKey Condition="'$(BuddyProxyClientKey)' == ''">$(BUDDY_PROXY_CLIENT_KEY)</BuddyProxyClientKey>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>None</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <MauiIcon Include="Resources\AppIcon\appicon.svg"
+              ForegroundFile="Resources\AppIcon\appiconfg.svg"
+              Color="#111827" />
+    <MauiSplashScreen Include="Resources\Splash\splash.svg"
+                      Color="#111827"
+                      BaseSize="128,128" />
+    <MauiImage Include="Resources\Images\*" />
+    <MauiFont Include="Resources\Fonts\*" />
+    <MauiAsset Include="Resources\Raw\**"
+               LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>BuddyProxyEndpoint</_Parameter1>
+      <_Parameter2>$(BuddyProxyEndpoint)</_Parameter2>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>BuddyProxyCertSha256</_Parameter1>
+      <_Parameter2>$(BuddyProxyCertSha256)</_Parameter2>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>BuddyProxyClientKey</_Parameter1>
+      <_Parameter2>$(BuddyProxyClientKey)</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="H.NotifyIcon.Maui" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
+    <PackageReference Include="Microsoft.Maui.Controls" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Buddy.Audio.Windows\Buddy.Audio.Windows.csproj" />
+    <ProjectReference Include="..\Buddy.Core\Buddy.Core.csproj" />
+    <ProjectReference Include="..\Buddy.Language\Buddy.Language.csproj" />
+    <ProjectReference Include="..\Buddy.Persistence\Buddy.Persistence.csproj" />
+    <ProjectReference Include="..\Buddy.Speech\Buddy.Speech.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\THIRD-PARTY-NOTICES.md"
+          Link="THIRD-PARTY-NOTICES.md"
+          CopyToOutputDirectory="PreserveNewest"
+          CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

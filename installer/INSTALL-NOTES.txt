@@ -1,0 +1,13 @@
+Buddy is a Windows 10/11 microphone recorder, speech trainer, and persistent AI dialog companion.
+
+The installed application is one self-contained executable at C:\Programs\Buddy.exe. Your recordings, transcripts, settings, and protected keys stay in your Windows user profile and are not removed by an application update.
+
+Local AI files are not bundled into this installer. Buddy downloads them only when the matching feature is activated, shows progress, resumes interrupted downloads, and verifies pinned file sizes and SHA-256 hashes before use:
+
+- Whisper large-v3-turbo and Silero VAD for private speech recognition
+- Kokoro for the local Buddy voice
+- Qwen 3.6 27B, DFlash, llama.cpp, and CUDA libraries (approximately 21.5 GB) when local language AI is selected
+
+The default language provider uses a limited Buddy DeepSeek proxy key. You can instead select direct DeepSeek with your own key, or Qwen for local processing.
+
+This release is not code-signed yet, so Windows may show an Unknown publisher warning. Verify the SHA256SUMS.txt file on the GitHub release before installing.

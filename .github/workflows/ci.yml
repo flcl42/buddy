@@ -1,0 +1,42 @@
+name: Validate Buddy
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Build and test on Windows
+    runs-on: windows-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.302
+
+      - name: Install the .NET MAUI Windows workload
+        run: dotnet workload install maui-windows --skip-manifest-update
+
+      - name: Restore
+        run: dotnet restore Buddy.slnx
+
+      - name: Build
+        run: dotnet build Buddy.slnx --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test Buddy.slnx --configuration Release --no-build --no-restore
+
+      - name: Verify formatting
+        run: dotnet format Buddy.slnx --verify-no-changes --no-restore

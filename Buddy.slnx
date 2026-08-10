@@ -1,0 +1,19 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Buddy.App/Buddy.App.csproj" />
+    <Project Path="src/Buddy.Audio.Windows/Buddy.Audio.Windows.csproj" />
+    <Project Path="src/Buddy.Core/Buddy.Core.csproj" />
+    <Project Path="src/Buddy.Language/Buddy.Language.csproj" />
+    <Project Path="src/Buddy.Persistence/Buddy.Persistence.csproj" />
+    <Project Path="src/Buddy.Proxy/Buddy.Proxy.csproj" />
+    <Project Path="src/Buddy.Speech/Buddy.Speech.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Buddy.App.Tests/Buddy.App.Tests.csproj" />
+    <Project Path="tests/Buddy.Core.Tests/Buddy.Core.Tests.csproj" />
+    <Project Path="tests/Buddy.IntegrationTests/Buddy.IntegrationTests.csproj" />
+    <Project Path="tests/Buddy.Language.Tests/Buddy.Language.Tests.csproj" />
+    <Project Path="tests/Buddy.Persistence.Tests/Buddy.Persistence.Tests.csproj" />
+    <Project Path="tests/Buddy.Proxy.Tests/Buddy.Proxy.Tests.csproj" />
+  </Folder>
+</Solution>

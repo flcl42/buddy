@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="coverlet.collector" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Buddy.Core\Buddy.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\src\Buddy.App\Services\DialogAnswerDocumentStore.cs"
+             Link="Services\DialogAnswerDocumentStore.cs" />
+    <Compile Include="..\..\src\Buddy.App\ViewModels\DialogMessageCollectionReconciler.cs"
+             Link="ViewModels\DialogMessageCollectionReconciler.cs" />
+    <Compile Include="..\..\src\Buddy.App\ViewModels\DialogMessageViewModel.cs"
+             Link="ViewModels\DialogMessageViewModel.cs" />
+    <Compile Include="..\..\src\Buddy.App\ViewModels\DialogScrollFollowState.cs"
+             Link="ViewModels\DialogScrollFollowState.cs" />
+    <Compile Include="..\..\src\Buddy.App\ViewModels\PronunciationWordViewModel.cs"
+             Link="ViewModels\PronunciationWordViewModel.cs" />
+    <Compile Include="..\..\src\Buddy.App\ViewModels\SpeakNavigationState.cs"
+             Link="ViewModels\SpeakNavigationState.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="be">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Buddy — прыватны маўленчы ШІ-памочнік для Windows</title>
+  <meta name="description" content="Запісвайце свае рэплікі на сустрэчах, трэніруйце больш выразнае англійскае маўленне і вядзіце галасавыя дыялогі з кантэкстам у прыватнай праграме для Windows 11.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="theme-color" content="#5b46d8">
+  <meta name="color-scheme" content="light">
+  <link rel="canonical" href="__SITE_BASE_URL__/be/">
+  <link rel="alternate" hreflang="en" href="__SITE_BASE_URL__/">
+  <link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/">
+  <link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/">
+  <link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/">
+  <link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Buddy">
+  <meta property="og:locale" content="be_BY">
+  <meta property="og:title" content="Buddy — Памятайце свае словы. Кажыце іх лепш.">
+  <meta property="og:description" content="Лакальны памочнік для Windows: захоўвае вашы рэплікі, дапамагае з вымаўленнем і падтрымлівае кантэкст дыялогу з ШІ.">
+  <meta property="og:url" content="__SITE_BASE_URL__/be/">
+  <meta property="og:image" content="__SITE_BASE_URL__/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Buddy з галасавым дыялогам і гукавой хваляй">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Buddy — прыватны маўленчы памочнік для Windows">
+  <meta name="twitter:description" content="Запісвайце, удасканальвайце і пераслухоўвайце сваё маўленне з лакальнай апрацоўкай і ШІ на ваш выбар.">
+  <meta name="twitter:image" content="__SITE_BASE_URL__/og.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+  <link rel="manifest" href="../site.webmanifest">
+  <link rel="stylesheet" href="../styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Buddy",
+    "description": "Прыватны памочнік для Windows, які захоўвае вашы рэплікі, дапамагае з вымаўленнем і падтрымлівае кантэкст дыялогу з ШІ.",
+    "url": "__SITE_BASE_URL__/be/",
+    "downloadUrl": "https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "Windows 11 x64",
+    "softwareVersion": "0.1",
+    "isAccessibleForFree": true,
+    "inLanguage": "be",
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+    "featureList": ["Лакальны запіс мікрафона", "Прайграванне без доўгіх паўз", "Жывая транскрыпцыя маўлення", "Падказкі па вымаўленні з МФА", "Рэдагавальнае ўдасканаленне граматыкі і лексікі", "Галасавы дыялог з ШІ і захаваным кантэкстам", "Лакальны сінтэз маўлення"]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type": "Question", "name": "Ці запісвае Buddy усіх удзельнікаў сустрэчы?", "acceptedAnswer": {"@type": "Answer", "text": "Не. Buddy запісвае абраны вамі мікрафон і прызначаны для захавання вашых уласных рэплік, а не галасоў аддаленых удзельнікаў ці сістэмнага гуку."}},
+      {"@type": "Question", "name": "Ці пакідае мой аўдыязапіс камп'ютар?", "acceptedAnswer": {"@type": "Answer", "text": "Не. Запіс, распазнаванне, аналіз вымаўлення і сінтэз маўлення адбываюцца лакальна. Моўныя задачы стандартна выкарыстоўваюць абмежаваны доступ Buddy да DeepSeek і адпраўляюць толькі патрэбны тэкст; лакальны Qwen пакідае і гэты тэкст на вашым ПК."}},
+      {"@type": "Question", "name": "Ці працуе Buddy без інтэрнэту?", "acceptedAnswer": {"@type": "Answer", "text": "Так. Пасля ўсталявання дадатковых лакальных мадэляў запіс, транскрыпцыя, удасканаленне тэксту праз Qwen і агучванне працуюць без хмарнага ўліковага запісу."}}
+    ]
+  }
+  </script>
+</head>
+<body data-locale="be" data-root="..">
+  <a class="skip-link" href="#main">Перайсці да асноўнага зместу</a>
+  <header class="site-header">
+    <div class="nav-shell">
+      <a class="brand" href="../" aria-label="Галоўная старонка Buddy"><span class="brand-mark" aria-hidden="true">b</span><span>Buddy</span></a>
+      <nav class="main-nav" aria-label="Асноўная навігацыя"><a href="#features">Магчымасці</a><a href="#how-it-works">Як гэта працуе</a><a href="#privacy">Прыватнасць</a><a href="#faq">Пытанні</a></nav>
+      <div class="nav-actions">
+        <label class="language-label" for="language-select">Мова</label>
+        <select id="language-select" class="language-select" aria-label="Выбраць мову"><option value="en">English</option><option value="es">Español</option><option value="de">Deutsch</option><option value="be" selected>Беларуская</option></select>
+        <a class="button button-small" href="#download">Спампаваць</a>
+      </div>
+    </div>
+    <noscript><nav class="noscript-languages" aria-label="Мовы"><strong>Мова:</strong> <a href="../">English</a> · <a href="../es/">Español</a> · <a href="../de/">Deutsch</a> · <a href="../be/">Беларуская</a></nav></noscript>
+  </header>
+
+  <main id="main">
+    <section class="hero section-shell">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Лакальны маўленчы памочнік для Windows 11</p>
+        <h1>Памятайце свае словы.<br><span>Кажыце іх лепш.</span></h1>
+        <p class="hero-lede">Buddy запісвае вашы рэплікі, ператварае маўленне ў рэдагавальны працэс навучання і захоўвае кантэкст галасавога дыялогу з ШІ, а асноўная апрацоўка гуку застаецца на вашым ПК.</p>
+        <div class="hero-actions"><a class="button button-primary" data-download-asset="Buddy-Setup.exe" href="#download">Спампаваць усталёўшчык</a><a class="button button-secondary" data-download-asset="Buddy.exe" href="#download">Партатыўная праграма</a></div>
+        <p class="release-status" id="release-status" aria-live="polite">Windows 11 x64 · Апошні выпуск на GitHub</p>
+        <ul class="hero-trust" aria-label="Асноўныя перавагі"><li><span aria-hidden="true">✓</span> Асноўныя функцыі без рэгістрацыі</li><li><span aria-hidden="true">✓</span> Лакальная апрацоўка гуку</li><li><span aria-hidden="true">✓</span> Аднаўляльныя запісы</li></ul>
+      </div>
+      <div class="product-preview" role="img" aria-label="Папярэдні выгляд Buddy з галасавым дыялогам, жывой транскрыпцыяй і кіраваннем аўдыя">
+        <div class="preview-glow" aria-hidden="true"></div>
+        <div class="app-window" aria-hidden="true">
+          <div class="window-titlebar"><div class="window-brand"><span class="mini-brand">b</span> Buddy</div><div class="window-controls"><span></span><span></span><span></span></div></div>
+          <div class="app-tabs"><span class="active">Размова</span><span>Усе запісы</span><span class="tab-spacer"></span><span class="mode active-soft">Дыялог з ШІ</span><span class="mode">Маналог</span></div>
+          <div class="app-body"><div class="conversation">
+            <div class="message user-message"><span class="message-label">Вы</span><p>Дапамажы мне выказаць гэта больш зразумела.</p><div class="phonetic">/dapaˈmaʐɨ mnʲe ˈvɨkazaʦʲ ˈɣeta bolʲʂ zrazuˈmʲela/</div></div>
+            <div class="message buddy-message"><span class="message-label">Buddy</span><p><strong>Пачніце з выніку.</strong> Потым дадайце дэталі, якія патрэбныя суразмоўцу.</p><div class="message-actions"><span>▶</span><span>Зразумела · коратка · натуральна</span></div></div>
+            <div class="live-card"><div class="live-heading"><span><i></i> Слухае</span><span>Паўза 1,1 с</span></div><p>Я таксама хачу растлумачыць, чаму гэта важна…</p><div class="silence-progress"><span></span></div></div>
+          </div><div class="side-card"><span class="side-kicker">Сеанс</span><strong>Кантэкст размовы захоўваецца</strong><div class="waveform"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="side-note">Аўдыя застаецца лакальна</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="proof-strip" aria-label="Магчымасці Buddy"><div class="section-shell proof-grid"><div><strong>Лакальна</strong><span>распазнаванне Whisper</span></div><div><strong>Рэдагуецца</strong><span>транскрыпты і версіі</span></div><div><strong>Захоўваецца</strong><span>запісы і дыялогі</span></div><div><strong>Натуральна</strong><span>голас Kokoro</span></div></div></section>
+
+    <section class="features-section section-shell" id="features">
+      <div class="section-heading"><p class="eyebrow">Тры спосабы дапамагчы</p><h2>Ад першага слова да той версіі, якую вы хацелі сказаць.</h2><p>Адзіная зручная прастора спалучае жывую размову, свядомае навучанне і даступную для пошуку памяць вашага маўлення.</p></div>
+      <div class="feature-grid">
+        <article class="feature-card feature-dialog"><div class="feature-number">01</div><div class="feature-icon icon-dialog" aria-hidden="true"><span></span><span></span></div><h3>Галасавы дыялог з ШІ</h3><p>Размаўляйце свабодна, назірайце жывую транскрыпцыю і аўтаматычна слухайце кожны адказ. Buddy захоўвае ўвесь кантэкст сеанса і чакае столькі, колькі вы задасце.</p><ul><li>Фарматаваныя адказы і натуральнае агучванне</li><li>Наладжвальная паўза перад адпраўкай рэплікі</li><li>Стандартны абмежаваны DeepSeek ад Buddy, ваш ключ або лакальны Qwen</li></ul></article>
+        <article class="feature-card feature-coach"><div class="feature-number">02</div><div class="feature-icon icon-coach" aria-hidden="true"><span>Aa</span></div><h3>Трэнер маўлення</h3><p>Выпраўце памылкі распазнавання, перш чым звяртацца па дапамогу. Палепшыце граматыку, лексіку, яснасць і тон, не змяняючы сваёй думкі.</p><ul><li>МФА і ўзровень упэўненасці для кожнага слова</li><li>Рэжымы выпраўлення, натуральнасці і сцісласці</li><li>Параўнанне арыгінальнай і палепшанай версій на слых</li></ul></article>
+        <article class="feature-card feature-record"><div class="feature-number">03</div><div class="feature-icon icon-record" aria-hidden="true"><span>r</span></div><h3>Памяць сустрэч</h3><p>Запісвайце абраны мікрафон з сістэмнага трэя. Пераслухоўвайце карыснае маўленне без доўгай цішыні і пераходзьце да патрэбнага моманту на гукавой хвалі.</p><ul><li>Аўдыяфрагменты аднаўляюцца пасля збою</li><li>Пошук па назвах, датах і транскрыптах</li><li>Захоўваюцца арыгінальная і сціснутая версіі</li></ul></article>
+      </div>
+    </section>
+
+    <section class="how-section" id="how-it-works"><div class="section-shell how-layout">
+      <div class="section-heading left-heading"><p class="eyebrow">Створана для штодзённай працы</p><h2>Пачніце гаварыць.<br>Астатняе зробіць Buddy.</h2><p>Усталюйце адну праграму для Windows. Дадатковыя пакеты лакальнага ШІ спампоўваюцца толькі пры патрэбе, з выразным індыкатарам прагрэсу і апавяшчэннямі.</p></div>
+      <ol class="steps-list">
+        <li><span class="step-index">1</span><div><h3>Выберыце рэжым</h3><p>Пачніце дыялог з ШІ, запішыце трэніровачны маналог або ўключыце запіс сустрэчы з трэя.</p></div></li>
+        <li><span class="step-index">2</span><div><h3>Гаварыце натуральна</h3><p>Лакальныя дэтэктар голасу і Whisper ператвараюць гук мікрафона ў надзейны тэкст, які можна рэдагаваць.</p></div></li>
+        <li><span class="step-index">3</span><div><h3>Правярайце, паляпшайце, слухайце</h3><p>Выпраўце слова, паглядзіце яго МФА і значэнне, паслухайце яснейшую версію або вярніцеся да захаванага моманту.</p></div></li>
+      </ol>
+    </div></section>
+
+    <section class="privacy-section section-shell" id="privacy"><div class="privacy-panel">
+      <div class="privacy-copy"><p class="eyebrow eyebrow-light">Прыватнасць у самой архітэктуры</p><h2>Ваш голас не павінен быць платай за доступ.</h2><p>Аўдыя з мікрафона, распазнаванне, аналіз вымаўлення, выдаленне цішыні і сінтэз маўлення застаюцца на вашым камп'ютары. Моўныя задачы стандартна выкарыстоўваюць абмежаваны доступ Buddy да DeepSeek і адпраўляюць толькі патрэбны тэкст, але ніколі не запіс. З лакальным Qwen і гэты тэкст застаецца на вашым ПК.</p><a href="#faq" class="text-link">Прачытайце адказы пра прыватнасць <span aria-hidden="true">→</span></a></div>
+      <div class="privacy-facts"><div><span class="fact-mark">01</span><strong>Лакальны гук</strong><p>Запісы застаюцца ў вашым профілі Windows.</p></div><div><span class="fact-mark">02</span><strong>Абароненыя ключы</strong><p>Уліковыя даныя пастаўшчыкоў абаронены праз Windows DPAPI.</p></div><div><span class="fact-mark">03</span><strong>Выбар за вамі</strong><p>Карыстайцеся хмарным ШІ для тэксту або спампуйце Qwen для лакальных адказаў.</p></div></div>
+    </div></section>
+
+    <section class="detail-section section-shell"><div class="detail-grid">
+      <div class="section-heading left-heading"><p class="eyebrow">Малыя элементы, сапраўдны кантроль</p><h2>Не замінае вашай працы.</h2></div>
+      <div class="detail-list">
+        <article><span class="detail-dot"></span><div><h3>Заўсёды ў трэі</h3><p>Бачная літара <strong>b</strong> азначае гатоўнасць, а чырвоная <strong>r</strong> адназначна паказвае актыўны запіс.</p></div></article>
+        <article><span class="detail-dot"></span><div><h3>Грае з патрэбнага моманту</h3><p>Націсніце ў любым месцы гукавой шкалы, прыпыніце, працягніце або пачніце спачатку.</p></div></article>
+        <article><span class="detail-dot"></span><div><h3>Тэкст застаецца тэкстам</h3><p>Вылучайце і капіруйце фарматаваныя паведамленні. Націскайце слова, толькі калі патрэбныя МФА і значэнне.</p></div></article>
+        <article><span class="detail-dot"></span><div><h3>Вытрымлівае перапынкі</h3><p>Кароткія кантрольныя запісы і надзейны лакальны каталог абараняюць незавершаную працу.</p></div></article>
+      </div>
+    </div></section>
+
+    <section class="faq-section section-shell" id="faq">
+      <div class="section-heading"><p class="eyebrow">Адказы на пытанні</p><h2>Дакладна ведайце, што Buddy робіць, а чаго не.</h2></div>
+      <div class="faq-list">
+        <details><summary>Ці запісвае Buddy усіх удзельнікаў сустрэчы?</summary><p>Не. Buddy запісвае абраны вамі мікрафон. Ён прызначаны для захавання вашых уласных рэплік, а не галасоў аддаленых удзельнікаў ці сістэмнага гуку Windows. Навушнікі даюць найлепшы вынік.</p></details>
+        <details><summary>Ці пакідае мой аўдыязапіс камп'ютар?</summary><p>Не. Запіс, Whisper, аналіз вымаўлення і агучванне Kokoro выконваюцца лакальна. Стандартны абмежаваны пастаўшчык адпраўляе ў DeepSeek толькі патрэбны для задачы тэкст. Лакальны Qwen пакідае і гэты тэкст на вашым ПК.</p></details>
+        <details><summary>Ці можна карыстацца Buddy без хмарнага ўліковага запісу?</summary><p>Так. Запіс, прайграванне, транскрыпцыя і лакальнае агучванне не патрабуюць яго. Выпуск утрымлівае да 1 000 адказаў або 1 000 000 токенаў абмежаванага доступу да DeepSeek. Спампуйце лакальны Qwen, каб адказы і паляпшэнні таксама заставаліся на вашым ПК.</p></details>
+        <details><summary>Што спампоўвае ўсталёўшчык?</summary><p>Сама праграма аўтаномная. Буйныя маўленчыя і лакальныя ШІ-мадэлі ўсталёўваюцца пры патрэбе, з індыкатарам прагрэсу і паведамленнем пра завяршэнне. Таму не давядзецца чакаць кампанентаў, якімі вы можаце не карыстацца.</p></details>
+        <details><summary>Ці з'яўляецца аналіз вымаўлення ацэнкай акцэнту?</summary><p>Не. Buddy выкарыстоўвае час слоў і ўпэўненасць распазнавання, каб адзначыць месцы, якія варта праверыць. МФА — гэта падказка, а не ацэнка вашага акцэнту або асобы.</p></details>
+      </div>
+    </section>
+
+    <section class="download-section" id="download"><div class="section-shell download-panel">
+      <div><p class="eyebrow eyebrow-light">Buddy 0.1 · Windows 11 x64</p><h2>Ваша наступная думка заслугоўвае лепшай другой спробы.</h2><p>Усталюйце Buddy, выберыце мікрафон і пачніце з функцый, якія працуюць лакальна з першага дня.</p></div>
+      <div class="download-options">
+        <a class="download-card primary-download" data-download-asset="Buddy-Setup.exe" href="#download"><span class="download-copy"><strong>Спампаваць усталёўшчык</strong><small>Рэкамендуецца · пакрокавае ўсталяванне</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card" data-download-asset="Buddy.exe" href="#download"><span class="download-copy"><strong>Партатыўная праграма</strong><small>Адзін файл · без усталявання</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="release-link" data-release-link href="https://github.com/">Заўвагі да выпуску і кантрольныя сумы <span aria-hidden="true">↗</span></a>
+        <p class="download-note" data-release-note>Спасылкі вядуць на апошні выпуск GitHub. Першыя версіі могуць быць без лічбавага подпісу; праверце апублікаваныя кантрольныя сумы.</p>
+      </div>
+    </div></section>
+  </main>
+
+  <footer class="site-footer"><div class="section-shell footer-grid">
+    <div><a class="brand footer-brand" href="../"><span class="brand-mark" aria-hidden="true">b</span><span>Buddy</span></a><p>Уважлівы маўленчы памочнік для Windows.</p></div>
+    <div class="footer-links"><a href="#features">Магчымасці</a><a href="#privacy">Прыватнасць</a><a data-release-link href="https://github.com/">Выпускі на GitHub</a></div>
+    <p class="footer-note">Створана для Windows 11. Перад распаўсюджваннем праграмы азнаёмцеся з далучанымі паведамленнямі пра староннія кампаненты.</p>
+  </div></footer>
+  <script src="../config.js"></script><script src="../app.js"></script>
+</body>
+</html>

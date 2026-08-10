@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Buddy — Asistente de voz con IA privada para Windows</title>
+  <meta name="description" content="Graba tus intervenciones en reuniones, practica un inglés más claro y mantén conversaciones de voz con contexto en un asistente privado para Windows 11.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="theme-color" content="#5b46d8">
+  <meta name="color-scheme" content="light">
+  <link rel="canonical" href="__SITE_BASE_URL__/es/">
+  <link rel="alternate" hreflang="en" href="__SITE_BASE_URL__/">
+  <link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/">
+  <link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/">
+  <link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/">
+  <link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Buddy">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="Buddy — Recuerda tus palabras. Exprésalas mejor.">
+  <meta property="og:description" content="Un asistente de voz local para Windows que recuerda reuniones, mejora la pronunciación y mantiene diálogos con IA.">
+  <meta property="og:url" content="__SITE_BASE_URL__/es/">
+  <meta property="og:image" content="__SITE_BASE_URL__/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Buddy con una conversación de voz y una forma de onda de audio">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Buddy — Asistente de voz privado para Windows">
+  <meta name="twitter:description" content="Graba, mejora y vuelve a escuchar lo que dices, con procesamiento local y el proveedor de IA que elijas.">
+  <meta name="twitter:image" content="__SITE_BASE_URL__/og.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+  <link rel="manifest" href="../site.webmanifest">
+  <link rel="stylesheet" href="../styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Buddy",
+    "description": "Asistente de voz privado para Windows, pensado para recordar reuniones, mejorar la pronunciación y conversar con IA manteniendo el contexto.",
+    "url": "__SITE_BASE_URL__/es/",
+    "downloadUrl": "https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "Windows 11 x64",
+    "softwareVersion": "0.1",
+    "isAccessibleForFree": true,
+    "inLanguage": "es",
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+    "featureList": ["Grabación local del micrófono", "Reproducción sin silencios largos", "Transcripción de voz en directo", "Análisis de pronunciación con AFI", "Mejora editable de gramática y vocabulario", "Diálogo de voz con IA y contexto persistente", "Síntesis de voz local"]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type": "Question", "name": "¿Buddy graba a todos los participantes de una reunión?", "acceptedAnswer": {"@type": "Answer", "text": "No. Buddy graba el micrófono que eliges y está diseñado para recordar tus propias intervenciones, no a los participantes remotos ni el audio del sistema."}},
+      {"@type": "Question", "name": "¿Sale mi audio del ordenador?", "acceptedAnswer": {"@type": "Answer", "text": "No. La grabación, el reconocimiento, el análisis de pronunciación y la voz se ejecutan localmente. Las tareas lingüísticas usan por defecto el acceso limitado de Buddy a DeepSeek y solo envían el texto solicitado; Qwen local conserva ese texto en tu PC."}},
+      {"@type": "Question", "name": "¿Puede Buddy funcionar sin conexión?", "acceptedAnswer": {"@type": "Answer", "text": "Sí. Una vez instalados los modelos locales opcionales, la grabación, la transcripción, la mejora con Qwen y la reproducción de voz pueden funcionar sin una cuenta en la nube."}}
+    ]
+  }
+  </script>
+</head>
+<body data-locale="es" data-root="..">
+  <a class="skip-link" href="#main">Saltar al contenido principal</a>
+  <header class="site-header">
+    <div class="nav-shell">
+      <a class="brand" href="../" aria-label="Inicio de Buddy"><span class="brand-mark" aria-hidden="true">b</span><span>Buddy</span></a>
+      <nav class="main-nav" aria-label="Navegación principal">
+        <a href="#features">Funciones</a><a href="#how-it-works">Cómo funciona</a><a href="#privacy">Privacidad</a><a href="#faq">Preguntas</a>
+      </nav>
+      <div class="nav-actions">
+        <label class="language-label" for="language-select">Idioma</label>
+        <select id="language-select" class="language-select" aria-label="Elegir idioma">
+          <option value="en">English</option><option value="es" selected>Español</option><option value="de">Deutsch</option><option value="be">Беларуская</option>
+        </select>
+        <a class="button button-small" href="#download">Descargar</a>
+      </div>
+    </div>
+    <noscript><nav class="noscript-languages" aria-label="Idiomas"><strong>Idioma:</strong> <a href="../">English</a> · <a href="../es/">Español</a> · <a href="../de/">Deutsch</a> · <a href="../be/">Беларуская</a></nav></noscript>
+  </header>
+
+  <main id="main">
+    <section class="hero section-shell">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Asistente de voz local para Windows 11</p>
+        <h1>Recuerda tus palabras.<br><span>Exprésalas mejor.</span></h1>
+        <p class="hero-lede">Buddy graba tus intervenciones, convierte la voz en un proceso de mejora editable y mantiene el contexto de una conversación hablada con IA, mientras el núcleo de audio permanece en tu PC.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" data-download-asset="Buddy-Setup.exe" href="#download">Descargar instalador</a>
+          <a class="button button-secondary" data-download-asset="Buddy.exe" href="#download">Ejecutable portátil</a>
+        </div>
+        <p class="release-status" id="release-status" aria-live="polite">Windows 11 x64 · Última versión de GitHub</p>
+        <ul class="hero-trust" aria-label="Ventajas principales">
+          <li><span aria-hidden="true">✓</span> Sin cuenta para las funciones esenciales</li>
+          <li><span aria-hidden="true">✓</span> Audio procesado localmente</li>
+          <li><span aria-hidden="true">✓</span> Grabaciones resistentes a fallos</li>
+        </ul>
+      </div>
+      <div class="product-preview" role="img" aria-label="Vista previa de Buddy con un diálogo hablado, transcripción en directo y controles de audio">
+        <div class="preview-glow" aria-hidden="true"></div>
+        <div class="app-window" aria-hidden="true">
+          <div class="window-titlebar"><div class="window-brand"><span class="mini-brand">b</span> Buddy</div><div class="window-controls"><span></span><span></span><span></span></div></div>
+          <div class="app-tabs"><span class="active">Hablar</span><span>Grabaciones</span><span class="tab-spacer"></span><span class="mode active-soft">Diálogo IA</span><span class="mode">Monólogo</span></div>
+          <div class="app-body">
+            <div class="conversation">
+              <div class="message user-message"><span class="message-label">Tú</span><p>Ayúdame a explicar esto con más claridad.</p><div class="phonetic">/aˈʝuðame a ekspliˈkaɾ ˈesto kon mas klaɾiˈðað/</div></div>
+              <div class="message buddy-message"><span class="message-label">Buddy</span><p><strong>Empieza por el resultado.</strong> Después, añade el detalle que necesita quien te escucha.</p><div class="message-actions"><span>▶</span><span>Claro · conciso · natural</span></div></div>
+              <div class="live-card"><div class="live-heading"><span><i></i> Escuchando</span><span>Pausa de 1,1 s</span></div><p>También quiero explicar por qué es importante…</p><div class="silence-progress"><span></span></div></div>
+            </div>
+            <div class="side-card"><span class="side-kicker">Sesión</span><strong>La conversación conserva el contexto</strong><div class="waveform"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="side-note">El audio permanece local</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="proof-strip" aria-label="Capacidades de Buddy"><div class="section-shell proof-grid">
+      <div><strong>Local</strong><span>reconocimiento Whisper</span></div><div><strong>Editable</strong><span>transcripciones y revisiones</span></div><div><strong>Persistente</strong><span>grabaciones y diálogos</span></div><div><strong>Natural</strong><span>voz con Kokoro</span></div>
+    </div></section>
+
+    <section class="features-section section-shell" id="features">
+      <div class="section-heading"><p class="eyebrow">Tres maneras de ayudarte</p><h2>Desde la primera palabra hasta la versión que querías decir.</h2><p>Un espacio sereno conecta la conversación espontánea, la práctica consciente y un archivo de voz fácil de consultar.</p></div>
+      <div class="feature-grid">
+        <article class="feature-card feature-dialog"><div class="feature-number">01</div><div class="feature-icon icon-dialog" aria-hidden="true"><span></span><span></span></div><h3>Diálogo hablado con IA</h3><p>Habla con libertad, mira la transcripción en directo y escucha cada respuesta automáticamente. Buddy conserva todo el contexto y espera el tiempo de pausa que elijas.</p><ul><li>Respuestas con formato y narración natural</li><li>Tiempo de fin de turno ajustable</li><li>DeepSeek limitado de Buddy por defecto, tu clave o Qwen local</li></ul></article>
+        <article class="feature-card feature-coach"><div class="feature-number">02</div><div class="feature-icon icon-coach" aria-hidden="true"><span>Aa</span></div><h3>Entrenador de expresión oral</h3><p>Corrige errores de reconocimiento antes de pedir ayuda. Mejora gramática, vocabulario, claridad y tono sin perder tu intención.</p><ul><li>AFI e indicadores de confianza por palabra</li><li>Modos corregir, natural o conciso</li><li>Escucha tu versión original y la mejorada</li></ul></article>
+        <article class="feature-card feature-record"><div class="feature-number">03</div><div class="feature-icon icon-record" aria-hidden="true"><span>r</span></div><h3>Memoria de reuniones</h3><p>Graba el micrófono elegido desde la bandeja. Vuelve a oír lo importante sin silencios largos y navega por una forma de onda real.</p><ul><li>Fragmentos de audio recuperables tras un fallo</li><li>Títulos, fechas y transcripciones consultables</li><li>Conserva la reproducción original y compacta</li></ul></article>
+      </div>
+    </section>
+
+    <section class="how-section" id="how-it-works"><div class="section-shell how-layout">
+      <div class="section-heading left-heading"><p class="eyebrow">Pensado para cada día</p><h2>Empieza a hablar.<br>Buddy se ocupa del resto.</h2><p>Instala una sola aplicación de Windows. Los paquetes locales opcionales se descargan solo cuando hacen falta, con progreso claro y notificaciones del escritorio.</p></div>
+      <ol class="steps-list">
+        <li><span class="step-index">1</span><div><h3>Elige un modo</h3><p>Inicia un diálogo con IA, practica un monólogo o empieza a grabar una reunión desde la bandeja.</p></div></li>
+        <li><span class="step-index">2</span><div><h3>Habla con naturalidad</h3><p>La detección de voz y Whisper, ambos locales, convierten el micrófono en texto duradero y editable.</p></div></li>
+        <li><span class="step-index">3</span><div><h3>Revisa, mejora y reproduce</h3><p>Corrige una palabra, consulta su AFI y significado, escucha una versión más clara o vuelve a cualquier momento guardado.</p></div></li>
+      </ol>
+    </div></section>
+
+    <section class="privacy-section section-shell" id="privacy"><div class="privacy-panel">
+      <div class="privacy-copy"><p class="eyebrow eyebrow-light">Privacidad desde el diseño</p><h2>Tu voz no es el precio de entrada.</h2><p>El audio del micrófono, el reconocimiento, el análisis de pronunciación, la eliminación de silencios y la síntesis de voz permanecen en tu ordenador. Las tareas lingüísticas usan por defecto el acceso limitado de Buddy a DeepSeek y solo envían el texto solicitado, nunca la grabación. Elige Qwen local para conservar también ese texto en tu PC.</p><a href="#faq" class="text-link">Leer las respuestas sobre privacidad <span aria-hidden="true">→</span></a></div>
+      <div class="privacy-facts"><div><span class="fact-mark">01</span><strong>Audio local</strong><p>Tus grabaciones permanecen en tu perfil de Windows.</p></div><div><span class="fact-mark">02</span><strong>Claves protegidas</strong><p>Las credenciales se protegen con DPAPI de Windows.</p></div><div><span class="fact-mark">03</span><strong>Tú eliges</strong><p>Usa IA de texto alojada o descarga Qwen para respuestas locales.</p></div></div>
+    </div></section>
+
+    <section class="detail-section section-shell"><div class="detail-grid">
+      <div class="section-heading left-heading"><p class="eyebrow">Controles pequeños, control de verdad</p><h2>Diseñado para no estorbar.</h2></div>
+      <div class="detail-list">
+        <article><span class="detail-dot"></span><div><h3>Vive en la bandeja</h3><p>Una <strong>b</strong> visible indica que está listo; una <strong>r</strong> roja deja claro que está grabando.</p></div></article>
+        <article><span class="detail-dot"></span><div><h3>Reproduce desde el momento exacto</h3><p>Haz clic en cualquier punto de la línea de sonido, pausa, reanuda o reinicia.</p></div></article>
+        <article><span class="detail-dot"></span><div><h3>El texto se comporta como texto</h3><p>Selecciona y copia mensajes con formato. Haz clic en una palabra solo cuando quieras su AFI y significado.</p></div></article>
+        <article><span class="detail-dot"></span><div><h3>Resiste las interrupciones</h3><p>Los puntos de control breves y un catálogo local duradero protegen el trabajo en curso.</p></div></article>
+      </div>
+    </div></section>
+
+    <section class="faq-section section-shell" id="faq">
+      <div class="section-heading"><p class="eyebrow">Respuestas claras</p><h2>Conoce lo que Buddy hace y lo que no.</h2></div>
+      <div class="faq-list">
+        <details><summary>¿Buddy graba a todos los participantes de una reunión?</summary><p>No. Buddy graba el micrófono que eliges. Está pensado para recordar tus propias intervenciones, no las de participantes remotos ni el audio del sistema de Windows. Con auriculares obtendrás el resultado más limpio.</p></details>
+        <details><summary>¿Sale mi audio del ordenador?</summary><p>No. La captura, Whisper, el análisis de pronunciación y la voz de Kokoro se ejecutan localmente. El proveedor limitado predeterminado envía a DeepSeek solo el texto necesario para la tarea. Qwen local conserva también ese texto en tu PC.</p></details>
+        <details><summary>¿Puedo usar Buddy sin una cuenta en la nube?</summary><p>Sí. La grabación, la reproducción, la transcripción y la voz local no necesitan una. La versión incluye hasta 1.000 respuestas o 1.000.000 de tokens de acceso limitado a DeepSeek. Descarga Qwen local para conservar también en tu PC las respuestas y mejoras.</p></details>
+        <details><summary>¿Qué descarga el instalador?</summary><p>La aplicación es autocontenida. Los paquetes más grandes de voz e IA local se instalan bajo demanda, con progreso y aviso al terminar, para que no esperes por componentes que quizá no utilices.</p></details>
+        <details><summary>¿La evaluación de pronunciación puntúa mi acento?</summary><p>No. Buddy usa tiempos y confianza del reconocimiento para señalar pasajes que conviene revisar. El AFI sirve de guía; no juzga tu acento ni tu identidad.</p></details>
+      </div>
+    </section>
+
+    <section class="download-section" id="download"><div class="section-shell download-panel">
+      <div><p class="eyebrow eyebrow-light">Buddy 0.1 · Windows 11 x64</p><h2>Tu próxima idea merece una segunda versión mejor.</h2><p>Instala Buddy, elige tu micrófono y empieza con funciones que trabajan localmente desde el primer día.</p></div>
+      <div class="download-options">
+        <a class="download-card primary-download" data-download-asset="Buddy-Setup.exe" href="#download"><span class="download-copy"><strong>Descargar instalador</strong><small>Recomendado · instalación guiada en Windows</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card" data-download-asset="Buddy.exe" href="#download"><span class="download-copy"><strong>Ejecutable portátil</strong><small>Aplicación en un solo archivo · sin instalar</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="release-link" data-release-link href="https://github.com/">Notas de versión y sumas de comprobación <span aria-hidden="true">↗</span></a>
+        <p class="download-note" data-release-note>Las descargas apuntan a la última versión de GitHub. Las primeras versiones pueden no estar firmadas; comprueba las sumas publicadas.</p>
+      </div>
+    </div></section>
+  </main>
+
+  <footer class="site-footer"><div class="section-shell footer-grid">
+    <div><a class="brand footer-brand" href="../"><span class="brand-mark" aria-hidden="true">b</span><span>Buddy</span></a><p>Un asistente de voz atento para Windows.</p></div>
+    <div class="footer-links"><a href="#features">Funciones</a><a href="#privacy">Privacidad</a><a data-release-link href="https://github.com/">Versiones en GitHub</a></div>
+    <p class="footer-note">Creado para Windows 11. Consulta los avisos de terceros incluidos antes de redistribuir los binarios.</p>
+  </div></footer>
+  <script src="../config.js"></script><script src="../app.js"></script>
+</body>
+</html>

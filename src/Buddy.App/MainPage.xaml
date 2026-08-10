@@ -1,0 +1,1985 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Buddy.App.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:cards="clr-namespace:Buddy.App.ViewModels"
+    xmlns:controls="clr-namespace:Buddy.App.Controls"
+    xmlns:tb="https://notifyicon.com/"
+    xmlns:vm="clr-namespace:Buddy.App.ViewModels"
+    x:DataType="vm:MainViewModel"
+    BackgroundColor="#F4F6FA"
+    Shell.NavBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="PrimaryButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#5B5CE2" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="FontFamily" Value="Segoe UI Semibold" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="CornerRadius" Value="10" />
+                <Setter Property="HeightRequest" Value="42" />
+                <Setter Property="Padding" Value="18,0" />
+            </Style>
+
+            <Style x:Key="SecondaryButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#EEF0F7" />
+                <Setter Property="TextColor" Value="#25283A" />
+                <Setter Property="FontFamily" Value="Segoe UI Semibold" />
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="CornerRadius" Value="10" />
+                <Setter Property="HeightRequest" Value="40" />
+                <Setter Property="Padding" Value="16,0" />
+            </Style>
+
+            <Style x:Key="QuietButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="TextColor" Value="#60657A" />
+                <Setter Property="FontFamily" Value="Segoe UI Semibold" />
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="HeightRequest" Value="38" />
+                <Setter Property="Padding" Value="12,0" />
+            </Style>
+
+            <Style x:Key="SectionTitle" TargetType="Label">
+                <Setter Property="TextColor" Value="#191B29" />
+                <Setter Property="FontFamily" Value="Segoe UI Semibold" />
+                <Setter Property="FontSize" Value="24" />
+            </Style>
+
+            <Style x:Key="MutedText" TargetType="Label">
+                <Setter Property="TextColor" Value="#767B91" />
+                <Setter Property="FontSize" Value="13" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <tb:TaskbarIcon
+            x:Name="TrayIcon"
+            DoubleClickCommand="{Binding OpenWindowCommand}"
+            LeftClickCommand="{Binding OpenWindowCommand}"
+            NoLeftClickDelay="False"
+            ToolTipText="{Binding Runtime.TrayToolTip}">
+            <FlyoutBase.ContextFlyout>
+                <MenuFlyout>
+                    <MenuFlyoutItem
+                        Command="{Binding ToggleMeetingRecordingCommand}"
+                        Text="{Binding TrayRecordingMenuText}" />
+                    <MenuFlyoutItem
+                        Command="{Binding OpenMonologueCommand}"
+                        Text="Speak · Monologue" />
+                    <MenuFlyoutItem
+                        Command="{Binding OpenDialogCommand}"
+                        Text="Speak · AI Dialog" />
+                    <MenuFlyoutSeparator />
+                    <MenuFlyoutItem
+                        Command="{Binding OpenWindowCommand}"
+                        Text="Open Buddy" />
+                    <MenuFlyoutItem
+                        Command="{Binding ToggleSettingsCommand}"
+                        Text="Settings" />
+                    <MenuFlyoutSeparator />
+                    <MenuFlyoutItem
+                        Command="{Binding ExitApplicationCommand}"
+                        Text="Exit Buddy" />
+                </MenuFlyout>
+            </FlyoutBase.ContextFlyout>
+        </tb:TaskbarIcon>
+
+        <Grid RowDefinitions="72,*">
+            <Border
+                Grid.Row="0"
+                Padding="24,0"
+                BackgroundColor="White"
+                Stroke="#E8EAF0"
+                StrokeThickness="1">
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
+                    <HorizontalStackLayout
+                        Grid.Column="0"
+                        Spacing="11"
+                        VerticalOptions="Center">
+                        <Border
+                            WidthRequest="36"
+                            HeightRequest="36"
+                            BackgroundColor="#111827"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 10">
+                            <Label
+                                HorizontalTextAlignment="Center"
+                                VerticalTextAlignment="Center"
+                                FontAttributes="Bold"
+                                FontSize="21"
+                                Text="b"
+                                TextColor="White" />
+                        </Border>
+                        <VerticalStackLayout Spacing="-2" VerticalOptions="Center">
+                            <Label
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="18"
+                                Text="Buddy"
+                                TextColor="#171926" />
+                            <HorizontalStackLayout Spacing="6">
+                                <Ellipse
+                                    WidthRequest="7"
+                                    HeightRequest="7"
+                                    Fill="#32A071"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    FontSize="11"
+                                    Text="{Binding Runtime.StatusText}"
+                                    TextColor="#74798D" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+
+                    <HorizontalStackLayout
+                        Grid.Column="1"
+                        HorizontalOptions="Center"
+                        Spacing="12"
+                        VerticalOptions="Center">
+                        <HorizontalStackLayout Spacing="4">
+                            <Button
+                                AutomationId="SpeakTabButton"
+                                Command="{Binding SelectSpeakCommand}"
+                                Style="{StaticResource QuietButton}"
+                                Text="Speak">
+                                <Button.Triggers>
+                                    <DataTrigger
+                                        Binding="{Binding IsSpeakSelected}"
+                                        TargetType="Button"
+                                        Value="False">
+                                        <Setter Property="BackgroundColor" Value="Transparent" />
+                                        <Setter Property="BorderColor" Value="Transparent" />
+                                        <Setter Property="BorderWidth" Value="0" />
+                                        <Setter Property="TextColor" Value="#60657A" />
+                                    </DataTrigger>
+                                    <DataTrigger
+                                        Binding="{Binding IsSpeakSelected}"
+                                        TargetType="Button"
+                                        Value="True">
+                                        <Setter Property="BackgroundColor" Value="#5B5CE2" />
+                                        <Setter Property="BorderColor" Value="#4546BE" />
+                                        <Setter Property="BorderWidth" Value="1" />
+                                        <Setter Property="TextColor" Value="White" />
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+                            <Button
+                                AutomationId="RecordingsTabButton"
+                                Command="{Binding SelectRecordingsCommand}"
+                                Style="{StaticResource QuietButton}"
+                                Text="All recordings">
+                                <Button.Triggers>
+                                    <DataTrigger
+                                        Binding="{Binding IsRecordingsSelected}"
+                                        TargetType="Button"
+                                        Value="False">
+                                        <Setter Property="BackgroundColor" Value="Transparent" />
+                                        <Setter Property="BorderColor" Value="Transparent" />
+                                        <Setter Property="BorderWidth" Value="0" />
+                                        <Setter Property="TextColor" Value="#60657A" />
+                                    </DataTrigger>
+                                    <DataTrigger
+                                        Binding="{Binding IsRecordingsSelected}"
+                                        TargetType="Button"
+                                        Value="True">
+                                        <Setter Property="BackgroundColor" Value="#5B5CE2" />
+                                        <Setter Property="BorderColor" Value="#4546BE" />
+                                        <Setter Property="BorderWidth" Value="1" />
+                                        <Setter Property="TextColor" Value="White" />
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+                        </HorizontalStackLayout>
+
+                        <Border
+                            Padding="3"
+                            BackgroundColor="#F3F4F8"
+                            IsVisible="{Binding IsSpeakSelected}"
+                            Stroke="#E2E4EB"
+                            StrokeShape="RoundRectangle 10">
+                            <HorizontalStackLayout Spacing="2">
+                                <Button
+                                    AutomationId="DialogModeButton"
+                                    Command="{Binding SelectDialogCommand}"
+                                    Style="{StaticResource QuietButton}"
+                                    Text="AI Dialog">
+                                    <Button.Triggers>
+                                        <DataTrigger
+                                            Binding="{Binding IsDialogMode}"
+                                            TargetType="Button"
+                                            Value="False">
+                                            <Setter Property="BackgroundColor" Value="Transparent" />
+                                            <Setter Property="BorderColor" Value="Transparent" />
+                                            <Setter Property="BorderWidth" Value="0" />
+                                            <Setter Property="TextColor" Value="#60657A" />
+                                        </DataTrigger>
+                                        <DataTrigger
+                                            Binding="{Binding IsDialogMode}"
+                                            TargetType="Button"
+                                            Value="True">
+                                            <Setter Property="BackgroundColor" Value="#E4E3FF" />
+                                            <Setter Property="BorderColor" Value="#797AE8" />
+                                            <Setter Property="BorderWidth" Value="1" />
+                                            <Setter Property="TextColor" Value="#3738A8" />
+                                        </DataTrigger>
+                                    </Button.Triggers>
+                                </Button>
+                                <Button
+                                    AutomationId="MonologueModeButton"
+                                    Command="{Binding SelectMonologueCommand}"
+                                    Style="{StaticResource QuietButton}"
+                                    Text="Monologue">
+                                    <Button.Triggers>
+                                        <DataTrigger
+                                            Binding="{Binding IsMonologueMode}"
+                                            TargetType="Button"
+                                            Value="False">
+                                            <Setter Property="BackgroundColor" Value="Transparent" />
+                                            <Setter Property="BorderColor" Value="Transparent" />
+                                            <Setter Property="BorderWidth" Value="0" />
+                                            <Setter Property="TextColor" Value="#60657A" />
+                                        </DataTrigger>
+                                        <DataTrigger
+                                            Binding="{Binding IsMonologueMode}"
+                                            TargetType="Button"
+                                            Value="True">
+                                            <Setter Property="BackgroundColor" Value="#E4E3FF" />
+                                            <Setter Property="BorderColor" Value="#797AE8" />
+                                            <Setter Property="BorderWidth" Value="1" />
+                                            <Setter Property="TextColor" Value="#3738A8" />
+                                        </DataTrigger>
+                                    </Button.Triggers>
+                                </Button>
+                            </HorizontalStackLayout>
+                        </Border>
+                    </HorizontalStackLayout>
+
+                    <Button
+                        Grid.Column="2"
+                        Command="{Binding ToggleMeetingRecordingCommand}"
+                        Style="{StaticResource PrimaryButton}"
+                        Text="{Binding MeetingButtonText}" />
+
+                    <Button
+                        Grid.Column="3"
+                        SemanticProperties.Description="Open settings"
+                        Command="{Binding ToggleSettingsCommand}"
+                        FontSize="19"
+                        Style="{StaticResource QuietButton}"
+                        Text="⚙" />
+                </Grid>
+            </Border>
+
+            <Grid
+                Grid.Row="1"
+                IsVisible="{Binding IsRecordingsSelected}"
+                RowDefinitions="Auto,Auto,*">
+                <Grid
+                    Grid.Row="0"
+                    Padding="28,24,28,16"
+                    ColumnDefinitions="*,Auto">
+                    <VerticalStackLayout Spacing="4">
+                        <Label Style="{StaticResource SectionTitle}" Text="All recordings" />
+                        <Label
+                            Style="{StaticResource MutedText}"
+                            Text="Meetings, practice takes, and completed AI dialogs, kept locally." />
+                        <Label
+                            FontSize="11"
+                            Text="{Binding AudioOperationMessage}"
+                            TextColor="#B54736" />
+                    </VerticalStackLayout>
+                    <Button
+                        Grid.Column="1"
+                        Command="{Binding ToggleMeetingRecordingCommand}"
+                        Style="{StaticResource PrimaryButton}"
+                        Text="{Binding MeetingButtonText}" />
+                </Grid>
+
+                <Grid
+                    Grid.Row="1"
+                    Padding="28,0,28,14"
+                    ColumnDefinitions="*,Auto"
+                    ColumnSpacing="12">
+                    <Border
+                        BackgroundColor="White"
+                        Stroke="#DFE2EA"
+                        StrokeShape="RoundRectangle 10">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Label
+                                Margin="14,0,6,0"
+                                FontSize="16"
+                                Text="⌕"
+                                TextColor="#7D8296"
+                                VerticalTextAlignment="Center" />
+                            <Entry
+                                Grid.Column="1"
+                                Margin="0"
+                                BackgroundColor="Transparent"
+                                ClearButtonVisibility="WhileEditing"
+                                Placeholder="Search titles and transcripts"
+                                ReturnCommand="{Binding RefreshRecordingsCommand}"
+                                Text="{Binding SearchText}" />
+                        </Grid>
+                    </Border>
+                    <Button
+                        Grid.Column="1"
+                        Command="{Binding RefreshRecordingsCommand}"
+                        Style="{StaticResource SecondaryButton}"
+                        Text="Refresh" />
+                </Grid>
+
+                <Grid Grid.Row="2" Padding="28,0,28,24">
+                    <CollectionView
+                        ItemsSource="{Binding Recordings}"
+                        SelectionMode="None"
+                        VerticalScrollBarVisibility="Default">
+                        <CollectionView.EmptyView>
+                            <Border
+                                Margin="0,12,0,0"
+                                Padding="42"
+                                BackgroundColor="White"
+                                Stroke="#DFE2EA"
+                                StrokeShape="RoundRectangle 14">
+                                <VerticalStackLayout
+                                    HorizontalOptions="Center"
+                                    Spacing="10">
+                                    <Border
+                                        WidthRequest="52"
+                                        HeightRequest="52"
+                                        BackgroundColor="#F0EFFF"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 16">
+                                        <Label
+                                            HorizontalTextAlignment="Center"
+                                            VerticalTextAlignment="Center"
+                                            FontSize="24"
+                                            Text="◉"
+                                            TextColor="#5B5CE2" />
+                                    </Border>
+                                    <Label
+                                        HorizontalTextAlignment="Center"
+                                        Style="{StaticResource MutedText}"
+                                        Text="{Binding RecordingsMessage}" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="cards:RecordingCardViewModel">
+                                <Border
+                                    Margin="0,0,0,10"
+                                    Padding="16"
+                                    BackgroundColor="White"
+                                    Stroke="#E1E4EB"
+                                    StrokeShape="RoundRectangle 12">
+                                    <Grid
+                                        ColumnDefinitions="Auto,*,Auto"
+                                        ColumnSpacing="14"
+                                        RowDefinitions="Auto,Auto,Auto,44">
+                                        <Button
+                                            Grid.RowSpan="4"
+                                            WidthRequest="42"
+                                            HeightRequest="42"
+                                            BackgroundColor="#F0EFFF"
+                                            BorderWidth="0"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayRecordingCommand}"
+                                            CommandParameter="{Binding .}"
+                                            CornerRadius="12"
+                                            FontSize="17"
+                                            IsEnabled="{Binding CanPlay}"
+                                            Padding="0"
+                                            SemanticProperties.Description="{Binding PlayButtonText}"
+                                            Text="{Binding PlayIcon}"
+                                            TextColor="#5B5CE2"
+                                            VerticalOptions="Center">
+                                        </Button>
+
+                                        <Label
+                                            Grid.Column="1"
+                                            FontFamily="Segoe UI Semibold"
+                                            FontSize="14"
+                                            LineBreakMode="TailTruncation"
+                                            Text="{Binding Title}"
+                                            TextColor="#252736" />
+                                        <Label
+                                            Grid.Column="2"
+                                            HorizontalTextAlignment="End"
+                                            FontFamily="Segoe UI Semibold"
+                                            FontSize="13"
+                                            Text="{Binding DurationText}"
+                                            TextColor="#363949" />
+                                        <HorizontalStackLayout
+                                            Grid.Row="1"
+                                            Grid.Column="1"
+                                            Spacing="8">
+                                            <Label
+                                                FontSize="11"
+                                                Text="{Binding DateText}"
+                                                TextColor="#7A7F92" />
+                                            <Label FontSize="11" Text="·" TextColor="#A0A4B2" />
+                                            <Label
+                                                FontSize="11"
+                                                Text="{Binding SourceText}"
+                                                TextColor="#5B5CE2" />
+                                            <Label
+                                                FontSize="11"
+                                                Text="{Binding StatusText}"
+                                                TextColor="#7A7F92" />
+                                        </HorizontalStackLayout>
+                                        <Label
+                                            Grid.Row="1"
+                                            Grid.Column="2"
+                                            FontSize="10"
+                                            HorizontalTextAlignment="End"
+                                            Text="{Binding SpeechDurationText}"
+                                            TextColor="#8A8E9E" />
+
+                                        <Button
+                                            Grid.Row="2"
+                                            Grid.Column="1"
+                                            Grid.ColumnSpan="2"
+                                            AutomationId="OpenDialogTranscriptLink"
+                                            BackgroundColor="Transparent"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.OpenSavedDialogCommand}"
+                                            CommandParameter="{Binding .}"
+                                            FontFamily="Segoe UI Semibold"
+                                            FontSize="11"
+                                            HeightRequest="28"
+                                            HorizontalOptions="Start"
+                                            IsVisible="{Binding IsDialog}"
+                                            Padding="0"
+                                            SemanticProperties.Description="Read the complete saved dialog"
+                                            Text="Read full dialog · formatted text and word help ›"
+                                            TextColor="#4F50C8" />
+
+                                        <Grid
+                                            Grid.Row="3"
+                                            Grid.Column="1"
+                                            Grid.ColumnSpan="2"
+                                            ColumnDefinitions="*,Auto"
+                                            ColumnSpacing="10">
+                                            <controls:WaveformView
+                                                HeightRequest="40"
+                                                HorizontalOptions="Fill"
+                                                IsEnabled="{Binding CanPlay}"
+                                                Progress="{Binding PlaybackProgress}"
+                                                Samples="{Binding WaveformSamples}"
+                                                SeekCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SeekRecordingCommand}"
+                                                SeekCommandParameter="{Binding .}"
+                                                SemanticProperties.Description="Recording waveform. Click to seek."
+                                                VerticalOptions="Center" />
+                                            <Label
+                                                Grid.Column="1"
+                                                HorizontalTextAlignment="End"
+                                                FontSize="10"
+                                                Text="{Binding TimelineText}"
+                                                TextColor="#72778A"
+                                                VerticalTextAlignment="Center" />
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <ActivityIndicator
+                        HorizontalOptions="Center"
+                        IsRunning="{Binding IsLoading}"
+                        IsVisible="{Binding IsLoading}"
+                        Color="#5B5CE2"
+                        VerticalOptions="Center" />
+                </Grid>
+
+                <Grid
+                    Grid.RowSpan="3"
+                    Padding="28,22,28,24"
+                    AutomationId="SavedDialogReader"
+                    BackgroundColor="#F4F6FA"
+                    IsVisible="{Binding Dialog.IsSavedDialogOpen}"
+                    RowDefinitions="Auto,*"
+                    ZIndex="5">
+                    <Grid
+                        Margin="0,0,0,14"
+                        ColumnDefinitions="*,Auto"
+                        ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="3">
+                            <Label
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="22"
+                                LineBreakMode="TailTruncation"
+                                Text="{Binding Dialog.SavedDialogTitle}"
+                                TextColor="#191B29" />
+                            <Label
+                                FontSize="12"
+                                Text="{Binding Dialog.SavedDialogMetadata}"
+                                TextColor="#767B91" />
+                            <Label
+                                FontSize="11"
+                                Text="{Binding Dialog.SavedDialogStatus}"
+                                TextColor="#5B5CE2" />
+                            <Label
+                                FontSize="11"
+                                LineBreakMode="WordWrap"
+                                Text="{Binding Dialog.OperationMessage}"
+                                TextColor="#B54736" />
+                        </VerticalStackLayout>
+                        <Button
+                            Grid.Column="1"
+                            AutomationId="CloseSavedDialogButton"
+                            Command="{Binding Dialog.CloseSavedDialogCommand}"
+                            SemanticProperties.Description="Close saved dialog"
+                            Style="{StaticResource SecondaryButton}"
+                            Text="Back to recordings" />
+                    </Grid>
+
+                    <Border
+                        Grid.Row="1"
+                        Padding="16"
+                        BackgroundColor="White"
+                        Stroke="#DFE2EA"
+                        StrokeShape="RoundRectangle 14">
+                        <Grid>
+                            <CollectionView
+                                AutomationId="SavedDialogMessages"
+                                ItemSizingStrategy="MeasureAllItems"
+                                ItemsSource="{Binding Dialog.SavedMessages}"
+                                SelectionMode="None"
+                                VerticalScrollBarVisibility="Default">
+                                <CollectionView.EmptyView>
+                                    <VerticalStackLayout
+                                        Padding="36"
+                                        HorizontalOptions="Center"
+                                        Spacing="10"
+                                        VerticalOptions="Center">
+                                        <Label
+                                            HorizontalTextAlignment="Center"
+                                            FontSize="26"
+                                            Text="◇"
+                                            TextColor="#B4B7C5" />
+                                        <Label
+                                            HorizontalTextAlignment="Center"
+                                            LineBreakMode="WordWrap"
+                                            Text="{Binding Dialog.SavedDialogStatus}"
+                                            TextColor="#767B91" />
+                                    </VerticalStackLayout>
+                                </CollectionView.EmptyView>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="cards:DialogMessageViewModel">
+                                        <controls:DialogMessageCardView />
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                            <ActivityIndicator
+                                HorizontalOptions="Center"
+                                IsRunning="{Binding Dialog.IsSavedDialogLoading}"
+                                IsVisible="{Binding Dialog.IsSavedDialogLoading}"
+                                Color="#5B5CE2"
+                                VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+
+            <ScrollView
+                Grid.Row="1"
+                IsVisible="{Binding IsMonologueMode}">
+                <Grid
+                    Padding="28,24,28,32"
+                    ColumnDefinitions="*,16,*"
+                    RowDefinitions="Auto,*">
+                    <VerticalStackLayout
+                        Grid.Row="0"
+                        Grid.ColumnSpan="3"
+                        Margin="0,0,0,18"
+                        Spacing="4">
+                        <Label Style="{StaticResource SectionTitle}" Text="Monologue" />
+                        <Label
+                            Style="{StaticResource MutedText}"
+                            Text="Speak freely, refine your wording and pronunciation, then hear a stronger version." />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="14">
+                        <Border
+                            Padding="20"
+                            BackgroundColor="White"
+                            Stroke="#E0E3EA"
+                            StrokeShape="RoundRectangle 14">
+                            <VerticalStackLayout Spacing="14">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <VerticalStackLayout Spacing="2">
+                                        <Label
+                                            FontFamily="Segoe UI Semibold"
+                                            FontSize="15"
+                                            Text="Practice take"
+                                            TextColor="#242635" />
+                                        <Label
+                                            Style="{StaticResource MutedText}"
+                                            Text="Your original audio is always preserved." />
+                                    </VerticalStackLayout>
+                                    <Button
+                                        Grid.Column="1"
+                                        Command="{Binding RecordTrainerTakeCommand}"
+                                        Style="{StaticResource PrimaryButton}"
+                                        Text="{Binding TrainerRecordingButtonText}" />
+                                </Grid>
+
+                                <Border
+                                    Padding="14,10"
+                                    BackgroundColor="#F7F8FB"
+                                    Stroke="#E4E6EC"
+                                    StrokeShape="RoundRectangle 10">
+                                    <Grid ColumnDefinitions="Auto,*,Auto">
+                                        <Button
+                                            Command="{Binding PlayTrainerTakeCommand}"
+                                            IsEnabled="{Binding IsTrainerTakeAvailable}"
+                                            Style="{StaticResource QuietButton}"
+                                            Text="{Binding TrainerPlaybackButtonText}" />
+                                        <ProgressBar
+                                            Grid.Column="1"
+                                            Margin="12,0"
+                                            HeightRequest="3"
+                                            Progress="{Binding Runtime.RecordingPeak}"
+                                            ProgressColor="#5B5CE2"
+                                            VerticalOptions="Center" />
+                                        <Label
+                                            Grid.Column="2"
+                                            FontSize="11"
+                                            Text="{Binding TrainerTakeStatusText}"
+                                            TextColor="#7C8193" />
+                                    </Grid>
+                                </Border>
+                                <Label
+                                    FontSize="11"
+                                    Text="{Binding TrainerStatusMessage}"
+                                    TextColor="#656B7F" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border
+                            Padding="20"
+                            BackgroundColor="White"
+                            Stroke="#E0E3EA"
+                            StrokeShape="RoundRectangle 14">
+                            <VerticalStackLayout Spacing="12">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label
+                                        FontFamily="Segoe UI Semibold"
+                                        FontSize="15"
+                                        Text="What I said"
+                                        TextColor="#242635" />
+                                    <Label
+                                        Grid.Column="1"
+                                        FontSize="11"
+                                        Text="Editable"
+                                        TextColor="#5B5CE2" />
+                                </Grid>
+                                <Editor
+                                    AutoSize="TextChanges"
+                                    BackgroundColor="#F8F9FB"
+                                    HeightRequest="190"
+                                    Placeholder="Your recognized text will appear here. You can correct recognition mistakes before improving it."
+                                    Text="{Binding TrainerTranscript}" />
+                                <Picker
+                                    SelectedIndex="{Binding ImprovementModeIndex}"
+                                    Title="Improvement style">
+                                    <Picker.Items>
+                                        <x:String>Correct only</x:String>
+                                        <x:String>Natural spoken English</x:String>
+                                        <x:String>Clear and concise</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                                <Label
+                                    FontSize="11"
+                                    Text="Improve sends only the editable text above to the selected AI provider. With local Qwen selected, text and audio stay on this PC."
+                                    TextColor="#767B91" />
+                                <Button
+                                    Command="{Binding ImproveTrainerTextCommand}"
+                                    IsEnabled="{Binding CanImproveTrainerText}"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Text="Improve my wording" />
+                                <ActivityIndicator
+                                    HorizontalOptions="Center"
+                                    IsRunning="{Binding IsTrainerBusy}"
+                                    IsVisible="{Binding IsTrainerBusy}"
+                                    Color="#5B5CE2" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border
+                            AutomationId="TrainerPronunciationCard"
+                            Padding="20"
+                            BackgroundColor="White"
+                            Stroke="#E0E3EA"
+                            StrokeShape="RoundRectangle 14">
+                            <VerticalStackLayout Spacing="12">
+                                <VerticalStackLayout Spacing="2">
+                                    <Label
+                                        FontFamily="Segoe UI Semibold"
+                                        FontSize="15"
+                                        Text="Pronunciation review"
+                                        TextColor="#242635" />
+                                    <Label
+                                        Style="{StaticResource MutedText}"
+                                        Text="Word clarity and timing collected from your audio." />
+                                </VerticalStackLayout>
+
+                                <Label
+                                    FontFamily="Segoe UI Semibold"
+                                    FontSize="12"
+                                    IsVisible="{Binding HasTrainerPronunciation}"
+                                    Text="{Binding TrainerPronunciationSummary}"
+                                    TextColor="#45495D" />
+
+                                <Border
+                                    Padding="12,9"
+                                    BackgroundColor="#F7F6FF"
+                                    IsVisible="{Binding HasTrainerPhoneticTranscript}"
+                                    Stroke="#DDD9FF"
+                                    StrokeShape="RoundRectangle 9">
+                                    <VerticalStackLayout Spacing="3">
+                                        <Label
+                                            FontFamily="Segoe UI Semibold"
+                                            FontSize="10"
+                                            Text="PHONETIC TRANSCRIPTION · IPA"
+                                            TextColor="#6668B8" />
+                                        <Label
+                                            FontFamily="Segoe UI"
+                                            FontSize="13"
+                                            LineBreakMode="WordWrap"
+                                            Text="{Binding TrainerPhoneticTranscript}"
+                                            TextColor="#303247" />
+                                    </VerticalStackLayout>
+                                </Border>
+
+                                <FlexLayout
+                                    AlignItems="Start"
+                                    BindableLayout.ItemsSource="{Binding TrainerPronunciationWords}"
+                                    Direction="Row"
+                                    IsVisible="{Binding HasTrainerPronunciation}"
+                                    Wrap="Wrap">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate x:DataType="cards:PronunciationWordViewModel">
+                                            <Border
+                                                Margin="0,0,7,7"
+                                                Padding="10,7"
+                                                BackgroundColor="#EDF8F0"
+                                                SemanticProperties.Description="{Binding AccessibilityText}"
+                                                Stroke="#B7DDC1"
+                                                StrokeShape="RoundRectangle 9"
+                                                ToolTipProperties.Text="{Binding TimingText}">
+                                                <Border.Triggers>
+                                                    <DataTrigger
+                                                        Binding="{Binding AttentionKey}"
+                                                        TargetType="Border"
+                                                        Value="Review">
+                                                        <Setter Property="BackgroundColor" Value="#FFF7E3" />
+                                                        <Setter Property="Stroke" Value="#E9C86C" />
+                                                    </DataTrigger>
+                                                    <DataTrigger
+                                                        Binding="{Binding AttentionKey}"
+                                                        TargetType="Border"
+                                                        Value="LikelyIssue">
+                                                        <Setter Property="BackgroundColor" Value="#FFF0F0" />
+                                                        <Setter Property="Stroke" Value="#E99A9A" />
+                                                    </DataTrigger>
+                                                </Border.Triggers>
+                                                <VerticalStackLayout Spacing="0">
+                                                    <Label
+                                                        FontFamily="Segoe UI Semibold"
+                                                        FontSize="12"
+                                                        Text="{Binding Text}"
+                                                        TextColor="#292C3D" />
+                                                    <Label
+                                                        FontSize="10"
+                                                        Text="{Binding ConfidenceText}"
+                                                        TextColor="#707589" />
+                                                </VerticalStackLayout>
+                                            </Border>
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </FlexLayout>
+
+                                <FlexLayout
+                                    AlignItems="Center"
+                                    Direction="Row"
+                                    IsVisible="{Binding HasTrainerPronunciation}"
+                                    Wrap="Wrap">
+                                    <HorizontalStackLayout Margin="0,0,14,4" Spacing="5">
+                                        <Border
+                                            BackgroundColor="#EDF8F0"
+                                            HeightRequest="10"
+                                            Stroke="#B7DDC1"
+                                            StrokeShape="RoundRectangle 5"
+                                            WidthRequest="10" />
+                                        <Label
+                                            FontSize="10"
+                                            Text="Clear"
+                                            TextColor="#686D80"
+                                            VerticalTextAlignment="Center" />
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Margin="0,0,14,4" Spacing="5">
+                                        <Border
+                                            BackgroundColor="#FFF7E3"
+                                            HeightRequest="10"
+                                            Stroke="#E9C86C"
+                                            StrokeShape="RoundRectangle 5"
+                                            WidthRequest="10" />
+                                        <Label
+                                            FontSize="10"
+                                            Text="Review"
+                                            TextColor="#686D80"
+                                            VerticalTextAlignment="Center" />
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Margin="0,0,14,4" Spacing="5">
+                                        <Border
+                                            BackgroundColor="#FFF0F0"
+                                            HeightRequest="10"
+                                            Stroke="#E99A9A"
+                                            StrokeShape="RoundRectangle 5"
+                                            WidthRequest="10" />
+                                        <Label
+                                            FontSize="10"
+                                            Text="Likely unclear"
+                                            TextColor="#686D80"
+                                            VerticalTextAlignment="Center" />
+                                    </HorizontalStackLayout>
+                                </FlexLayout>
+
+                                <Label
+                                    FontSize="11"
+                                    Text="{Binding TrainerPronunciationStatus}"
+                                    TextColor="#767B91" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        Padding="20"
+                        BackgroundColor="White"
+                        Stroke="#E0E3EA"
+                        StrokeShape="RoundRectangle 14">
+                        <VerticalStackLayout Spacing="13">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <VerticalStackLayout Spacing="2">
+                                    <Label
+                                        FontFamily="Segoe UI Semibold"
+                                        FontSize="15"
+                                        Text="Better version"
+                                        TextColor="#242635" />
+                                    <Label
+                                        Style="{StaticResource MutedText}"
+                                        Text="Review every change before creating audio." />
+                                </VerticalStackLayout>
+                                <Label
+                                    Grid.Column="1"
+                                    FontSize="11"
+                                    Text="Editable"
+                                    TextColor="#5B5CE2" />
+                            </Grid>
+
+                            <Editor
+                                AutoSize="TextChanges"
+                                BackgroundColor="#F8F9FB"
+                                HeightRequest="270"
+                                Placeholder="The corrected and polished version will appear here."
+                                Text="{Binding TrainerImprovedText}" />
+
+                            <Border
+                                Padding="14"
+                                BackgroundColor="#F3F7FF"
+                                IsVisible="{Binding HasTrainerFeedback}"
+                                Stroke="#C9D7F2"
+                                StrokeShape="RoundRectangle 10">
+                                <VerticalStackLayout Spacing="6">
+                                    <Label
+                                        FontFamily="Segoe UI Semibold"
+                                        FontSize="12"
+                                        Text="What changed"
+                                        TextColor="#35486A" />
+                                    <VerticalStackLayout
+                                        BindableLayout.ItemsSource="{Binding TrainerChangeNotes}"
+                                        Spacing="4">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate x:DataType="x:String">
+                                                <Label
+                                                    FontSize="11"
+                                                    Text="{Binding .}"
+                                                    TextColor="#52627E" />
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+                                    </VerticalStackLayout>
+                                    <VerticalStackLayout
+                                        BindableLayout.ItemsSource="{Binding TrainerProtectedWarnings}"
+                                        Spacing="4">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate x:DataType="x:String">
+                                                <Label
+                                                    FontSize="11"
+                                                    Text="{Binding .}"
+                                                    TextColor="#A15C1B" />
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+                                    </VerticalStackLayout>
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <Border
+                                Padding="14"
+                                BackgroundColor="#FFF9EC"
+                                IsVisible="{Binding HasTrainerAmbiguities}"
+                                Stroke="#F0D9A4"
+                                StrokeShape="RoundRectangle 10">
+                                <VerticalStackLayout Spacing="6">
+                                    <Label
+                                        FontFamily="Segoe UI Semibold"
+                                        FontSize="12"
+                                        Text="Meaning needs review"
+                                        TextColor="#815B16" />
+                                    <VerticalStackLayout
+                                        BindableLayout.ItemsSource="{Binding TrainerAmbiguityNotes}"
+                                        Spacing="4">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate x:DataType="x:String">
+                                                <Label
+                                                    FontSize="11"
+                                                    Text="{Binding .}"
+                                                    TextColor="#815B16" />
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+                                    </VerticalStackLayout>
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <Grid ColumnDefinitions="*,150,Auto" ColumnSpacing="10">
+                                <Picker
+                                    ItemsSource="{Binding TrainerVoiceNames}"
+                                    SelectedIndex="{Binding SelectedTrainerVoiceIndex}"
+                                    Title="Voice" />
+                                <Picker
+                                    Grid.Column="1"
+                                    ItemsSource="{Binding TrainerSpeedNames}"
+                                    SelectedIndex="{Binding TrainerSpeedIndex}"
+                                    Title="Pace" />
+                                <Button
+                                    Grid.Column="2"
+                                    Command="{Binding SynthesizeTrainerTextCommand}"
+                                    IsEnabled="{Binding CanSynthesizeTrainerText}"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Text="Create better audio" />
+                            </Grid>
+
+                            <Border
+                                Padding="14,12"
+                                BackgroundColor="#F1F0FF"
+                                Stroke="#DAD8FF"
+                                StrokeShape="RoundRectangle 10">
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                                    <Button
+                                        Command="{Binding PlayTrainerGeneratedCommand}"
+                                        IsEnabled="{Binding IsTrainerGeneratedAudioAvailable}"
+                                        Style="{StaticResource QuietButton}"
+                                        Text="{Binding TrainerGeneratedPlaybackButtonText}" />
+                                    <Label
+                                        Grid.Column="1"
+                                        FontSize="12"
+                                        Text="{Binding TrainerGeneratedStatusText}"
+                                        TextColor="#5D6072"
+                                        VerticalTextAlignment="Center" />
+                                    <Label
+                                        Grid.Column="2"
+                                        FontSize="11"
+                                        Text="Local WAV"
+                                        TextColor="#4F50C8" />
+                                </Grid>
+                            </Border>
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+            </ScrollView>
+
+            <Grid
+                Grid.Row="1"
+                Padding="28,24,28,28"
+                ColumnDefinitions="*,18,330"
+                IsVisible="{Binding IsDialogMode}"
+                RowDefinitions="Auto,*">
+                <Grid
+                    Grid.Row="0"
+                    Grid.ColumnSpan="3"
+                    Margin="0,0,0,18"
+                    ColumnDefinitions="*,Auto"
+                    ColumnSpacing="10">
+                    <VerticalStackLayout Spacing="4">
+                        <Label Style="{StaticResource SectionTitle}" Text="AI Dialog" />
+                        <Label
+                            Style="{StaticResource MutedText}"
+                            Text="Speak naturally. Buddy detects your pause, keeps the full session context, and answers out loud automatically." />
+                    </VerticalStackLayout>
+                    <Button
+                        Grid.Column="1"
+                        Command="{Binding Dialog.StartDialogCommand}"
+                        IsEnabled="{Binding Dialog.CanStart}"
+                        IsVisible="{Binding Dialog.IsInactive}"
+                        Style="{StaticResource PrimaryButton}"
+                        Text="Start dialog" />
+                    <Button
+                        Grid.Column="1"
+                        Command="{Binding Dialog.FinishDialogCommand}"
+                        IsEnabled="{Binding Dialog.CanFinish}"
+                        IsVisible="{Binding Dialog.IsActive}"
+                        Style="{StaticResource SecondaryButton}"
+                        Text="{Binding Dialog.FinishButtonText}" />
+                </Grid>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Padding="18"
+                    BackgroundColor="White"
+                    Stroke="#E0E3EA"
+                    StrokeShape="RoundRectangle 14">
+                    <Grid RowDefinitions="Auto,*,Auto">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Spacing="2">
+                                <Label
+                                    FontFamily="Segoe UI Semibold"
+                                    FontSize="15"
+                                    Text="Conversation"
+                                    TextColor="#242635" />
+                                <Label
+                                    Style="{StaticResource MutedText}"
+                                    Text="Every turn is persisted before the next AI request; each answer speaks automatically." />
+                            </VerticalStackLayout>
+                            <Border
+                                Grid.Column="1"
+                                Padding="10,5"
+                                BackgroundColor="#F1F0FF"
+                                Stroke="#DAD8FF"
+                                StrokeShape="RoundRectangle 12">
+                                <Label
+                                    FontFamily="Segoe UI Semibold"
+                                    FontSize="11"
+                                    Text="{Binding Dialog.PhaseText}"
+                                    TextColor="#4F50C8" />
+                            </Border>
+                        </Grid>
+
+                        <Grid
+                            Grid.Row="1"
+                            Margin="0,14,0,10">
+                            <CollectionView
+                                x:Name="DialogMessages"
+                                HandlerChanged="OnDialogMessagesHandlerChanged"
+                                ItemSizingStrategy="MeasureAllItems"
+                                ItemsSource="{Binding Dialog.Messages}"
+                                ItemsUpdatingScrollMode="KeepScrollOffset"
+                                Scrolled="OnDialogMessagesScrolled"
+                                SelectionMode="None"
+                                VerticalScrollBarVisibility="Default">
+                            <CollectionView.EmptyView>
+                                <VerticalStackLayout
+                                    Padding="30"
+                                    HorizontalOptions="Center"
+                                    Spacing="9"
+                                    VerticalOptions="Center">
+                                    <Label
+                                        HorizontalTextAlignment="Center"
+                                        FontSize="28"
+                                        Text="◌"
+                                        TextColor="#B4B7C5" />
+                                    <Label
+                                        HorizontalTextAlignment="Center"
+                                        Style="{StaticResource MutedText}"
+                                        Text="Start the dialog and speak your first thought." />
+                                </VerticalStackLayout>
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="cards:DialogMessageViewModel">
+                                    <Border
+                                        Margin="0,0,0,10"
+                                        Padding="14,12"
+                                        BackgroundColor="#F5F6FA"
+                                        Stroke="#E1E4EB"
+                                        StrokeShape="RoundRectangle 12">
+                                        <Border.Triggers>
+                                            <DataTrigger
+                                                Binding="{Binding IsUser}"
+                                                TargetType="Border"
+                                                Value="True">
+                                                <Setter Property="BackgroundColor" Value="#EFEEFF" />
+                                                <Setter Property="Stroke" Value="#DAD8FF" />
+                                            </DataTrigger>
+                                        </Border.Triggers>
+                                        <VerticalStackLayout Spacing="7">
+                                            <Grid ColumnDefinitions="*,Auto">
+                                                <Label
+                                                    FontFamily="Segoe UI Semibold"
+                                                    FontSize="11"
+                                                    Text="{Binding ProviderText}"
+                                                    TextColor="#5B5CE2" />
+                                                <Label
+                                                    Grid.Column="1"
+                                                    FontSize="10"
+                                                    Text="{Binding TimeText}"
+                                                    TextColor="#9296A6" />
+                                            </Grid>
+                                            <controls:MarkdownMessageView
+                                                CommandContext="{Binding .}"
+                                                Document="{Binding RenderedContent}"
+                                                WordClickedCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.LookupWordCommand}" />
+                                            <Border
+                                                Padding="11,9"
+                                                BackgroundColor="#FFFDF5"
+                                                IsVisible="{Binding IsWordLookupVisible}"
+                                                SemanticProperties.Description="Word pronunciation and contextual meaning"
+                                                Stroke="#DED8B7"
+                                                StrokeShape="RoundRectangle 9">
+                                                <VerticalStackLayout Spacing="6">
+                                                    <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                                                        <Label
+                                                            FontFamily="Segoe UI Semibold"
+                                                            FontSize="13"
+                                                            Text="{Binding SelectedWord}"
+                                                            TextColor="#303342" />
+                                                        <ActivityIndicator
+                                                            Grid.Column="1"
+                                                            Margin="0,0,7,0"
+                                                            HeightRequest="18"
+                                                            IsRunning="{Binding IsWordLookupLoading}"
+                                                            IsVisible="{Binding IsWordLookupLoading}"
+                                                            WidthRequest="18" />
+                                                        <controls:AudioTransportView
+                                                            Grid.Column="2"
+                                                            AutomationId="WordAudioTransport"
+                                                            CommandParameter="{Binding .}"
+                                                            IsEnabled="{Binding CanControlWordAudio}"
+                                                            Margin="0,0,5,0"
+                                                            PauseCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.PauseDialogAudioCommand}"
+                                                            PlayCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.PlayWordAudioCommand}"
+                                                            ResetCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.RestartDialogAudioCommand}"
+                                                            State="{Binding WordAudioState}"
+                                                            StopCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.StopDialogAudioCommand}"
+                                                            Subject="{Binding WordAudioSubject}" />
+                                                        <Button
+                                                            Grid.Column="3"
+                                                            AutomationId="DismissWordLookupButton"
+                                                            BackgroundColor="Transparent"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.DismissWordLookupCommand}"
+                                                            CommandParameter="{Binding .}"
+                                                            FontSize="16"
+                                                            HeightRequest="24"
+                                                            Padding="3,0"
+                                                            Text="×"
+                                                            TextColor="#777B8D"
+                                                            WidthRequest="24" />
+                                                    </Grid>
+                                                    <HorizontalStackLayout Spacing="8">
+                                                        <Label
+                                                            FontFamily="Segoe UI"
+                                                            FontSize="12"
+                                                            Text="{Binding WordPhoneticText}"
+                                                            TextColor="#4F50C8" />
+                                                        <Label
+                                                            FontAttributes="Italic"
+                                                            FontSize="11"
+                                                            IsVisible="{Binding HasWordPartOfSpeech}"
+                                                            Text="{Binding WordPartOfSpeechText}"
+                                                            TextColor="#777B8D" />
+                                                    </HorizontalStackLayout>
+                                                    <Label
+                                                        FontSize="11"
+                                                        IsVisible="{Binding IsWordPhoneticLoading}"
+                                                        Text="Preparing phonetics locally…"
+                                                        TextColor="#777B8D" />
+                                                    <Label
+                                                        FontSize="12"
+                                                        IsVisible="{Binding HasWordDefinition}"
+                                                        LineBreakMode="WordWrap"
+                                                        Text="{Binding WordDefinitionText}"
+                                                        TextColor="#343746" />
+                                                    <Label
+                                                        FontSize="11"
+                                                        IsVisible="{Binding IsWordDefinitionLoading}"
+                                                        Text="Looking up its meaning in this sentence…"
+                                                        TextColor="#777B8D" />
+                                                    <Label
+                                                        FontSize="11"
+                                                        IsVisible="{Binding HasWordLookupError}"
+                                                        LineBreakMode="WordWrap"
+                                                        Text="{Binding WordLookupError}"
+                                                        TextColor="#B54736" />
+                                                </VerticalStackLayout>
+                                            </Border>
+                                            <Border
+                                                Padding="11,9"
+                                                BackgroundColor="#FAFAFD"
+                                                IsVisible="{Binding HasPronunciation}"
+                                                Stroke="#DFE1EA"
+                                                StrokeShape="RoundRectangle 9">
+                                                <VerticalStackLayout Spacing="7">
+                                                    <Grid ColumnDefinitions="*,Auto">
+                                                        <Label
+                                                            FontFamily="Segoe UI Semibold"
+                                                            FontSize="10"
+                                                            Text="PRONUNCIATION"
+                                                            TextColor="#6668B8" />
+                                                        <Label
+                                                            Grid.Column="1"
+                                                            FontSize="9"
+                                                            Text="{Binding PronunciationSummary}"
+                                                            TextColor="#777C8F" />
+                                                    </Grid>
+                                                    <Label
+                                                        FontFamily="Segoe UI"
+                                                        FontSize="12"
+                                                        LineBreakMode="WordWrap"
+                                                        Text="{Binding PhoneticTranscriptText}"
+                                                        TextColor="#333647" />
+                                                    <FlexLayout
+                                                        BindableLayout.ItemsSource="{Binding PronunciationWords}"
+                                                        Direction="Row"
+                                                        IsVisible="{Binding HasPronunciationWords}"
+                                                        Wrap="Wrap">
+                                                        <BindableLayout.ItemTemplate>
+                                                            <DataTemplate x:DataType="cards:PronunciationWordViewModel">
+                                                                <Border
+                                                                    Margin="0,0,5,5"
+                                                                    Padding="7,4"
+                                                                    BackgroundColor="#EDF8F0"
+                                                                    SemanticProperties.Description="{Binding AccessibilityText}"
+                                                                    Stroke="#B7DDC1"
+                                                                    StrokeShape="RoundRectangle 7"
+                                                                    ToolTipProperties.Text="{Binding TimingText}">
+                                                                    <Border.Triggers>
+                                                                        <DataTrigger
+                                                                            Binding="{Binding AttentionKey}"
+                                                                            TargetType="Border"
+                                                                            Value="Review">
+                                                                            <Setter Property="BackgroundColor" Value="#FFF7E3" />
+                                                                            <Setter Property="Stroke" Value="#E9C86C" />
+                                                                        </DataTrigger>
+                                                                        <DataTrigger
+                                                                            Binding="{Binding AttentionKey}"
+                                                                            TargetType="Border"
+                                                                            Value="LikelyIssue">
+                                                                            <Setter Property="BackgroundColor" Value="#FFF0F0" />
+                                                                            <Setter Property="Stroke" Value="#E99A9A" />
+                                                                        </DataTrigger>
+                                                                    </Border.Triggers>
+                                                                    <Label
+                                                                        FontSize="10"
+                                                                        Text="{Binding Text}"
+                                                                        TextColor="#303342" />
+                                                                </Border>
+                                                            </DataTemplate>
+                                                        </BindableLayout.ItemTemplate>
+                                                    </FlexLayout>
+                                                </VerticalStackLayout>
+                                            </Border>
+                                            <HorizontalStackLayout Spacing="8">
+                                                <controls:AudioTransportView
+                                                    AutomationId="MessageAudioTransport"
+                                                    CommandParameter="{Binding .}"
+                                                    IsEnabled="{Binding CanControlMessageAudio}"
+                                                    IsVisible="{Binding HasMessageAudioControl}"
+                                                    PauseCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.PauseDialogAudioCommand}"
+                                                    PlayCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.PlayMessageAudioCommand}"
+                                                    ResetCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.RestartDialogAudioCommand}"
+                                                    State="{Binding MessageAudioState}"
+                                                    StopCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.StopDialogAudioCommand}"
+                                                    Subject="{Binding MessageAudioSubject}" />
+                                            </HorizontalStackLayout>
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                            </CollectionView>
+                            <Border
+                                Margin="14"
+                                Padding="12,8"
+                                AutomationId="DialogGeneratingIndicator"
+                                BackgroundColor="#FFFFFF"
+                                HorizontalOptions="Start"
+                                InputTransparent="True"
+                                IsVisible="{Binding Dialog.IsGeneratingReply}"
+                                SemanticProperties.Description="The AI model is generating a reply"
+                                Stroke="#DAD8FF"
+                                StrokeShape="RoundRectangle 12"
+                                VerticalOptions="End"
+                                ZIndex="2">
+                                <HorizontalStackLayout Spacing="9">
+                                    <ActivityIndicator
+                                        HeightRequest="18"
+                                        IsRunning="{Binding Dialog.IsGeneratingReply}"
+                                        Color="#5B5CE2"
+                                        VerticalOptions="Center"
+                                        WidthRequest="18" />
+                                    <Label
+                                        FontFamily="Segoe UI Semibold"
+                                        FontSize="11"
+                                        Text="Model is generating a reply…"
+                                        TextColor="#4F50C8"
+                                        VerticalTextAlignment="Center" />
+                                </HorizontalStackLayout>
+                            </Border>
+                            <Button
+                                x:Name="DialogJumpToLatestButton"
+                                Margin="0,0,14,14"
+                                AutomationId="DialogJumpToLatestButton"
+                                Clicked="OnDialogJumpToLatestClicked"
+                                HorizontalOptions="End"
+                                IsVisible="False"
+                                Style="{StaticResource PrimaryButton}"
+                                Text="↓ Latest"
+                                VerticalOptions="End" />
+                        </Grid>
+
+                        <Label
+                            Grid.Row="2"
+                            FontSize="11"
+                            Text="{Binding Dialog.OperationMessage}"
+                            TextColor="#B54736" />
+                    </Grid>
+                </Border>
+
+                <ScrollView
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    VerticalScrollBarVisibility="Default">
+                    <VerticalStackLayout Spacing="14">
+                        <Border
+                            Padding="18"
+                            BackgroundColor="White"
+                            Stroke="#E0E3EA"
+                            StrokeShape="RoundRectangle 14">
+                            <VerticalStackLayout Spacing="12">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label
+                                        FontFamily="Segoe UI Semibold"
+                                        FontSize="15"
+                                        Text="Live transcription"
+                                        TextColor="#242635" />
+                                    <Label
+                                        Grid.Column="1"
+                                        FontSize="11"
+                                        Text="Local Whisper"
+                                        TextColor="#327C5A" />
+                                </Grid>
+                                <Editor
+                                    AutoSize="TextChanges"
+                                    BackgroundColor="#F8F9FB"
+                                    HeightRequest="110"
+                                    IsReadOnly="True"
+                                    Placeholder="Your current sentence will update here every few seconds…"
+                                    Text="{Binding Dialog.LiveTranscript, Mode=OneWay}" />
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                    <Label
+                                        FontSize="11"
+                                        Text="Allowed pause"
+                                        TextColor="#656B7F"
+                                        VerticalTextAlignment="Center" />
+                                    <Picker
+                                        Grid.Column="1"
+                                        AutomationId="DialogAllowedPausePicker"
+                                        HorizontalOptions="Fill"
+                                        ItemsSource="{Binding Dialog.AllowedPauseOptions}"
+                                        SelectedIndex="{Binding Dialog.SelectedPauseIndex, Mode=TwoWay}"
+                                        Title="Choose pause before sending" />
+                                </Grid>
+                                <Label
+                                    FontSize="11"
+                                    LineBreakMode="WordWrap"
+                                    Text="{Binding Dialog.StatusMessage}"
+                                    TextColor="#656B7F" />
+                                <Border
+                                    Padding="10,8"
+                                    BackgroundColor="#F3F2FF"
+                                    IsVisible="{Binding Dialog.IsSilenceCountdownVisible}"
+                                    Stroke="#D8D6FF"
+                                    StrokeShape="RoundRectangle 9">
+                                    <VerticalStackLayout Spacing="7">
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                            <Label
+                                                FontSize="11"
+                                                LineBreakMode="WordWrap"
+                                                Text="{Binding Dialog.SilenceCountdownText}"
+                                                TextColor="#4F50A8"
+                                                VerticalTextAlignment="Center" />
+                                            <Button
+                                                Grid.Column="1"
+                                                AutomationId="DialogKeepTalkingButton"
+                                                Command="{Binding Dialog.KeepTalkingCommand}"
+                                                IsEnabled="{Binding Dialog.CanPostponeSending}"
+                                                Padding="9,3"
+                                                SemanticProperties.Description="Reset the silence countdown and keep the current thought open"
+                                                Style="{StaticResource QuietButton}"
+                                                Text="Reset · keep talking" />
+                                        </Grid>
+                                        <ProgressBar
+                                            AutomationId="DialogSilenceProgressBar"
+                                            HeightRequest="5"
+                                            Progress="{Binding Dialog.SilenceProgress}"
+                                            ProgressColor="#5B5CE2" />
+                                    </VerticalStackLayout>
+                                </Border>
+                                <Label
+                                    FontSize="10"
+                                    Text="Microphone level"
+                                    TextColor="#777B8D" />
+                                <ProgressBar
+                                    HeightRequest="4"
+                                    Progress="{Binding Runtime.RecordingPeak}"
+                                    ProgressColor="#5B5CE2" />
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                    <Button
+                                        Command="{Binding Dialog.SendNowCommand}"
+                                        IsEnabled="{Binding Dialog.CanSendNow}"
+                                        Style="{StaticResource SecondaryButton}"
+                                        Text="Send now" />
+                                    <Button
+                                        Grid.Column="1"
+                                        Command="{Binding Dialog.RetryAnswerCommand}"
+                                        IsEnabled="{Binding Dialog.CanRetryAnswer}"
+                                        Style="{StaticResource SecondaryButton}"
+                                        Text="Retry answer" />
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border
+                            Padding="16"
+                            BackgroundColor="#F3F7FF"
+                            Stroke="#C9D7F2"
+                            StrokeShape="RoundRectangle 12">
+                            <VerticalStackLayout Spacing="7">
+                                <Label
+                                    FontFamily="Segoe UI Semibold"
+                                    FontSize="12"
+                                    Text="How context works"
+                                    TextColor="#35486A" />
+                                <Label
+                                    FontSize="11"
+                                    LineBreakMode="WordWrap"
+                                    Text="Buddy stores every turn locally and gives the selected AI provider the complete ordered session history. Earlier turns are never silently dropped."
+                                    TextColor="#52627E" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border
+                            Padding="16"
+                            BackgroundColor="#FFF9EC"
+                            Stroke="#F0D9A4"
+                            StrokeShape="RoundRectangle 12">
+                            <Label
+                                FontSize="11"
+                                LineBreakMode="WordWrap"
+                                    Text="Answers play automatically, so headphones are recommended. Microphone audio, VAD, transcription, and generated voice stay local. With Qwen selected, dialog text and word definitions are local too; DeepSeek sends only the requested text to its cloud API."
+                                TextColor="#815B16" />
+                        </Border>
+                    </VerticalStackLayout>
+                </ScrollView>
+            </Grid>
+        </Grid>
+
+        <Grid
+            BackgroundColor="#660B1020"
+            IsVisible="{Binding IsSettingsOpen}">
+            <Border
+                WidthRequest="460"
+                Padding="24"
+                BackgroundColor="White"
+                HorizontalOptions="End"
+                StrokeThickness="0">
+                <ScrollView>
+                    <VerticalStackLayout Spacing="18">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Spacing="2">
+                                <Label
+                                    FontFamily="Segoe UI Semibold"
+                                    FontSize="22"
+                                    Text="Settings"
+                                    TextColor="#1D1F2C" />
+                                <Label
+                                    Style="{StaticResource MutedText}"
+                                    Text="Local models, devices, privacy and provider keys." />
+                            </VerticalStackLayout>
+                            <Button
+                                Grid.Column="1"
+                                Command="{Binding CloseSettingsCommand}"
+                                FontSize="16"
+                                Style="{StaticResource QuietButton}"
+                                Text="✕" />
+                        </Grid>
+
+                        <BoxView HeightRequest="1" BackgroundColor="#E7E9EF" />
+
+                        <VerticalStackLayout Spacing="8">
+                            <Label
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="14"
+                                Text="Microphone"
+                                TextColor="#292B39" />
+                            <Picker
+                                ItemsSource="{Binding Settings.MicrophoneNames}"
+                                SelectedIndex="{Binding Settings.SelectedMicrophoneIndex}"
+                                Title="Recording microphone" />
+                            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+                                <ProgressBar
+                                    HeightRequest="5"
+                                    Progress="{Binding Settings.MicrophoneLevel}"
+                                    ProgressColor="#32A071"
+                                    VerticalOptions="Center" />
+                                <Button
+                                    Grid.Column="1"
+                                    Command="{Binding Settings.TestMicrophoneCommand}"
+                                    IsEnabled="{Binding Settings.CanTestMicrophone}"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Text="{Binding Settings.TestMicrophoneButtonText}" />
+                                <Button
+                                    Grid.Column="2"
+                                    Command="{Binding Settings.SaveMicrophoneCommand}"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Text="Use" />
+                            </Grid>
+                            <Button
+                                Command="{Binding Settings.TestMicrophoneCancelCommand}"
+                                IsVisible="{Binding Settings.IsTestingMicrophone}"
+                                Style="{StaticResource QuietButton}"
+                                Text="Stop test" />
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label
+                                    FontSize="11"
+                                    Text="{Binding Settings.MicrophoneStatus}"
+                                    TextColor="#64697B" />
+                                <Button
+                                    Grid.Column="1"
+                                    Command="{Binding Settings.RefreshMicrophonesCommand}"
+                                    Style="{StaticResource QuietButton}"
+                                    Text="Refresh" />
+                            </Grid>
+                            <Label
+                                Style="{StaticResource MutedText}"
+                                Text="Buddy records this microphone in shared mode, so meeting apps can use it at the same time." />
+                        </VerticalStackLayout>
+
+                        <BoxView HeightRequest="1" BackgroundColor="#E7E9EF" />
+
+                        <VerticalStackLayout Spacing="8">
+                            <Label
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="14"
+                                Text="Speaker"
+                                TextColor="#292B39" />
+                            <Picker
+                                AutomationId="OutputDevicePicker"
+                                ItemsSource="{Binding Settings.OutputNames}"
+                                SelectedIndex="{Binding Settings.SelectedOutputIndex}"
+                                Title="AI answer speaker" />
+                            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+                                <Label
+                                    FontSize="11"
+                                    LineBreakMode="WordWrap"
+                                    Text="{Binding Settings.OutputStatus}"
+                                    TextColor="#64697B"
+                                    VerticalTextAlignment="Center" />
+                                <Button
+                                    Grid.Column="1"
+                                    AutomationId="TestOutputButton"
+                                    Command="{Binding Settings.TestOutputCommand}"
+                                    IsEnabled="{Binding Settings.CanTestOutput}"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Text="{Binding Settings.TestOutputButtonText}" />
+                                <Button
+                                    Grid.Column="2"
+                                    AutomationId="SaveOutputButton"
+                                    Command="{Binding Settings.SaveOutputCommand}"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Text="Use" />
+                            </Grid>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label
+                                    Style="{StaticResource MutedText}"
+                                    Text="AI replies, replay, recordings, and trainer audio use this speaker."
+                                    VerticalTextAlignment="Center" />
+                                <Button
+                                    Grid.Column="1"
+                                    Command="{Binding Settings.RefreshOutputsCommand}"
+                                    Style="{StaticResource QuietButton}"
+                                    Text="Refresh" />
+                            </Grid>
+                        </VerticalStackLayout>
+
+                        <BoxView HeightRequest="1" BackgroundColor="#E7E9EF" />
+
+                        <VerticalStackLayout Spacing="8">
+                            <Label
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="14"
+                                Text="Local storage"
+                                TextColor="#292B39" />
+                            <Border
+                                Padding="12,10"
+                                BackgroundColor="#F7F8FA"
+                                Stroke="#E0E2E8"
+                                StrokeShape="RoundRectangle 9">
+                                <Label
+                                    FontSize="11"
+                                    LineBreakMode="MiddleTruncation"
+                                    Text="{Binding Settings.StoragePath}"
+                                    TextColor="#64697B" />
+                            </Border>
+                            <Label
+                                Style="{StaticResource MutedText}"
+                                Text="Audio and transcripts stay here unless you explicitly use a cloud action." />
+                        </VerticalStackLayout>
+
+                        <BoxView HeightRequest="1" BackgroundColor="#E7E9EF" />
+
+                        <VerticalStackLayout Spacing="10">
+                            <Label
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="14"
+                                Text="AI language provider"
+                                TextColor="#292B39" />
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                <Picker
+                                    AutomationId="LanguageProviderPicker"
+                                    ItemsSource="{Binding Settings.LanguageProviderNames}"
+                                    SelectedIndex="{Binding Settings.SelectedLanguageProviderIndex}" />
+                                <Button
+                                    Grid.Column="1"
+                                    AutomationId="UseLanguageProviderButton"
+                                    Command="{Binding Settings.SaveLanguageProviderCommand}"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Text="Use selected" />
+                            </Grid>
+                            <Label
+                                Style="{StaticResource MutedText}"
+                                Text="{Binding Settings.LanguageProviderDescription}" />
+                            <Label
+                                FontSize="11"
+                                Text="{Binding Settings.LanguageProviderStatus}"
+                                TextColor="#327C5A" />
+
+                            <Border
+                                Padding="12"
+                                BackgroundColor="#F7F8FA"
+                                Stroke="#E0E2E8"
+                                StrokeShape="RoundRectangle 9">
+                                <Grid
+                                    ColumnDefinitions="*,Auto,Auto,Auto"
+                                    ColumnSpacing="8"
+                                    RowDefinitions="Auto,Auto,Auto,Auto">
+                                    <Label
+                                        FontFamily="Segoe UI Semibold"
+                                        FontSize="12"
+                                        Text="Qwen 3.6 27B · Q4_K_M"
+                                        TextColor="#343746" />
+                                    <Label
+                                        Grid.Row="1"
+                                        Grid.ColumnSpan="4"
+                                        FontSize="11"
+                                        Text="{Binding Settings.QwenModelStatus}"
+                                        TextColor="#777C8E" />
+                                    <Label
+                                        Grid.Row="2"
+                                        Grid.ColumnSpan="4"
+                                        Margin="0,5,0,0"
+                                        FontSize="10"
+                                        LineBreakMode="MiddleTruncation"
+                                        Text="{Binding Settings.QwenModelPath}"
+                                        TextColor="#8A8E9E" />
+                                    <ProgressBar
+                                        Grid.Row="3"
+                                        Grid.ColumnSpan="4"
+                                        Margin="0,8,0,0"
+                                        IsVisible="{Binding Settings.IsManagingQwen}"
+                                        Progress="{Binding LocalSetup.Progress}"
+                                        ProgressColor="#5B5CE2" />
+                                    <Button
+                                        Grid.Column="1"
+                                        Command="{Binding Settings.LoadQwenCommand}"
+                                        IsEnabled="{Binding Settings.CanLoadQwen}"
+                                        Style="{StaticResource QuietButton}"
+                                        Text="{Binding Settings.QwenPrimaryButtonText}" />
+                                    <Button
+                                        Grid.Column="2"
+                                        Command="{Binding Settings.UnloadQwenCommand}"
+                                        IsEnabled="{Binding Settings.CanUnloadQwen}"
+                                        Style="{StaticResource QuietButton}"
+                                        Text="Unload" />
+                                    <Button
+                                        Grid.Column="3"
+                                        Command="{Binding Settings.LoadQwenCancelCommand}"
+                                        IsVisible="{Binding Settings.IsManagingQwen}"
+                                        Style="{StaticResource QuietButton}"
+                                        Text="Cancel" />
+                                </Grid>
+                            </Border>
+                            <Label
+                                FontSize="11"
+                                Text="Selecting Qwen starts a resumable, SHA-256-verified setup automatically. Load warms it now; Unload releases its RAM and VRAM."
+                                TextColor="#64697B" />
+                        </VerticalStackLayout>
+
+                        <BoxView HeightRequest="1" BackgroundColor="#E7E9EF" />
+
+                        <VerticalStackLayout Spacing="10">
+                            <Label
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="14"
+                                Text="Cloud provider keys"
+                                TextColor="#292B39" />
+                            <Label
+                                Style="{StaticResource MutedText}"
+                                Text="Stored using Windows Current User protection. Existing values are never displayed." />
+                            <Label
+                                FontSize="11"
+                                Text="Buddy proxy access is included in release builds and has a shared quota. You can replace it with another proxy key, use your own DeepSeek key directly, or keep all language work local with Qwen."
+                                TextColor="#815B16" />
+
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                                <Entry
+                                    IsPassword="True"
+                                    Placeholder="Buddy proxy key (optional override)"
+                                    Text="{Binding Settings.ProxyApiKey}" />
+                                <Button
+                                    Grid.Column="1"
+                                    Command="{Binding Settings.RemoveProxyKeyCommand}"
+                                    Style="{StaticResource QuietButton}"
+                                    Text="Use included" />
+                                <Label
+                                    Grid.Row="1"
+                                    FontSize="10"
+                                    Text="{Binding Settings.ProxyStatus}"
+                                    TextColor="#6D7285" />
+                            </Grid>
+
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                                <Entry
+                                    IsPassword="True"
+                                    Placeholder="DeepSeek API key"
+                                    Text="{Binding Settings.DeepSeekApiKey}" />
+                                <Button
+                                    Grid.Column="1"
+                                    Command="{Binding Settings.RemoveDeepSeekKeyCommand}"
+                                    Style="{StaticResource QuietButton}"
+                                    Text="Remove" />
+                                <Label
+                                    Grid.Row="1"
+                                    FontSize="10"
+                                    Text="{Binding Settings.DeepSeekStatus}"
+                                    TextColor="#6D7285" />
+                            </Grid>
+
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                                <Entry
+                                    IsPassword="True"
+                                    Placeholder="Kimi / Moonshot API key"
+                                    Text="{Binding Settings.KimiApiKey}" />
+                                <Button
+                                    Grid.Column="1"
+                                    Command="{Binding Settings.RemoveKimiKeyCommand}"
+                                    Style="{StaticResource QuietButton}"
+                                    Text="Remove" />
+                                <Label
+                                    Grid.Row="1"
+                                    FontSize="10"
+                                    Text="{Binding Settings.KimiStatus}"
+                                    TextColor="#6D7285" />
+                            </Grid>
+
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                                <Entry
+                                    IsPassword="True"
+                                    Placeholder="OpenAI API key (optional)"
+                                    Text="{Binding Settings.OpenAiApiKey}" />
+                                <Button
+                                    Grid.Column="1"
+                                    Command="{Binding Settings.RemoveOpenAiKeyCommand}"
+                                    Style="{StaticResource QuietButton}"
+                                    Text="Remove" />
+                                <Label
+                                    Grid.Row="1"
+                                    FontSize="10"
+                                    Text="{Binding Settings.OpenAiStatus}"
+                                    TextColor="#6D7285" />
+                            </Grid>
+
+                            <Button
+                                Command="{Binding Settings.SaveProviderKeysCommand}"
+                                Style="{StaticResource PrimaryButton}"
+                                Text="Save provided keys" />
+                            <Label
+                                FontSize="11"
+                                Text="{Binding Settings.SaveStatus}"
+                                TextColor="#327C5A" />
+                        </VerticalStackLayout>
+
+                        <BoxView HeightRequest="1" BackgroundColor="#E7E9EF" />
+
+                        <VerticalStackLayout Spacing="8">
+                            <Label
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="14"
+                                Text="Local speech models"
+                                TextColor="#292B39" />
+                            <Border
+                                Padding="12"
+                                BackgroundColor="#F7F8FA"
+                                Stroke="#E0E2E8"
+                                StrokeShape="RoundRectangle 9">
+                                <Grid
+                                    ColumnDefinitions="*,Auto"
+                                    ColumnSpacing="10"
+                                    RowDefinitions="Auto,Auto,Auto">
+                                    <Label
+                                        FontFamily="Segoe UI Semibold"
+                                        FontSize="12"
+                                        Text="Whisper large-v3-turbo"
+                                        TextColor="#343746" />
+                                    <Label
+                                        Grid.Row="1"
+                                        FontSize="11"
+                                        Text="{Binding Settings.WhisperModelStatus}"
+                                        TextColor="#777C8E" />
+                                    <ProgressBar
+                                        Grid.Row="2"
+                                        Margin="0,7,0,0"
+                                        IsVisible="{Binding Settings.IsDownloadingWhisper}"
+                                        Progress="{Binding Settings.WhisperDownloadProgress}"
+                                        ProgressColor="#5B5CE2" />
+                                    <VerticalStackLayout
+                                        Grid.RowSpan="3"
+                                        Grid.Column="1"
+                                        Spacing="4"
+                                        VerticalOptions="Center">
+                                        <Button
+                                            Command="{Binding Settings.DownloadWhisperCommand}"
+                                            IsEnabled="{Binding Settings.CanDownloadWhisper}"
+                                            Style="{StaticResource SecondaryButton}"
+                                            Text="{Binding Settings.WhisperDownloadButtonText}" />
+                                        <Button
+                                            Command="{Binding Settings.DownloadWhisperCancelCommand}"
+                                            IsVisible="{Binding Settings.IsDownloadingWhisper}"
+                                            Style="{StaticResource QuietButton}"
+                                            Text="Pause" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                            <Border
+                                Padding="12"
+                                BackgroundColor="#F7F8FA"
+                                Stroke="#E0E2E8"
+                                StrokeShape="RoundRectangle 9">
+                                <VerticalStackLayout Spacing="4">
+                                    <Label
+                                        FontFamily="Segoe UI Semibold"
+                                        FontSize="12"
+                                        Text="Silero voice activity detector"
+                                        TextColor="#343746" />
+                                    <Label
+                                        FontSize="11"
+                                        Text="{Binding Settings.VadModelStatus}"
+                                        TextColor="#777C8E" />
+                                </VerticalStackLayout>
+                            </Border>
+                            <Border
+                                Padding="12"
+                                BackgroundColor="#F7F8FA"
+                                Stroke="#E0E2E8"
+                                StrokeShape="RoundRectangle 9">
+                                <Grid
+                                    ColumnDefinitions="*,Auto"
+                                    ColumnSpacing="10"
+                                    RowDefinitions="Auto,Auto,Auto">
+                                    <Label
+                                        FontFamily="Segoe UI Semibold"
+                                        FontSize="12"
+                                        Text="Kokoro English"
+                                        TextColor="#343746" />
+                                    <Label
+                                        Grid.Row="1"
+                                        FontSize="11"
+                                        Text="{Binding Settings.KokoroModelStatus}"
+                                        TextColor="#777C8E" />
+                                    <ProgressBar
+                                        Grid.Row="2"
+                                        Margin="0,7,0,0"
+                                        IsVisible="{Binding Settings.IsDownloadingKokoro}"
+                                        Progress="{Binding Settings.KokoroDownloadProgress}"
+                                        ProgressColor="#5B5CE2" />
+                                    <VerticalStackLayout
+                                        Grid.RowSpan="3"
+                                        Grid.Column="1"
+                                        Spacing="4"
+                                        VerticalOptions="Center">
+                                        <Button
+                                            Command="{Binding Settings.DownloadKokoroCommand}"
+                                            IsEnabled="{Binding Settings.CanDownloadKokoro}"
+                                            Style="{StaticResource SecondaryButton}"
+                                            Text="{Binding Settings.KokoroDownloadButtonText}" />
+                                        <Button
+                                            Command="{Binding Settings.DownloadKokoroCancelCommand}"
+                                            IsVisible="{Binding Settings.IsDownloadingKokoro}"
+                                            Style="{StaticResource QuietButton}"
+                                            Text="Pause" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </ScrollView>
+            </Border>
+        </Grid>
+
+        <Border
+            Margin="24"
+            Padding="14,12"
+            BackgroundColor="#FFFFFF"
+            HorizontalOptions="End"
+            IsVisible="{Binding LocalSetup.IsVisible}"
+            MaximumWidthRequest="430"
+            MinimumWidthRequest="360"
+            Stroke="#D8DAE5"
+            StrokeShape="RoundRectangle 12"
+            VerticalOptions="End"
+            ZIndex="100">
+            <Border.Shadow>
+                <Shadow Brush="#33000000" Offset="0,4" Opacity="0.35" Radius="12" />
+            </Border.Shadow>
+            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="12">
+                <Label
+                    FontFamily="Segoe UI Semibold"
+                    FontSize="13"
+                    Text="{Binding LocalSetup.Title}"
+                    TextColor="#242635" />
+                <Button
+                    Grid.Column="1"
+                    Command="{Binding LocalSetup.CancelCommand}"
+                    IsVisible="{Binding LocalSetup.IsActive}"
+                    Padding="8,2"
+                    Style="{StaticResource QuietButton}"
+                    Text="Pause" />
+                <Label
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    FontSize="11"
+                    LineBreakMode="WordWrap"
+                    Text="{Binding LocalSetup.Detail}"
+                    TextColor="#64697B" />
+                <ProgressBar
+                    Grid.Row="2"
+                    Grid.ColumnSpan="2"
+                    Margin="0,8,0,0"
+                    Progress="{Binding LocalSetup.Progress}"
+                    ProgressColor="#5B5CE2" />
+            </Grid>
+        </Border>
+    </Grid>
+</ContentPage>

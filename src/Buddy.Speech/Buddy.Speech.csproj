@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="KokoroSharp.CPU" />
+    <PackageReference Include="NAudio" />
+    <PackageReference Include="Whisper.net" />
+    <PackageReference Include="Whisper.net.Runtime" />
+    <PackageReference Include="Whisper.net.Runtime.Cuda.Windows" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Buddy.Core\Buddy.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Buddy.IntegrationTests" />
+  </ItemGroup>
+</Project>

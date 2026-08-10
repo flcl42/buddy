@@ -1,0 +1,76 @@
+name: Deploy Buddy website
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - "site/**"
+      - ".github/workflows/pages.yml"
+  release:
+    types:
+      - published
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Publish static site
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Configure GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Prepare site
+        env:
+          SITE_BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: |
+          cp -a site _site
+          printf 'window.BUDDY_REPOSITORY = "%s";\n' "$GITHUB_REPOSITORY" > _site/config.js
+          python - <<'PY'
+          import os
+          from pathlib import Path
+
+          replacements = {
+              "__SITE_BASE_URL__": os.environ["SITE_BASE_URL"].rstrip("/"),
+              "__BUDDY_REPOSITORY__": os.environ["GITHUB_REPOSITORY"],
+          }
+
+          for path in Path("_site").rglob("*"):
+              if not path.is_file() or path.suffix.lower() not in {".html", ".xml", ".txt"}:
+                  continue
+              content = path.read_text(encoding="utf-8")
+              for marker, value in replacements.items():
+                  content = content.replace(marker, value)
+              path.write_text(content, encoding="utf-8", newline="\n")
+          PY
+          if grep -R --line-number --fixed-strings '__SITE_BASE_URL__' _site || \
+             grep -R --line-number --fixed-strings '__BUDDY_REPOSITORY__' _site; then
+            echo "Unresolved website metadata placeholder found."
+            exit 1
+          fi
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

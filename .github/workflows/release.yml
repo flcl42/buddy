@@ -1,0 +1,109 @@
+name: Build Buddy release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Three-part release version, without a leading v
+        required: true
+        default: "0.1.0"
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    name: Test and package Windows release
+    runs-on: windows-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.302
+
+      - name: Install the .NET MAUI Windows workload
+        run: dotnet workload install maui-windows --skip-manifest-update
+
+      - name: Restore, build, and test
+        shell: pwsh
+        run: |
+          dotnet restore Buddy.slnx
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet build Buddy.slnx --configuration Release --no-restore
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet test Buddy.slnx --configuration Release --no-build --no-restore
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet format Buddy.slnx --verify-no-changes --no-restore
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: |
+          $installer = Join-Path $env:RUNNER_TEMP 'innosetup-6.7.3.exe'
+          Invoke-WebRequest -Uri 'https://files.jrsoftware.org/is/6/innosetup-6.7.3.exe' -OutFile $installer
+          $process = Start-Process -FilePath $installer -ArgumentList '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/CURRENTUSER' -Wait -PassThru
+          if ($process.ExitCode -ne 0) {
+            throw "Inno Setup installation failed with exit code $($process.ExitCode)."
+          }
+
+      - name: Build portable app and installer
+        shell: pwsh
+        env:
+          BUDDY_PROXY_CLIENT_KEY: ${{ secrets.BUDDY_PROXY_CLIENT_KEY }}
+          BUDDY_PROXY_CERT_SHA256: ${{ secrets.BUDDY_PROXY_CERT_SHA256 }}
+          REQUESTED_VERSION: ${{ inputs.version }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:BUDDY_PROXY_CLIENT_KEY) -or
+              [string]::IsNullOrWhiteSpace($env:BUDDY_PROXY_CERT_SHA256)) {
+            throw 'The capped proxy key and certificate pin release secrets are required.'
+          }
+
+          $version = if ($env:GITHUB_REF_TYPE -eq 'tag') {
+            $env:GITHUB_REF_NAME.TrimStart('v')
+          } else {
+            $env:REQUESTED_VERSION
+          }
+          if ($version -notmatch '^\d+\.\d+\.\d+$') {
+            throw "Release version '$version' must contain three numeric parts."
+          }
+
+          & .\scripts\build-installer.ps1 -Configuration Release -Version $version
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          $lines = @(
+            "$(Get-FileHash artifacts\release\Buddy-Setup.exe -Algorithm SHA256 | Select-Object -ExpandProperty Hash)  Buddy-Setup.exe"
+            "$(Get-FileHash artifacts\release\Buddy.exe -Algorithm SHA256 | Select-Object -ExpandProperty Hash)  Buddy.exe"
+          )
+          $lines | Set-Content artifacts\release\SHA256SUMS.txt -Encoding ascii
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Buddy-Windows-x64
+          path: |
+            artifacts/release/Buddy-Setup.exe
+            artifacts/release/Buddy.exe
+            artifacts/release/SHA256SUMS.txt
+          if-no-files-found: error
+
+      - name: Publish GitHub release assets
+        if: github.ref_type == 'tag'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = $env:GITHUB_REF_NAME
+          gh release view $tag *> $null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag --title "Buddy $($tag.TrimStart('v'))" --notes "Windows x64 release. Buddy-Setup.exe is recommended; Buddy.exe is the portable single-file build. The binaries are currently unsigned, so Windows may show a publisher warning."
+          }
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          gh release upload $tag artifacts\release\Buddy-Setup.exe artifacts\release\Buddy.exe artifacts\release\SHA256SUMS.txt --clobber
