@@ -50,6 +50,8 @@
     <CodesignEntitlements>Platforms\MacCatalyst\Entitlements.plist</CodesignEntitlements>
     <CreatePackage>false</CreatePackage>
     <MtouchLink>None</MtouchLink>
+    <!-- Kokoro ships its native eSpeak Mach-O binaries with a .dll suffix. -->
+    <EnableAssemblyILStripping>false</EnableAssemblyILStripping>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
