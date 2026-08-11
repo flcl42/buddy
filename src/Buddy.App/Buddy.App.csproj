@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFrameworks>net10.0-maccatalyst</TargetFrameworks>
     <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">net10.0-windows10.0.19041.0;$(TargetFrameworks)</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows')) and $([System.String]::Copy('$(RuntimeIdentifier)').StartsWith('win-'))">net10.0-windows10.0.19041.0</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <RootNamespace>Buddy.App</RootNamespace>
     <AssemblyName>Buddy</AssemblyName>

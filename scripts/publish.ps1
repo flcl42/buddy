@@ -2,6 +2,7 @@
 param(
     [string] $Configuration = "Release",
     [string] $RuntimeIdentifier = "win-x64",
+    [string] $TargetFramework = "net10.0-windows10.0.19041.0",
     [string] $OutputPath = "C:\Programs\Buddy.exe"
 )
 
@@ -57,6 +58,7 @@ try {
     # that folder publishes can never leave stale activation redirects behind.
     dotnet clean $projectPath `
         --configuration $Configuration `
+        --framework $TargetFramework `
         --runtime $RuntimeIdentifier `
         --verbosity quiet `
         --disable-build-servers
@@ -67,6 +69,7 @@ try {
 
     dotnet publish $projectPath `
         --configuration $Configuration `
+        --framework $TargetFramework `
         --runtime $RuntimeIdentifier `
         --output $staging `
         -p:WindowsPackageType=None `
