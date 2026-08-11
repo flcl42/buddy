@@ -105,8 +105,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 75
     env:
-      NUGET_PACKAGES: ${{ runner.temp }}/nuget-packages
-      BUDDY_DATA_ROOT: ${{ runner.temp }}/buddy-data
+      NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+      BUDDY_DATA_ROOT: ${{ github.workspace }}/.ci-buddy-data
       BUDDY_PROXY_CLIENT_KEY: ${{ secrets.BUDDY_PROXY_CLIENT_KEY }}
       BUDDY_PROXY_CERT_SHA256: ${{ secrets.BUDDY_PROXY_CERT_SHA256 }}
       REQUESTED_VERSION: ${{ inputs.version }}
@@ -208,7 +208,7 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 90
     env:
-      NUGET_PACKAGES: ${{ runner.temp }}/nuget-packages
+      NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
       BUDDY_PROXY_CLIENT_KEY: ${{ secrets.BUDDY_PROXY_CLIENT_KEY }}
       BUDDY_PROXY_CERT_SHA256: ${{ secrets.BUDDY_PROXY_CERT_SHA256 }}
       REQUESTED_VERSION: ${{ inputs.version }}

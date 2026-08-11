@@ -55,8 +55,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     env:
-      NUGET_PACKAGES: ${{ runner.temp }}/nuget-packages
-      BUDDY_DATA_ROOT: ${{ runner.temp }}/buddy-data
+      NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+      BUDDY_DATA_ROOT: ${{ github.workspace }}/.ci-buddy-data
 
     steps:
       - name: Check out repository
@@ -120,7 +120,7 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 75
     env:
-      NUGET_PACKAGES: ${{ runner.temp }}/nuget-packages
+      NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
 
     strategy:
       fail-fast: false
