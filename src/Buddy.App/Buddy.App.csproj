@@ -49,6 +49,7 @@
     <ApplicationVersion>4</ApplicationVersion>
     <CodesignEntitlements>Platforms\MacCatalyst\Entitlements.plist</CodesignEntitlements>
     <CreatePackage>false</CreatePackage>
+    <MtouchLink>None</MtouchLink>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
