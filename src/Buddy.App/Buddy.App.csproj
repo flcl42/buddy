@@ -113,11 +113,15 @@
     <ProjectReference Include="..\Buddy.Speech\Buddy.Speech.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'maccatalyst'">
     <None Include="..\..\THIRD-PARTY-NOTICES.md"
           Link="THIRD-PARTY-NOTICES.md"
           CopyToOutputDirectory="PreserveNewest"
-          CopyToPublishDirectory="PreserveNewest"
-          PublishFolderType="RootDirectory" />
+          CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+    <BundleResource Include="..\..\THIRD-PARTY-NOTICES.md"
+                    LogicalName="THIRD-PARTY-NOTICES.md" />
   </ItemGroup>
 </Project>

@@ -275,9 +275,10 @@ jobs:
         shell: bash
         run: |
           search_root="src/Buddy.App/bin/Release/net10.0-maccatalyst/$BUDDY_RID"
-          app="$(find "$search_root" -type d -name Buddy.app -print -quit)"
+          app="$(find "$search_root" -type d -name 'Chitchat Buddy.app' -print -quit)"
           test -n "$app"
           test -f "$app/Contents/MacOS/Buddy"
+          test -f "$app/Contents/Resources/THIRD-PARTY-NOTICES.md"
           file "$app/Contents/MacOS/Buddy" | grep -q 'arm64'
           test -f "$(find "$app" -type f -name ggml-metal.metal -print -quit)"
           ! find "$app" -type f -iname '*onnxruntime*' | grep -q .
