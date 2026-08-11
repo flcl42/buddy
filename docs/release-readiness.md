@@ -304,7 +304,7 @@ broader product specification.
 
 The installed executable is `C:\Programs\Buddy.exe`, version 0.2.0. Its
 installed SHA-256 is
-`12DB5832CB2F344D310A8E39C269A760ACC3B7D2E024ACA71287F0A07F086E95` and
+`A1EC745BF803F2FE82F32C609B04EDBB6F87B166E525709A303ADE8A9B28CC6D` and
 matches the staged publish. This personal build is intentionally unpackaged and
 unsigned; a public release still requires a trusted code-signing certificate
 and a distribution decision compatible with the bundled GPL-3.0-or-later
