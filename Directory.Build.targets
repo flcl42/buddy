@@ -39,7 +39,7 @@
 
   <Target Name="PrepareBuddyPortablePublishContent"
           BeforeTargets="_HandleFileConflictsForPublish"
-          DependsOnTargets="CopyContent;PruneUnusedKokoroRuntimeContent"
+          DependsOnTargets="PruneUnusedKokoroRuntimeContent"
           Condition="'$(MSBuildProjectName)' == 'Buddy.App.Linux' or ('$(MSBuildProjectName)' == 'Buddy.App' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst')">
     <PropertyGroup>
       <BuddyWhisperRuntimeFolder Condition="'$(RuntimeIdentifier)' == 'linux-x64'">linux-x64</BuddyWhisperRuntimeFolder>
@@ -71,7 +71,7 @@
 
   <Target Name="PrepareBuddySingleFileContent"
           BeforeTargets="_HandleFileConflictsForPublish"
-          DependsOnTargets="CopyContent;PruneUnusedKokoroRuntimeContent"
+          DependsOnTargets="PruneUnusedKokoroRuntimeContent"
           Condition="'$(MSBuildProjectName)' == 'Buddy.App' and '$(RuntimeIdentifier)' == 'win-x64' and '$(PublishSingleFile)' == 'true'">
     <ItemGroup>
       <BuddyVoiceFile Include="$(OutputPath)voices\**\*" />

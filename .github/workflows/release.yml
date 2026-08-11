@@ -218,7 +218,6 @@ jobs:
       matrix:
         arch:
           - arm64
-          - x64
 
     steps:
       - name: Check out repository
@@ -278,12 +277,10 @@ jobs:
           search_root="src/Buddy.App/bin/Release/net10.0-maccatalyst/$BUDDY_RID"
           app="$(find "$search_root" -type d -name Buddy.app -print -quit)"
           test -n "$app"
-          test -f "$(find "$app" -type f -path '*/voices/af_heart.npy' -print -quit)"
-          if [ "${{ matrix.arch }}" = "arm64" ]; then
-            test -f "$(find "$app" -type f -name espeak-ng-macos-arm64.dll -print -quit)"
-          else
-            test -f "$(find "$app" -type f -name espeak-ng-macos-amd64.dll -print -quit)"
-          fi
+          test -f "$app/Contents/MacOS/Buddy"
+          file "$app/Contents/MacOS/Buddy" | grep -q 'arm64'
+          test -f "$(find "$app" -type f -name ggml-metal.metal -print -quit)"
+          ! find "$app" -type f -iname '*onnxruntime*' | grep -q .
           codesign --force --deep --sign - "$app"
           codesign --verify --deep --strict "$app"
           mkdir -p artifacts/release
@@ -339,6 +336,6 @@ jobs:
           if ! gh release view "$tag" >/dev/null 2>&1; then
             gh release create "$tag" \
               --title "Chitchat Buddy ${tag#v}" \
-              --notes "Windows x64 is the stable release. macOS Catalyst builds are beta and currently use the Dock instead of a menu-bar status item. Linux x64 is a GTK4 preview and needs a StatusNotifier-compatible desktop for the tray icon. All builds keep microphone audio and speech recognition local."
+              --notes "Windows x64 is the stable release. The Apple Silicon macOS Catalyst build is beta and currently uses the Dock instead of a menu-bar status item. Linux x64 is a GTK4 preview and needs a StatusNotifier-compatible desktop for the tray icon. All builds keep microphone audio and speech recognition local."
           fi
           gh release upload "$tag" release-assets/* --clobber

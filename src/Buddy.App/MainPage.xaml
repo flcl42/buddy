@@ -2197,6 +2197,7 @@
                             <Border
                                 Padding="12"
                                 BackgroundColor="#F7F8FA"
+                                IsVisible="{Binding Settings.IsKokoroSupported}"
                                 Stroke="#E0E2E8"
                                 StrokeShape="RoundRectangle 9">
                                 <Grid

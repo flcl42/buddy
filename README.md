@@ -151,7 +151,7 @@ dotnet run --project src/Buddy.App/Buddy.App.csproj
 
 ### macOS beta
 
-- macOS 13+ on Apple Silicon or Intel
+- macOS 13+ on Apple Silicon
 - Xcode and the .NET MAUI Mac Catalyst workload
 
 ```bash
@@ -161,7 +161,10 @@ dotnet run --project src/Buddy.App/Buddy.App.csproj -f net10.0-maccatalyst
 
 The beta has native microphone, playback, local recognition, and macOS system
 speech. It currently uses the Dock rather than a menu-bar status item, and the
-Windows-only local Qwen runtime is not offered as a supported path.
+Windows-only local Qwen runtime is not offered as a supported path. Word-level
+confidence and lazy word phonetics remain available; the full local IPA line
+is currently limited to Windows and Linux because the bundled eSpeak/Kokoro
+runtime is not Mac Catalyst compatible.
 
 ### Linux GTK4 preview
 
@@ -278,7 +281,7 @@ its approximately 21.5 GB verified model/runtime setup. Qwen lives under
 another root.
 
 Tagged releases also build `Buddy-macOS-arm64-beta.zip`,
-`Buddy-macOS-x64-beta.zip`, `Buddy-Linux-x64-preview.deb`, and
+`Buddy-Linux-x64-preview.deb`, and
 `Buddy-Linux-x64-preview.tar.gz`. macOS archives are ad-hoc signed rather than
 notarized; Linux uses an experimental MAUI backend. Those tiers are intentional
 and are not represented as having the same production maturity as Windows.

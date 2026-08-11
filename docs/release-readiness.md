@@ -155,11 +155,14 @@ broader product specification.
   StatusNotifier protocol surface against Tmds.DBus 0.94.2 and renders the
   `b`, `r`, and attention pixmaps itself. If a desktop has no watcher, the
   preview remains open and usable without a tray instead of crashing.
-- The Mac Catalyst beta compiles for both `maccatalyst-arm64` and
-  `maccatalyst-x64`, uses Core Audio through the portable capture/playback
-  layer, and provides system speech through `/usr/bin/say`. Native packaging,
-  direct microphone/speaker QA, and Gatekeeper/notarization checks run only on
-  the macOS CI host and remain beta gates rather than Windows-host claims.
+- The Mac Catalyst beta targets Apple Silicon with `maccatalyst-arm64`, uses
+  Core Audio through the portable capture/playback layer, and provides system
+  speech through `/usr/bin/say`. Word confidence and lazy word phonetics remain
+  available, while the full local IPA line stays Windows/Linux-only because
+  eSpeak/Kokoro's macOS binaries are not Mac Catalyst binaries. Native
+  packaging, direct microphone/speaker QA, and Gatekeeper/notarization checks
+  run only on the macOS CI host and remain beta gates rather than Windows-host
+  claims.
 - Whisper large-v3-turbo and Silero artifacts download resumably and pass
   SHA-256 verification before use.
 - DeepSeek returns schema-validated improvement results and generated titles.
@@ -348,8 +351,7 @@ broader product specification.
 ## Packaging boundary
 
 Version 0.4.0 retains the stable Windows assets `Buddy.exe` and
-`Buddy-Setup.exe` and adds beta `Buddy-macOS-arm64-beta.zip` and
-`Buddy-macOS-x64-beta.zip` archives plus preview
+`Buddy-Setup.exe` and adds the beta `Buddy-macOS-arm64-beta.zip` archive plus preview
 `Buddy-Linux-x64-preview.deb` and `Buddy-Linux-x64-preview.tar.gz` bundles.
 Exact hashes are combined in `SHA256SUMS.txt` alongside each tagged release.
 The current binaries are unsigned or ad-hoc signed; a broadly promoted public
@@ -376,7 +378,7 @@ remain later-stage work and are not presented as implemented:
 - formal two-hour soak, forced-crash, sleep/resume, and device-unplug test
   matrix;
 - native macOS microphone, speaker, sleep/resume, Dock lifecycle, signing, and
-  notarization acceptance on representative Intel and Apple Silicon hardware;
+  notarization acceptance on representative Apple Silicon hardware;
 - Linux microphone/speaker/device-unplug acceptance on physical PulseAudio and
   ALSA desktops beyond the native headless GTK4, tray-protocol, and package
   checks;

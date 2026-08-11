@@ -33,6 +33,7 @@ public sealed partial class SettingsViewModel : ObservableObject
     private readonly SpeechProcessingCoordinator _speechProcessing;
     private readonly LanguagePreferences _languages;
     private readonly UiLocalizationService _localization;
+    private readonly bool _isKokoroSupported = !OperatingSystem.IsMacCatalyst();
     private IReadOnlyList<AudioInputDevice> _microphones = [];
     private IReadOnlyList<AudioOutputDevice> _outputs = [];
 
@@ -265,6 +266,8 @@ public sealed partial class SettingsViewModel : ObservableObject
             : "Download and verify";
 
     public bool CanDownloadKokoro => !IsDownloadingKokoro && !IsKokoroReady;
+
+    public bool IsKokoroSupported => _isKokoroSupported;
 
     public bool CanTestMicrophone => !IsTestingMicrophone;
 

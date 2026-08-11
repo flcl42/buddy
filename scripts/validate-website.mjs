@@ -129,7 +129,6 @@ const releaseAssets = [
   "Buddy-Setup.exe",
   "Buddy.exe",
   "Buddy-macOS-arm64-beta.zip",
-  "Buddy-macOS-x64-beta.zip",
   "Buddy-Linux-x64-preview.deb",
   "Buddy-Linux-x64-preview.tar.gz"
 ];
@@ -212,4 +211,4 @@ for (const relativePage of pages) {
   assert.equal(current.textContent, "1");
 }
 
-console.log("Buddy website validation passed: four localized carousels, desktop tiers, six release assets, recording copy, language routing, controls, and 1284x842 screenshots.");
+console.log("Buddy website validation passed: four localized carousels, desktop tiers, five release assets, recording copy, language routing, controls, and 1284x842 screenshots.");

@@ -54,7 +54,7 @@ as production-ready would overstate its maturity.
 | Platform | Host | Audio | Release tier |
 | --- | --- | --- | --- |
 | Windows 10/11 x64 | MAUI WinUI | NAudio WASAPI shared mode | Stable |
-| macOS 13+ Apple Silicon / Intel | MAUI Mac Catalyst | MiniAudioEx / Core Audio | Beta until device QA completes |
+| macOS 13+ Apple Silicon | MAUI Mac Catalyst | MiniAudioEx / Core Audio | Beta until device QA completes |
 | Ubuntu 24.04+ x64 | experimental MAUI GTK4 head | MiniAudioEx / PulseAudio or ALSA | Preview |
 
 The Windows host remains isolated from preview platform dependencies. Shared

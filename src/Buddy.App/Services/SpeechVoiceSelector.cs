@@ -65,8 +65,14 @@ public static class SpeechVoiceSelector
         return preferred;
     }
 
-    public static bool RequiresKokoro(DialogLanguageOption language) =>
-        language.Id is "en" or "es" or "fr";
+    public static bool RequiresKokoro(DialogLanguageOption language)
+    {
+#if MACCATALYST
+        return false;
+#else
+        return language.Id is "en" or "es" or "fr";
+#endif
+    }
 
     private static SpeechVoice? FindPlatformVoiceByLanguage(
         IReadOnlyList<SpeechVoice> voices,

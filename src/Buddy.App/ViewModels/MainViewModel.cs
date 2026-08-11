@@ -724,12 +724,12 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
             || SelectedTrainerVoiceIndex < 0
             || SelectedTrainerVoiceIndex >= _trainerVoices.Count)
         {
-            TrainerStatusMessage = "No local Kokoro voice is available.";
+            TrainerStatusMessage = "No local speaking voice is available.";
             return;
         }
 
         IsTrainerBusy = true;
-        TrainerStatusMessage = "Generating the better version locally with Kokoro…";
+        TrainerStatusMessage = "Generating the better version with a local voice…";
         Guid artifactId = Guid.NewGuid();
         string? outputPath = null;
         bool artifactPersisted = false;

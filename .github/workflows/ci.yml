@@ -127,7 +127,6 @@ jobs:
       matrix:
         rid:
           - maccatalyst-arm64
-          - maccatalyst-x64
 
     steps:
       - name: Check out repository
@@ -160,8 +159,15 @@ jobs:
           --no-restore
           -p:EnableCodeSigning=false
 
-      - name: Verify macOS system speech export
+      - name: Verify Mac bundle and system speech export
         run: |
+          search_root="src/Buddy.App/bin/Release/net10.0-maccatalyst/${{ matrix.rid }}"
+          app="$(find "$search_root" -type d -name Buddy.app -print -quit)"
+          test -n "$app"
+          test -f "$app/Contents/MacOS/Buddy"
+          file "$app/Contents/MacOS/Buddy" | grep -q 'arm64'
+          test -f "$(find "$app" -type f -name ggml-metal.metal -print -quit)"
+          ! find "$app" -type f -iname '*onnxruntime*' | grep -q .
           voice="$(say -v '?' | awk '$2 ~ /^en_/ { print $1; exit }')"
           test -n "$voice"
           say -v "$voice" --file-format=WAVE --data-format=LEI16@24000 \
