@@ -9,7 +9,7 @@ on:
       version:
         description: Three-part release version, without a leading v
         required: true
-        default: "0.1.0"
+        default: "0.2.0"
 
 permissions:
   contents: write
@@ -108,7 +108,7 @@ jobs:
           $tag = $env:GITHUB_REF_NAME
           gh release view $tag *> $null
           if ($LASTEXITCODE -ne 0) {
-            gh release create $tag --title "Buddy $($tag.TrimStart('v'))" --notes "Windows x64 release. Buddy-Setup.exe is recommended; Buddy.exe is the portable single-file build. The binaries are currently unsigned, so Windows may show a publisher warning."
+            gh release create $tag --title "Chitchat Buddy $($tag.TrimStart('v'))" --notes "Windows x64 release. Buddy-Setup.exe is recommended; Buddy.exe is the portable single-file build. The binaries are currently unsigned, so Windows may show a publisher warning."
           }
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           gh release upload $tag artifacts\release\Buddy-Setup.exe artifacts\release\Buddy.exe artifacts\release\SHA256SUMS.txt --clobber

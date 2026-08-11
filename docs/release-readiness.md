@@ -302,13 +302,13 @@ broader product specification.
 
 ## Packaging boundary
 
-The installed executable is `C:\Programs\Buddy.exe`, version 0.2.0. Its
-installed SHA-256 is
-`A1EC745BF803F2FE82F32C609B04EDBB6F87B166E525709A303ADE8A9B28CC6D` and
-matches the staged publish. This personal build is intentionally unpackaged and
-unsigned; a public release still requires a trusted code-signing certificate
-and a distribution decision compatible with the bundled GPL-3.0-or-later
-eSpeak NG runtime. See [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md).
+The installed executable is `C:\Programs\Buddy.exe`, version 0.2.0, and matches
+the staged portable release. Exact portable and installer hashes are published
+in `SHA256SUMS.txt` alongside each release. This personal build is intentionally
+unpackaged and unsigned; a public release still requires a trusted code-signing
+certificate and a distribution decision compatible with the bundled
+GPL-3.0-or-later eSpeak NG runtime. See
+[THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md).
 
 ## Release scope
 
