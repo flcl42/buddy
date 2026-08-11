@@ -25,6 +25,8 @@ public sealed class KokoroSpeechSynthesisService :
         new("am_michael", "Michael · clear male", "en-US", "Male"),
         new("bf_emma", "Emma · warm British female", "en-GB", "Female"),
         new("bm_george", "George · clear British male", "en-GB", "Male"),
+        new("ef_dora", "Dora · Spanish female", "es-ES", "Female"),
+        new("ff_siwis", "Siwis · French female", "fr-FR", "Female"),
     ];
 
     private readonly ILocalModelManager _models;
@@ -170,7 +172,9 @@ public sealed class KokoroSpeechSynthesisService :
                     destinationPath,
                     duration,
                     LocalSpeechModels.KokoroEnglishV1,
-                    selectedVoice.Id);
+                    selectedVoice.Id,
+                    KokoroSampleRate,
+                    1);
             }
             finally
             {
@@ -211,7 +215,7 @@ public sealed class KokoroSpeechSynthesisService :
         {
             throw new LocalModelNotInstalledException(
                 LocalSpeechModels.KokoroEnglishV1,
-                "Kokoro English");
+                "Kokoro multilingual");
         }
 
         return model.LocalPath;

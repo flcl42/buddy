@@ -45,7 +45,8 @@ The server binds only to loopback and requires a random 256-bit bearer key that
 is generated for each Buddy process. It is assigned to a Windows
 kill-on-job-close object, stops on explicit application exit, and sleeps after
 two idle minutes to release inference resources. Models and runtime stay outside the
-single executable under `D:\ai\Buddy`; `BUDDY_AI_ROOT` can override that root.
+single executable under `H:\BuddyAI` when that drive is available;
+`BUDDY_AI_ROOT` can override that root.
 
 ## Consequences
 

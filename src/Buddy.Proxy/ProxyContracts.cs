@@ -67,6 +67,7 @@ public static class ProxyErrorCodes
     public const string DisabledKey = "proxy_key_disabled";
     public const string ReplyQuotaExhausted = "proxy_reply_quota_exhausted";
     public const string TokenQuotaExhausted = "proxy_token_quota_exhausted";
+    public const string RateLimited = "proxy_rate_limited";
     public const string InvalidRequest = "proxy_invalid_request";
     public const string StreamingUnsupported = "proxy_streaming_unsupported";
     public const string ModelUnavailable = "proxy_model_unavailable";

@@ -7,13 +7,13 @@
     <UseMaui>true</UseMaui>
     <SingleProject>true</SingleProject>
     <MauiXamlInflator>SourceGen</MauiXamlInflator>
-    <ApplicationTitle>Buddy</ApplicationTitle>
-    <Product>Buddy</Product>
-    <Description>Private meeting recorder and speech trainer</Description>
+    <ApplicationTitle>Chitchat Buddy</ApplicationTitle>
+    <Product>Chitchat Buddy</Product>
+    <Description>Private microphone recorder, speech trainer, and AI dialog companion</Description>
     <Company>Buddy</Company>
     <ApplicationId>com.flcl.buddy</ApplicationId>
-    <ApplicationDisplayVersion>0.1.0</ApplicationDisplayVersion>
-    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>0.2.0</ApplicationDisplayVersion>
+    <ApplicationVersion>2</ApplicationVersion>
     <WindowsPackageType>None</WindowsPackageType>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <WindowsAppSdkUndockedRegFreeWinRTInitialize>false</WindowsAppSdkUndockedRegFreeWinRTInitialize>

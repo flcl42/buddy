@@ -1,3 +1,4 @@
+using Buddy.App.Services;
 using Buddy.Core.Domain;
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -13,6 +14,15 @@ public enum BuddyRuntimeMode
 
 public sealed partial class BuddyRuntimeState : ObservableObject
 {
+    private readonly UiLocalizationService _localization;
+
+    public BuddyRuntimeState(UiLocalizationService localization)
+    {
+        _localization = localization
+            ?? throw new ArgumentNullException(nameof(localization));
+        _localization.Changed += OnLocalizationChanged;
+    }
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(TrayToolTip))]
     [NotifyPropertyChangedFor(nameof(IsRecording))]
@@ -45,22 +55,47 @@ public sealed partial class BuddyRuntimeState : ObservableObject
     public string TrayToolTip => Mode switch
     {
         BuddyRuntimeMode.Recording when ActiveRecordingKind == RecordingKind.Dialog =>
-            $"Buddy · AI Dialog · {FormatDuration(RecordingElapsed)}",
-        BuddyRuntimeMode.Recording => $"Buddy · Recording · {FormatDuration(RecordingElapsed)}",
-        BuddyRuntimeMode.Processing => "Buddy · Processing locally",
-        BuddyRuntimeMode.Attention => $"Buddy · {AttentionMessage ?? "Needs attention"}",
-        _ => "Buddy · Ready",
+            FormatTrayStatus("RuntimeDialogFormat"),
+        BuddyRuntimeMode.Recording =>
+            FormatTrayStatus("RuntimeRecordingFormat"),
+        BuddyRuntimeMode.Processing =>
+            $"{_localization.Get("AppName")} · {_localization.Get("RuntimeProcessing")}",
+        BuddyRuntimeMode.Attention =>
+            $"{_localization.Get("AppName")} · "
+                + (AttentionMessage ?? _localization.Get("PhaseNeedsAttention")),
+        _ => $"{_localization.Get("AppName")} · "
+            + _localization.Get("PhaseReady"),
     };
 
     public string StatusText => Mode switch
     {
         BuddyRuntimeMode.Recording when ActiveRecordingKind == RecordingKind.Dialog =>
-            $"AI Dialog {FormatDuration(RecordingElapsed)}",
-        BuddyRuntimeMode.Recording => $"Recording {FormatDuration(RecordingElapsed)}",
-        BuddyRuntimeMode.Processing => "Processing locally",
-        BuddyRuntimeMode.Attention => AttentionMessage ?? "Needs attention",
-        _ => "Ready",
+            string.Format(
+                System.Globalization.CultureInfo.CurrentCulture,
+                _localization.Get("RuntimeDialogFormat"),
+                FormatDuration(RecordingElapsed)),
+        BuddyRuntimeMode.Recording => string.Format(
+            System.Globalization.CultureInfo.CurrentCulture,
+            _localization.Get("RuntimeRecordingFormat"),
+            FormatDuration(RecordingElapsed)),
+        BuddyRuntimeMode.Processing => _localization.Get("RuntimeProcessing"),
+        BuddyRuntimeMode.Attention =>
+            AttentionMessage ?? _localization.Get("PhaseNeedsAttention"),
+        _ => _localization.Get("PhaseReady"),
     };
+
+    private string FormatTrayStatus(string resourceKey) =>
+        $"{_localization.Get("AppName")} · "
+        + string.Format(
+            System.Globalization.CultureInfo.CurrentCulture,
+            _localization.Get(resourceKey),
+            FormatDuration(RecordingElapsed));
+
+    private void OnLocalizationChanged(object? sender, EventArgs eventArgs)
+    {
+        OnPropertyChanged(nameof(TrayToolTip));
+        OnPropertyChanged(nameof(StatusText));
+    }
 
     private static string FormatDuration(TimeSpan duration)
     {

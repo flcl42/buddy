@@ -36,6 +36,7 @@ public sealed class ProxyEndpointPolicyTests
     [InlineData(
         ProxyErrorCodes.TokenQuotaExhausted,
         "proxy_token_quota_exhausted")]
+    [InlineData(ProxyErrorCodes.RateLimited, "proxy_rate_limited")]
     public void KeyAndQuotaErrorsAreStable(string actual, string expected)
     {
         Assert.Equal(expected, actual);

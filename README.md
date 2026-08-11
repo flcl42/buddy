@@ -64,8 +64,10 @@ The recorder is local-first and remains useful without a cloud provider.
 - Compact one-line navigation: `Speak`, `All recordings`, `AI Dialog`, and
   `Monologue` share the main header so the active workflow gets the full
   remaining window height without changing window geometry.
-- Local Kokoro synthesis with four curated English voices, three speaking
-  speeds, saved Monologue and dialog-answer WAV artifacts, automatic Dialog
+- Local Kokoro synthesis with four curated English voices plus Spanish and
+  French voices, Windows speech fallback for installed German and Belarusian
+  voices (Russian is the safe Belarusian fallback), three speaking speeds,
+  saved Monologue and dialog-answer WAV artifacts, automatic Dialog
   answers, replay after restart, on-demand speech for your own dialog turns and
   selected words, and a real Stop action for every dialog speech control.
   New answers use their dedicated pronunciation-ready narration. Older answers
@@ -105,7 +107,7 @@ See the [product specification](docs/product-specification.md), the
 | Recognition | Whisper large-v3-turbo through Whisper.net, local |
 | Phonetic transcription | eSpeak NG through the bundled KokoroSharp tokenizer, local |
 | Grammar, vocabulary, titles, dialog answers | Capped Buddy DeepSeek proxy by default; direct DeepSeek with your key; or local Qwen 3.6 27B Q4_K_M through llama.cpp |
-| Speech synthesis | Kokoro 82M through KokoroSharp, local |
+| Speech synthesis | Kokoro 82M through KokoroSharp plus installed Windows multilingual voices, local |
 | Metadata and recovery queue | SQLite in WAL mode |
 | Tray integration | H.NotifyIcon.Maui |
 
@@ -129,10 +131,19 @@ dotnet restore Buddy.slnx
 dotnet run --project src/Buddy.App/Buddy.App.csproj
 ```
 
-Open Settings to verify the microphone and answer speaker and inspect the local
-models. Published releases include a capped Buddy proxy key and select that
-provider by default. Source builds can read `BUDDY_PROXY_API_KEY` and
-`BUDDY_PROXY_CERT_SHA256`, or you can select local Qwen or direct DeepSeek.
+The first launch is blocked by a one-time setup screen. Interface language can
+be switched immediately among English, Беларуская, and Русский; dialog speech
+can be English, German, Spanish, French, or Belarusian. Choose the included
+12-letter trial code, direct DeepSeek, or local Qwen. Whisper, Silero, and the
+selected local voice are verified before the workspace opens; Qwen is shown and
+downloaded only after those speech dependencies are ready. Large files prefer
+`H:` when it is available.
+
+Open Settings afterward to verify the microphone and answer speaker and inspect
+the local models. Published releases include a capped Buddy proxy key and select
+that provider by default. Source builds can embed `BUDDY_PROXY_CLIENT_KEY` and
+`BUDDY_PROXY_CERT_SHA256` at build time, or you can select local Qwen or direct
+DeepSeek.
 Buddy reads `DEEPSEEK_API_KEY` from the process environment without copying it
 into the application database.
 
@@ -146,7 +157,8 @@ as text when its local model has not been downloaded.
    **Start dialog**.
 2. Speak normally. The current utterance refreshes in **Live transcription**.
 3. Pause for an automatic turn, or select **Send now** to commit it immediately.
-   Choose **Allowed pause** to control how long Buddy waits. While a recognized
+   Choose **Allowed pause** to control how long Buddy waits; it defaults to
+   three seconds. While a recognized
    turn is waiting, the progress line shows the remaining silence; choose
    **Reset · keep talking** as often as needed to postpone sending.
 4. Buddy speaks the answer automatically when Kokoro is installed. The answer
@@ -197,7 +209,7 @@ the installed executable. To create both distributable assets, install Inno
 Setup 6 and run:
 
 ```powershell
-.\scripts\build-installer.ps1 -Version 0.1.0
+.\scripts\build-installer.ps1 -Version 0.2.0
 ```
 
 This produces `artifacts\release\Buddy-Setup.exe` and the portable
@@ -209,11 +221,12 @@ so Windows may show an unknown-publisher warning. Run
 
 On first launch, .NET extracts the versioned native speech runtime into its
 per-user bundle cache; the portable app needs no companion files beside
-`Buddy.exe`. Personal recordings and speech models remain in
-`%LOCALAPPDATA%\Buddy` across upgrades. Whisper, Silero, and Kokoro are fetched
-only when needed with resumable verified downloads. Selecting local Qwen starts
+`Buddy.exe`. Personal recordings and speech models remain in `H:\Buddy` when
+`H:` is available, or `%LOCALAPPDATA%\Buddy` on other PCs; `BUDDY_DATA_ROOT`
+overrides that choice. Whisper, Silero, and Kokoro are fetched only when needed
+with resumable verified downloads. Selecting local Qwen starts
 its approximately 21.5 GB verified model/runtime setup. Qwen lives under
-`D:\ai\Buddy` on this installation; set `BUDDY_AI_ROOT` before launch to use
+`H:\BuddyAI` when `H:` is available; set `BUDDY_AI_ROOT` before launch to use
 another root.
 
 ## Data and privacy

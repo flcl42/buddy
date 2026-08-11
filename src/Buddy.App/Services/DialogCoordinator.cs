@@ -95,6 +95,7 @@ public sealed class DialogCoordinator : IAsyncDisposable
     private readonly IAudioPlaybackService _playback;
     private readonly LocalSetupCoordinator _localSetup;
     private readonly IAppSettingsStore _settings;
+    private readonly LanguagePreferences _languages;
     private readonly BuddyDataPaths _paths;
     private readonly Channel<DialogWorkItem> _work;
     private readonly CancellationTokenSource _shutdown = new();
@@ -142,6 +143,7 @@ public sealed class DialogCoordinator : IAsyncDisposable
         IAudioPlaybackService playback,
         LocalSetupCoordinator localSetup,
         IAppSettingsStore settings,
+        LanguagePreferences languages,
         BuddyDataPaths paths)
     {
         _dialogs = dialogs ?? throw new ArgumentNullException(nameof(dialogs));
@@ -166,6 +168,7 @@ public sealed class DialogCoordinator : IAsyncDisposable
         _localSetup = localSetup
             ?? throw new ArgumentNullException(nameof(localSetup));
         _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+        _languages = languages ?? throw new ArgumentNullException(nameof(languages));
         _paths = paths ?? throw new ArgumentNullException(nameof(paths));
         _work = Channel.CreateUnbounded<DialogWorkItem>(
             new UnboundedChannelOptions
@@ -989,8 +992,8 @@ public sealed class DialogCoordinator : IAsyncDisposable
                 .TranscribeAsync(
                     analysisPath,
                     new TranscriptionOptions(
-                        Language: "en",
-                        InitialPrompt: null,
+                        Language: _languages.DialogLanguage.WhisperLanguage,
+                        InitialPrompt: _languages.DialogLanguage.InitialPrompt,
                         IncludeWordTimestamps: true),
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
@@ -1184,7 +1187,7 @@ public sealed class DialogCoordinator : IAsyncDisposable
                                     message.Role,
                                     message.Text))
                             .ToArray(),
-                        "en-US"),
+                        _languages.DialogLanguage.Locale),
                     cancellationToken)
                 .ConfigureAwait(false);
         }
@@ -1287,9 +1290,9 @@ public sealed class DialogCoordinator : IAsyncDisposable
             IReadOnlyList<SpeechVoice> voices = await _synthesis
                 .GetVoicesAsync(cancellationToken)
                 .ConfigureAwait(false);
-            SpeechVoice? voice = voices.FirstOrDefault(
-                    item => item.Id == "af_heart")
-                ?? (voices.Count > 0 ? voices[0] : null);
+            SpeechVoice? voice = SpeechVoiceSelector.FindPreferred(
+                voices,
+                _languages.DialogLanguage);
             if (voice is null)
             {
                 PublishState(
@@ -1301,9 +1304,12 @@ public sealed class DialogCoordinator : IAsyncDisposable
             outputPath = Path.Combine(
                 directory,
                 $"dialog-answer-{assistant.Sequence:D4}-{artifactId:N}.wav");
-            await _localSetup
-                .EnsureSpeechSynthesisAsync(cancellationToken)
-                .ConfigureAwait(false);
+            if (SpeechVoiceSelector.RequiresKokoro(_languages.DialogLanguage))
+            {
+                await _localSetup
+                    .EnsureSpeechSynthesisAsync(cancellationToken)
+                    .ConfigureAwait(false);
+            }
             SpeechSynthesisResult result = await _synthesis
                 .SynthesizeAsync(
                     spokenAnswer,
@@ -1318,8 +1324,8 @@ public sealed class DialogCoordinator : IAsyncDisposable
                 AudioArtifactKind.DialogAssistant,
                 _paths.ToRecordingRelativePath(result.OutputPath),
                 AudioContainer.Wave,
-                24_000,
-                1,
+                result.SampleRate,
+                result.Channels,
                 result.Duration,
                 file.Length,
                 await ComputeSha256Async(result.OutputPath, cancellationToken)
@@ -1327,7 +1333,7 @@ public sealed class DialogCoordinator : IAsyncDisposable
                 $"{result.Model}; voice={result.VoiceId}; "
                     + "text-normalization="
                     + $"{MarkdownTextProcessor.SpeechNormalizationVersion}; "
-                    + $"synthesis={KokoroSpeechSynthesisService.SynthesisVersion}; "
+                    + $"synthesis={LocalSpeechSynthesisService.SynthesisVersion}; "
                     + "answer-contract="
                     + $"{ConversationAnswerContract.SchemaVersion}; "
                     + "answer-document="
@@ -1640,6 +1646,7 @@ public sealed class DialogCoordinator : IAsyncDisposable
                 string phoneticTranscript = await _phonetics
                     .TranscribeAsync(
                         message.Text,
+                        _languages.DialogLanguage.Locale,
                         cancellationToken: cancellationToken)
                     .ConfigureAwait(false);
                 if (string.IsNullOrWhiteSpace(phoneticTranscript))
@@ -1692,7 +1699,10 @@ public sealed class DialogCoordinator : IAsyncDisposable
         try
         {
             return await _phonetics
-                .TranscribeAsync(text, cancellationToken: cancellationToken)
+                .TranscribeAsync(
+                    text,
+                    _languages.DialogLanguage.Locale,
+                    cancellationToken)
                 .ConfigureAwait(false);
         }
         catch (Exception error) when (

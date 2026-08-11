@@ -8,12 +8,17 @@ public partial class App : Application
     private readonly MainPage _mainPage;
     private readonly IWindowController _window;
 
-    public App(MainPage mainPage, IWindowController window)
+    public App(
+        MainPage mainPage,
+        IWindowController window,
+        UiLocalizationService localization)
     {
         StartupDiagnostics.Write("MAUI App constructor starting");
         _mainPage = mainPage ?? throw new ArgumentNullException(nameof(mainPage));
         _window = window ?? throw new ArgumentNullException(nameof(window));
         InitializeComponent();
+        (localization ?? throw new ArgumentNullException(nameof(localization)))
+            .Apply("en");
         UserAppTheme = AppTheme.Light;
         SingleInstanceCoordinator.ActivationRequested += OnActivationRequested;
         StartupDiagnostics.Write("MAUI App constructor complete");

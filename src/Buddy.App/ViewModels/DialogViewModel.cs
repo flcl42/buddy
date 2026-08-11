@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Security.Cryptography;
 using Buddy.App.Services;
 using Buddy.App.State;
@@ -39,6 +40,8 @@ public sealed partial class DialogViewModel : ObservableObject, IDisposable
     private readonly IWordDefinitionProvider _wordDefinitions;
     private readonly BuddyDataPaths _paths;
     private readonly BuddyRuntimeState _runtime;
+    private readonly LanguagePreferences _languages;
+    private readonly UiLocalizationService _localization;
     private readonly System.Timers.Timer _silenceProgressTimer;
     private Guid? _recordingId;
     private Guid? _playingArtifactId;
@@ -59,6 +62,7 @@ public sealed partial class DialogViewModel : ObservableObject, IDisposable
     private bool _applyingPauseSelection;
     private bool _initialized;
     private bool _disposed;
+    private DialogPhase _currentPhase = DialogPhase.Idle;
 
     public DialogViewModel(
         DialogCoordinator coordinator,
@@ -70,6 +74,8 @@ public sealed partial class DialogViewModel : ObservableObject, IDisposable
         IPhoneticTranscriptionService phonetics,
         IWordDefinitionProvider wordDefinitions,
         BuddyDataPaths paths,
+        LanguagePreferences languages,
+        UiLocalizationService localization,
         BuddyRuntimeState runtime)
     {
         _coordinator = coordinator ?? throw new ArgumentNullException(nameof(coordinator));
@@ -83,33 +89,33 @@ public sealed partial class DialogViewModel : ObservableObject, IDisposable
         _wordDefinitions = wordDefinitions
             ?? throw new ArgumentNullException(nameof(wordDefinitions));
         _paths = paths ?? throw new ArgumentNullException(nameof(paths));
+        _languages = languages ?? throw new ArgumentNullException(nameof(languages));
+        _localization = localization
+            ?? throw new ArgumentNullException(nameof(localization));
         _runtime = runtime ?? throw new ArgumentNullException(nameof(runtime));
         _coordinator.StateChanged += OnDialogStateChanged;
         _playback.StateChanged += OnPlaybackStateChanged;
         _runtime.PropertyChanged += OnRuntimePropertyChanged;
+        _localization.Changed += OnLocalizationChanged;
         _silenceProgressTimer = new System.Timers.Timer(100)
         {
             AutoReset = true,
         };
         _silenceProgressTimer.Elapsed += OnSilenceProgressTimerElapsed;
+        RefreshAllowedPauseOptions();
+        StatusMessage = _localization.Get("DialogReadyStatus");
+        SilenceCountdownText = string.Format(
+            CultureInfo.CurrentCulture,
+            _localization.Get("PauseToSendFormat"),
+            FormatPause(_allowedPause));
+        PhaseText = FormatPhase(_currentPhase);
     }
 
     public ObservableCollection<DialogMessageViewModel> Messages { get; } = [];
 
     public ObservableCollection<DialogMessageViewModel> SavedMessages { get; } = [];
 
-    public IReadOnlyList<string> AllowedPauseOptions { get; } =
-    [
-        "0.75 s · very quick",
-        "1.1 s · quick",
-        "1.5 s",
-        "2 s",
-        "3 s",
-        "5 s",
-        "8 s",
-        "12 s",
-        "15 s",
-    ];
+    public ObservableCollection<string> AllowedPauseOptions { get; } = [];
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanStart))]
@@ -171,14 +177,14 @@ public sealed partial class DialogViewModel : ObservableObject, IDisposable
     public partial string? OperationMessage { get; set; }
 
     [ObservableProperty]
-    public partial int SelectedPauseIndex { get; set; } = 1;
+    public partial int SelectedPauseIndex { get; set; } = 4;
 
     [ObservableProperty]
     public partial double SilenceProgress { get; set; }
 
     [ObservableProperty]
     public partial string SilenceCountdownText { get; set; } =
-        "Pause to send automatically after 1.1 seconds.";
+        "Pause to send automatically after 3 seconds.";
 
     [ObservableProperty]
     public partial bool IsSilenceCountdownVisible { get; set; }
@@ -194,7 +200,9 @@ public sealed partial class DialogViewModel : ObservableObject, IDisposable
 
     public bool CanFinish => IsActive && !IsFinishing;
 
-    public string FinishButtonText => IsFinishing ? "Saving…" : "Finish & save";
+    public string FinishButtonText => IsFinishing
+        ? _localization.Get("Saving")
+        : _localization.Get("FinishSave");
 
     public bool CanSendNow => IsActive && !IsBusy && HasLiveTranscript;
 
@@ -488,8 +496,10 @@ public sealed partial class DialogViewModel : ObservableObject, IDisposable
         _interpolateSilenceProgress = false;
         _silenceProgressTimer.Stop();
         SilenceProgress = 0;
-        SilenceCountdownText =
-            $"Countdown reset · another {FormatPause(_allowedPause)} available.";
+        SilenceCountdownText = string.Format(
+            CultureInfo.CurrentCulture,
+            _localization.Get("CountdownResetFormat"),
+            FormatPause(_allowedPause));
     }
 
     [RelayCommand(CanExecute = nameof(CanRetryAnswer))]
@@ -780,8 +790,9 @@ public sealed partial class DialogViewModel : ObservableObject, IDisposable
                     item.Id,
                     savedVoiceId,
                     StringComparison.Ordinal))
-            ?? voices.FirstOrDefault(item => item.Id == "af_heart")
-            ?? (voices.Count > 0 ? voices[0] : null);
+            ?? SpeechVoiceSelector.FindPreferred(
+                voices,
+                _languages.DialogLanguage);
         if (voice is null)
         {
             throw new InvalidOperationException(
@@ -798,8 +809,8 @@ public sealed partial class DialogViewModel : ObservableObject, IDisposable
         AudioArtifact refreshed = artifact with
         {
             Container = AudioContainer.Wave,
-            SampleRate = 24_000,
-            Channels = 1,
+            SampleRate = result.SampleRate,
+            Channels = result.Channels,
             Duration = result.Duration,
             ByteLength = file.Length,
             Sha256 = await ComputeSha256Async(result.OutputPath)
@@ -807,7 +818,7 @@ public sealed partial class DialogViewModel : ObservableObject, IDisposable
             Generator = $"{result.Model}; voice={result.VoiceId}; "
                 + "text-normalization="
                 + $"{MarkdownTextProcessor.SpeechNormalizationVersion}; "
-                + $"synthesis={KokoroSpeechSynthesisService.SynthesisVersion}; "
+                + $"synthesis={LocalSpeechSynthesisService.SynthesisVersion}; "
                 + (usesSpeakerAwareAnswer
                     ? "answer-contract="
                         + $"{ConversationAnswerContract.SchemaVersion}; "
@@ -837,7 +848,7 @@ public sealed partial class DialogViewModel : ObservableObject, IDisposable
         }
 
         bool usesCurrentSynthesis = artifact.Generator?.Contains(
-            $"synthesis={KokoroSpeechSynthesisService.SynthesisVersion}",
+            $"synthesis={LocalSpeechSynthesisService.SynthesisVersion}",
             StringComparison.Ordinal) == true;
         bool usesCurrentTextNormalization = artifact.Generator?.Contains(
             $"text-normalization={MarkdownTextProcessor.SpeechNormalizationVersion}",
@@ -968,7 +979,10 @@ public sealed partial class DialogViewModel : ObservableObject, IDisposable
         try
         {
             string phonetic = await _phonetics
-                .TranscribeAsync(word, "en-US", cancellationToken)
+                .TranscribeAsync(
+                    word,
+                    _languages.DialogLanguage.Locale,
+                    cancellationToken)
                 .ConfigureAwait(true);
             if (IsCurrentWordLookup(message, generation))
             {
@@ -1002,7 +1016,7 @@ public sealed partial class DialogViewModel : ObservableObject, IDisposable
                     new WordDefinitionRequest(
                         word,
                         message.PlainText,
-                        "en-US"),
+                        _languages.DialogLanguage.Locale),
                     cancellationToken)
                 .ConfigureAwait(true);
             if (IsCurrentWordLookup(message, generation))
@@ -1083,6 +1097,7 @@ public sealed partial class DialogViewModel : ObservableObject, IDisposable
         IsActive = snapshot.IsActive;
         LiveTranscript = snapshot.LiveTranscript;
         StatusMessage = snapshot.StatusMessage;
+        _currentPhase = snapshot.Phase;
         PhaseText = FormatPhase(snapshot.Phase);
         IsGeneratingReply = snapshot.Phase == DialogPhase.Thinking;
         RetryAvailable = snapshot.CanRetryAnswer;
@@ -1234,15 +1249,19 @@ public sealed partial class DialogViewModel : ObservableObject, IDisposable
         SilenceProgress = progress;
         if (progress >= 1)
         {
-            SilenceCountdownText =
-                "Pause complete · confirming and sending your turn…";
+            SilenceCountdownText = _localization.Get("PauseComplete");
             return;
         }
 
         TimeSpan remaining = _allowedPause - elapsed;
-        SilenceCountdownText = elapsed > TimeSpan.Zero
-            ? $"Sending in about {FormatPause(remaining)} · reset if needed."
-            : $"Pause to send automatically after {FormatPause(_allowedPause)}.";
+        SilenceCountdownText = string.Format(
+            CultureInfo.CurrentCulture,
+            _localization.Get(
+                elapsed > TimeSpan.Zero
+                    ? "SendingInFormat"
+                    : "PauseToSendFormat"),
+            FormatPause(
+                elapsed > TimeSpan.Zero ? remaining : _allowedPause));
     }
 
     private static int FindPauseIndex(TimeSpan pause)
@@ -1263,12 +1282,56 @@ public sealed partial class DialogViewModel : ObservableObject, IDisposable
         return bestIndex;
     }
 
-    private static string FormatPause(TimeSpan pause)
+    private string FormatPause(TimeSpan pause)
     {
         double seconds = Math.Max(0, pause.TotalSeconds);
-        return seconds < 1
-            ? $"{seconds:0.0} seconds"
-            : $"{seconds:0.#} seconds";
+        return $"{seconds:0.#} {_localization.Get("SecondsShort")}";
+    }
+
+    private void OnLocalizationChanged(object? sender, EventArgs eventArgs)
+    {
+        RefreshAllowedPauseOptions();
+        OnPropertyChanged(nameof(FinishButtonText));
+        PhaseText = FormatPhase(_currentPhase);
+        if (!IsActive && _currentPhase is DialogPhase.Idle)
+        {
+            StatusMessage = _localization.Get("DialogReadyStatus");
+        }
+
+        UpdateSilencePresentation(_silenceProgressBase);
+    }
+
+    private void RefreshAllowedPauseOptions()
+    {
+        string[] values = AllowedPauseDurations
+            .Select((pause, index) => index switch
+            {
+                0 => $"{FormatPause(pause)} · {_localization.Get("VeryQuick")}",
+                1 => $"{FormatPause(pause)} · {_localization.Get("Quick")}",
+                _ => FormatPause(pause),
+            })
+            .ToArray();
+        if (AllowedPauseOptions.Count != values.Length)
+        {
+            AllowedPauseOptions.Clear();
+            foreach (string value in values)
+            {
+                AllowedPauseOptions.Add(value);
+            }
+
+            return;
+        }
+
+        for (int index = 0; index < values.Length; index++)
+        {
+            if (!string.Equals(
+                    AllowedPauseOptions[index],
+                    values[index],
+                    StringComparison.Ordinal))
+            {
+                AllowedPauseOptions[index] = values[index];
+            }
+        }
     }
 
     private void UpdatePlaybackMessages()
@@ -1517,21 +1580,22 @@ public sealed partial class DialogViewModel : ObservableObject, IDisposable
         _coordinator.StateChanged -= OnDialogStateChanged;
         _playback.StateChanged -= OnPlaybackStateChanged;
         _runtime.PropertyChanged -= OnRuntimePropertyChanged;
+        _localization.Changed -= OnLocalizationChanged;
     }
 
-    private static string FormatPhase(DialogPhase phase)
+    private string FormatPhase(DialogPhase phase)
     {
         return phase switch
         {
-            DialogPhase.Listening => "Listening",
-            DialogPhase.Transcribing => "Transcribing locally",
-            DialogPhase.Thinking => "AI is thinking",
-            DialogPhase.Synthesizing => "Preparing voice",
-            DialogPhase.Speaking => "Speaking answer",
-            DialogPhase.Finishing => "Saving",
-            DialogPhase.Completed => "Saved",
-            DialogPhase.Error => "Needs attention",
-            _ => "Ready",
+            DialogPhase.Listening => _localization.Get("PhaseListening"),
+            DialogPhase.Transcribing => _localization.Get("PhaseTranscribing"),
+            DialogPhase.Thinking => _localization.Get("PhaseThinking"),
+            DialogPhase.Synthesizing => _localization.Get("PhasePreparingVoice"),
+            DialogPhase.Speaking => _localization.Get("PhaseSpeaking"),
+            DialogPhase.Finishing => _localization.Get("Saving"),
+            DialogPhase.Completed => _localization.Get("PhaseSaved"),
+            DialogPhase.Error => _localization.Get("PhaseNeedsAttention"),
+            _ => _localization.Get("PhaseReady"),
         };
     }
 

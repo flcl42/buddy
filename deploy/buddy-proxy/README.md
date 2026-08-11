@@ -22,7 +22,8 @@ ASPNETCORE_ENVIRONMENT=Production ./buddy-proxy admin create \
   --name buddy-release --reply-limit 1000 --token-limit 1000000
 ```
 
-The plaintext `bpk_…` key is printed once. Key status and usage can be inspected
+The plaintext 12-letter code (for example, `ABCDEF-GHIJKL`) is printed once.
+Key status and usage can be inspected
 without revealing it:
 
 ```bash
@@ -38,7 +39,8 @@ ASPNETCORE_ENVIRONMENT=Production ./buddy-proxy admin enable --id 2
 
 ## Client API
 
-All client routes except `/healthz` require `Authorization: Bearer bpk_…`.
+All client routes except `/healthz` require a bearer code such as
+`Authorization: Bearer ABCDEF-GHIJKL`.
 
 - `GET /v1/models` returns the approved DeepSeek model list and quota snapshot.
 - `GET /v1/quota` returns the current reply, prompt-token, completion-token,
@@ -56,6 +58,7 @@ object with `type: buddy_proxy_error` and a stable `code`:
 | 403 | `proxy_key_disabled` | Administratively disabled key |
 | 429 | `proxy_reply_quota_exhausted` | Reply limit reached |
 | 429 | `proxy_token_quota_exhausted` | Not enough token allowance remains |
+| 429 | `proxy_rate_limited` | The source address exceeded the request-rate limit |
 | 422 | `proxy_streaming_unsupported` | Streaming is rejected for atomic billing |
 | 422 | `proxy_model_unavailable` | Model is not on the deployment allowlist |
 

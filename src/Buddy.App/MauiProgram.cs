@@ -32,12 +32,15 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
-        string dataRoot = Path.Combine(
+        string localAppDataRoot = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "Buddy");
+        bool hasHeavyDataDrive = Directory.Exists(@"H:\");
+        string dataRoot = Environment.GetEnvironmentVariable("BUDDY_DATA_ROOT")
+            ?? (hasHeavyDataDrive ? @"H:\Buddy" : localAppDataRoot);
         string languageRoot = Environment.GetEnvironmentVariable("BUDDY_AI_ROOT")
-            ?? (Directory.Exists(@"D:\ai")
-                ? @"D:\ai\Buddy"
+            ?? (hasHeavyDataDrive
+                ? @"H:\BuddyAI"
                 : Path.Combine(dataRoot, "language-models"));
         builder.Services.AddSingleton(new BuddyDataPaths(dataRoot));
         builder.Services.AddSingleton<SqliteConnectionFactory>();
@@ -100,8 +103,10 @@ public static class MauiProgram
             services => services
                 .GetRequiredService<KokoroPhoneticTranscriptionService>());
         builder.Services.AddSingleton<KokoroSpeechSynthesisService>();
+        builder.Services.AddSingleton<WindowsSpeechSynthesisService>();
+        builder.Services.AddSingleton<LocalSpeechSynthesisService>();
         builder.Services.AddSingleton<ISpeechSynthesisService>(
-            services => services.GetRequiredService<KokoroSpeechSynthesisService>());
+            services => services.GetRequiredService<LocalSpeechSynthesisService>());
         builder.Services.AddSingleton(
             new QwenRuntimeOptions(
                 Path.Combine(languageRoot, "llama.cpp", "b10243"),
@@ -141,6 +146,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<IWordDefinitionProvider>(
             services => services.GetRequiredService<LanguageProviderRouter>());
         builder.Services.AddSingleton<ISecretStore, DpapiSecretStore>();
+        builder.Services.AddSingleton<UiLocalizationService>();
+        builder.Services.AddSingleton<LanguagePreferences>();
         builder.Services.AddSingleton<LocalSetupCoordinator>();
         builder.Services.AddSingleton<IWindowController, WindowController>();
         builder.Services.AddSingleton<BuddyRuntimeState>();
@@ -150,6 +157,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<DialogSpeechCacheService>();
         builder.Services.AddSingleton<SettingsViewModel>();
         builder.Services.AddSingleton<DialogViewModel>();
+        builder.Services.AddSingleton<OnboardingViewModel>();
         builder.Services.AddSingleton<MainViewModel>();
         builder.Services.AddSingleton<MainPage>();
 

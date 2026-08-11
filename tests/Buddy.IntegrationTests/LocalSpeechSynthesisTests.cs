@@ -55,7 +55,9 @@ public sealed class LocalSpeechSynthesisTests
             voice => Assert.Equal("af_heart", voice.Id),
             voice => Assert.Equal("am_michael", voice.Id),
             voice => Assert.Equal("bf_emma", voice.Id),
-            voice => Assert.Equal("bm_george", voice.Id));
+            voice => Assert.Equal("bm_george", voice.Id),
+            voice => Assert.Equal("ef_dora", voice.Id),
+            voice => Assert.Equal("ff_siwis", voice.Id));
 
         LocalModelNotInstalledException error =
             await Assert.ThrowsAsync<LocalModelNotInstalledException>(
@@ -64,6 +66,49 @@ public sealed class LocalSpeechSynthesisTests
                     Path.Combine(Path.GetTempPath(), "buddy-missing-model.wav"),
                     new SpeechSynthesisOptions("af_heart")));
         Assert.Equal(LocalSpeechModels.KokoroEnglishV1, error.ModelId);
+    }
+
+    [Fact]
+    public async Task WindowsFallbackEnumeratesInstalledVoicesWithoutNativeCrash()
+    {
+        WindowsSpeechSynthesisService service = new();
+
+        IReadOnlyList<SpeechVoice> voices = await service.GetVoicesAsync();
+
+        Assert.NotEmpty(voices);
+        Assert.All(
+            voices,
+            voice => Assert.StartsWith("windows:", voice.Id));
+    }
+
+    [Fact]
+    public async Task WindowsFallbackCreatesAPlayableWave()
+    {
+        string root = CreateTemporaryDirectory();
+        try
+        {
+            WindowsSpeechSynthesisService service = new();
+            SpeechVoice voice = Assert.Single(
+                (await service.GetVoicesAsync()).Take(1));
+            string path = Path.Combine(root, "windows-voice.wav");
+
+            SpeechSynthesisResult result = await service.SynthesizeAsync(
+                "This is a local voice test.",
+                path,
+                new SpeechSynthesisOptions(voice.Id));
+
+            Assert.True(File.Exists(path));
+            Assert.True(new FileInfo(path).Length > 44);
+            Assert.True(result.Duration > TimeSpan.Zero);
+            Assert.Equal(voice.Id, result.VoiceId);
+            using WaveFileReader reader = new(path);
+            Assert.Equal(result.SampleRate, reader.WaveFormat.SampleRate);
+            Assert.Equal(result.Channels, reader.WaveFormat.Channels);
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
     }
 
     [Theory]
@@ -177,6 +222,8 @@ public sealed class LocalSpeechSynthesisTests
                          "am_michael.npy",
                          "bf_emma.npy",
                          "bm_george.npy",
+                         "ef_dora.npy",
+                         "ff_siwis.npy",
                      })
             {
                 File.WriteAllText(Path.Combine(voices, voice), "test");

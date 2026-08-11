@@ -3,16 +3,19 @@ namespace Buddy.Proxy.Tests;
 public sealed class ProxyKeyHasherTests
 {
     [Fact]
-    public void GeneratedKeysAreCompactAndContainOneHundredTwentyEightRandomBits()
+    public void GeneratedKeysAreFriendlyUppercaseTwelveLetterCodes()
     {
         string first = ProxyKeyHasher.CreateKey();
         string second = ProxyKeyHasher.CreateKey();
 
         Assert.True(ProxyKeyHasher.IsWellFormed(first));
         Assert.True(ProxyKeyHasher.IsWellFormed(second));
-        Assert.Equal(26, first.Length);
+        Assert.Equal(13, first.Length);
         Assert.NotEqual(first, second);
-        Assert.StartsWith("bpk_", first, StringComparison.Ordinal);
+        Assert.Equal('-', first[6]);
+        Assert.All(
+            first.Where(character => character != '-'),
+            character => Assert.InRange(character, 'A', 'Z'));
     }
 
     [Fact]
@@ -23,7 +26,7 @@ public sealed class ProxyKeyHasherTests
             KeyPepper = new string('p', 32),
         };
         ProxyKeyHasher hasher = new(options);
-        string key = "bpk_0123456789abcdefghijkl";
+        string key = "ABCDEF-GHIJKL";
 
         byte[] first = hasher.Hash(key);
         byte[] second = hasher.Hash(key);
@@ -33,5 +36,16 @@ public sealed class ProxyKeyHasherTests
         Assert.DoesNotContain(
             System.Text.Encoding.UTF8.GetBytes(key),
             first);
+    }
+
+    [Theory]
+    [InlineData("abcdef-GHIJKL")]
+    [InlineData("ABCDE-GHIJKL")]
+    [InlineData("ABCDEF_GHIJKL")]
+    [InlineData("ABCDEF-GHIJK1")]
+    [InlineData("ABCDEF-GHIJKLM")]
+    public void MalformedCodesAreRejected(string key)
+    {
+        Assert.False(ProxyKeyHasher.IsWellFormed(key));
     }
 }

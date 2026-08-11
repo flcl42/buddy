@@ -78,7 +78,9 @@ public sealed record SpeechSynthesisResult(
     string OutputPath,
     TimeSpan Duration,
     string Model,
-    string VoiceId);
+    string VoiceId,
+    int SampleRate = 24_000,
+    int Channels = 1);
 
 public interface ISpeechSynthesisService
 {

@@ -21,12 +21,15 @@ public sealed class KokoroPhoneticTranscriptionService :
                 nameof(text));
         }
 
-        string language = string.Equals(
-                locale,
-                "en-GB",
-                StringComparison.OrdinalIgnoreCase)
-            ? "en-gb"
-            : "en-us";
+        string language = locale.ToLowerInvariant() switch
+        {
+            "en-gb" => "en-gb",
+            "de-de" => "de",
+            "es-es" => "es",
+            "fr-fr" => "fr-fr",
+            "be-by" => "be",
+            _ => "en-us",
+        };
         await KokoroTokenizerGate.Instance.WaitAsync(cancellationToken)
             .ConfigureAwait(false);
         bool previousNativeEnglish = Tokenizer.UseNativeEnglish;

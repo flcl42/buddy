@@ -19,10 +19,13 @@ public static class ProxyEndpoints
                     service = "buddy-proxy",
                     schema = ProxyDatabase.SchemaVersion,
                 }));
-        app.MapGet("/v1/quota", GetQuotaAsync);
-        app.MapGet("/v1/models", GetModelsAsync);
-        app.MapPost("/v1/chat/completions", ForwardChatAsync);
-        app.MapPost("/chat/completions", ForwardChatAsync);
+        RouteGroupBuilder api = app.MapGroup("/v1")
+            .RequireRateLimiting("proxy-api");
+        api.MapGet("/quota", GetQuotaAsync);
+        api.MapGet("/models", GetModelsAsync);
+        api.MapPost("/chat/completions", ForwardChatAsync);
+        app.MapPost("/chat/completions", ForwardChatAsync)
+            .RequireRateLimiting("proxy-api");
     }
 
     public static int EstimateInputReservation(JsonObject payload)

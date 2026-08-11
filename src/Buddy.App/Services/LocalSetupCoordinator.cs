@@ -92,7 +92,7 @@ public sealed partial class LocalSetupCoordinator : ObservableObject, IAsyncDisp
                         new Progress<double>(
                             value => report(
                                 value,
-                                $"Kokoro English voice · {value:P0}")),
+                                $"Kokoro multilingual voice · {value:P0}")),
                         token)
                     .ConfigureAwait(false);
             },

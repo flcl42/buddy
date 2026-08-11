@@ -42,7 +42,7 @@
                 Padding="11,9"
                 BackgroundColor="#FFFDF5"
                 IsVisible="{Binding IsWordLookupVisible}"
-                SemanticProperties.Description="Word pronunciation and contextual meaning"
+                                SemanticProperties.Description="{DynamicResource WordHelpTitle}"
                 Stroke="#DED8B7"
                 StrokeShape="RoundRectangle 9">
                 <VerticalStackLayout Spacing="6">
@@ -100,7 +100,7 @@
                     <Label
                         FontSize="11"
                         IsVisible="{Binding IsWordPhoneticLoading}"
-                        Text="Preparing phonetics locally…"
+                                        Text="{DynamicResource PreparingPhonetics}"
                         TextColor="#777B8D" />
                     <Label
                         FontSize="12"
@@ -111,7 +111,7 @@
                     <Label
                         FontSize="11"
                         IsVisible="{Binding IsWordDefinitionLoading}"
-                        Text="Looking up its meaning in this sentence…"
+                                        Text="{DynamicResource LookingUpMeaning}"
                         TextColor="#777B8D" />
                     <Label
                         FontSize="11"
@@ -132,7 +132,7 @@
                         <Label
                             FontFamily="Segoe UI Semibold"
                             FontSize="10"
-                            Text="PRONUNCIATION"
+                                            Text="{DynamicResource PronunciationLabel}"
                             TextColor="#6668B8" />
                         <Label
                             Grid.Column="1"

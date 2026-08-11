@@ -24,8 +24,9 @@ and local Qwen. Changing this key/value default introduces no data migration.
 
 The proxy is an ASP.NET Core HTTPS service with these controls:
 
-- client keys contain 128 random bits in a compact `bpk_...` form;
+- client keys are friendly 12-letter uppercase codes in `ABCDEF-GHIJKL` form;
 - only an HMAC-SHA-256 key digest is stored, using deployment-only pepper;
+- client routes are rate-limited per source address before key validation;
 - every client has independent reply and combined prompt/completion token
   limits; the release key stops at 1,000 replies or 1,000,000 tokens, whichever
   is reached first;

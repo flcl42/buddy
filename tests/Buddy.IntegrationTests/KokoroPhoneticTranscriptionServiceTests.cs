@@ -17,4 +17,21 @@ public sealed class KokoroPhoneticTranscriptionServiceTests
         Assert.DoesNotContain('❓', phonetics);
         Assert.DoesNotContain("Alexey", phonetics, StringComparison.OrdinalIgnoreCase);
     }
+
+    [Theory]
+    [InlineData("Guten Tag", "de-DE")]
+    [InlineData("Buenos días", "es-ES")]
+    [InlineData("Bonjour", "fr-FR")]
+    [InlineData("Добры дзень", "be-BY")]
+    public async Task EspeakBackendSupportsConfiguredDialogLanguages(
+        string text,
+        string locale)
+    {
+        KokoroPhoneticTranscriptionService service = new();
+
+        string phonetics = await service.TranscribeAsync(text, locale);
+
+        Assert.False(string.IsNullOrWhiteSpace(phonetics));
+        Assert.NotEqual(text, phonetics);
+    }
 }

@@ -85,7 +85,7 @@ public sealed class QwenLanguageProviderTests
                 client,
                 new EmptySecretStore(),
                 new Uri("https://proxy.example/v1/"),
-                "bpk_0123456789abcdefghijkl"),
+                "ABCDEF-GHIJKL"),
             new QwenLanguageProvider(
                 client,
                 new EmptySecretStore(),

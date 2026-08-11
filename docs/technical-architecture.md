@@ -258,7 +258,10 @@ CPU-resident; this preserves target-model quality and reserves VRAM for Whisper.
 Quantized KV cache and a 32,768-token context bound memory. The server remains warm for two
 minutes so adjacent dialog turns can reuse the loaded model and prompt cache,
 then sleeps after idle time; Settings can warm or unload it explicitly. The GGUF and runtime live
-outside the single-file application under `D:\ai\Buddy` by default.
+outside the single-file application under `H:\BuddyAI` when that drive is
+available, with `BUDDY_AI_ROOT` as an explicit override and a per-user fallback
+on other PCs. Recordings and speech models similarly prefer `H:\Buddy` on this
+machine and can be redirected with `BUDDY_DATA_ROOT`.
 
 The Buddy proxy is a separate ASP.NET Core service. Its SQLite catalog stores
 hashed client keys, key state, limits, aggregate prompt/completion counters, and
@@ -269,7 +272,9 @@ recorded in one transaction, and updated counters are returned as response
 headers. Stable `buddy_proxy_error` codes let the desktop distinguish an invalid
 or disabled key from reply/token exhaustion and upstream availability. The
 release endpoint uses a target-local certificate whose SHA-256 fingerprint is
-pinned in the client.
+pinned in the client. Friendly codes use 12 random uppercase letters with a
+hyphen after the sixth character; per-source request limiting constrains online
+guessing attempts before authentication.
 
 The live synthetic comparison documented in
 `research/language-model-evaluation.md` found Flash substantially faster and Pro

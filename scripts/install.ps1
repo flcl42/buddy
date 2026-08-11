@@ -12,13 +12,13 @@ if (-not (Test-Path -LiteralPath $resolvedExecutable -PathType Leaf)) {
 
 $startMenu = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs"
 [System.IO.Directory]::CreateDirectory($startMenu) | Out-Null
-$shortcutPath = Join-Path $startMenu "Buddy.lnk"
+$shortcutPath = Join-Path $startMenu "Chitchat Buddy.lnk"
 $shell = New-Object -ComObject WScript.Shell
 $shortcut = $shell.CreateShortcut($shortcutPath)
 $shortcut.TargetPath = $resolvedExecutable
 $shortcut.WorkingDirectory = Split-Path -Parent $resolvedExecutable
 $shortcut.IconLocation = "$resolvedExecutable,0"
-$shortcut.Description = "Buddy speech recorder, trainer, and AI dialog"
+$shortcut.Description = "Chitchat Buddy speech recorder, trainer, and AI dialog"
 $shortcut.Save()
 
 Write-Host "Buddy executable: $resolvedExecutable"

@@ -1,5 +1,8 @@
 namespace Buddy.Proxy;
 
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
+
 public static class Program
 {
     public static async Task<int> Main(string[] args)
@@ -28,9 +31,45 @@ public static class Program
             });
         builder.Services.AddProblemDetails();
         builder.Services.AddHealthChecks();
+        builder.Services.AddRateLimiter(
+            options =>
+            {
+                options.AddPolicy(
+                    "proxy-api",
+                    context => RateLimitPartition.GetFixedWindowLimiter(
+                        context.Connection.RemoteIpAddress?.ToString()
+                            ?? "unknown",
+                        _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 60,
+                            Window = TimeSpan.FromMinutes(1),
+                            QueueLimit = 0,
+                            AutoReplenishment = true,
+                        }));
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+                options.OnRejected = async (context, cancellationToken) =>
+                {
+                    context.HttpContext.Response.ContentType =
+                        "application/json; charset=utf-8";
+                    await context.HttpContext.Response.WriteAsJsonAsync(
+                        new
+                        {
+                            error = new
+                            {
+                                message = "Too many proxy requests. Try again in one minute.",
+                                type = "buddy_proxy_error",
+                                param = (string?)null,
+                                code = ProxyErrorCodes.RateLimited,
+                            },
+                        },
+                        cancellationToken)
+                        .ConfigureAwait(false);
+                };
+            });
 
         WebApplication app = builder.Build();
         app.UseExceptionHandler();
+        app.UseRateLimiter();
         ProxyDatabase database = app.Services.GetRequiredService<ProxyDatabase>();
         await database.InitializeAsync().ConfigureAwait(false);
 

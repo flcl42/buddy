@@ -10,4 +10,10 @@ public static class BuddySettings
         "dialog.allowed-pause-milliseconds";
 
     public const string LanguageProviderId = "language.provider-id";
+
+    public const string InterfaceLanguageId = "language.interface-id";
+
+    public const string DialogLanguageId = "language.dialog-id";
+
+    public const string OnboardingCompleted = "onboarding.completed";
 }

@@ -70,21 +70,21 @@
                         Text="{Binding TrayRecordingMenuText}" />
                     <MenuFlyoutItem
                         Command="{Binding OpenMonologueCommand}"
-                        Text="Speak · Monologue" />
+                        Text="{DynamicResource TrayMonologue}" />
                     <MenuFlyoutItem
                         Command="{Binding OpenDialogCommand}"
-                        Text="Speak · AI Dialog" />
+                        Text="{DynamicResource TrayDialog}" />
                     <MenuFlyoutSeparator />
                     <MenuFlyoutItem
                         Command="{Binding OpenWindowCommand}"
-                        Text="Open Buddy" />
+                        Text="{DynamicResource OpenBuddy}" />
                     <MenuFlyoutItem
                         Command="{Binding ToggleSettingsCommand}"
-                        Text="Settings" />
+                        Text="{DynamicResource Settings}" />
                     <MenuFlyoutSeparator />
                     <MenuFlyoutItem
                         Command="{Binding ExitApplicationCommand}"
-                        Text="Exit Buddy" />
+                        Text="{DynamicResource ExitBuddy}" />
                 </MenuFlyout>
             </FlyoutBase.ContextFlyout>
         </tb:TaskbarIcon>
@@ -119,7 +119,7 @@
                             <Label
                                 FontFamily="Segoe UI Semibold"
                                 FontSize="18"
-                                Text="Buddy"
+                                Text="{DynamicResource AppName}"
                                 TextColor="#171926" />
                             <HorizontalStackLayout Spacing="6">
                                 <Ellipse
@@ -145,7 +145,7 @@
                                 AutomationId="SpeakTabButton"
                                 Command="{Binding SelectSpeakCommand}"
                                 Style="{StaticResource QuietButton}"
-                                Text="Speak">
+                                Text="{DynamicResource SpeakTab}">
                                 <Button.Triggers>
                                     <DataTrigger
                                         Binding="{Binding IsSpeakSelected}"
@@ -171,7 +171,7 @@
                                 AutomationId="RecordingsTabButton"
                                 Command="{Binding SelectRecordingsCommand}"
                                 Style="{StaticResource QuietButton}"
-                                Text="All recordings">
+                                Text="{DynamicResource RecordingsTab}">
                                 <Button.Triggers>
                                     <DataTrigger
                                         Binding="{Binding IsRecordingsSelected}"
@@ -206,7 +206,7 @@
                                     AutomationId="DialogModeButton"
                                     Command="{Binding SelectDialogCommand}"
                                     Style="{StaticResource QuietButton}"
-                                    Text="AI Dialog">
+                                    Text="{DynamicResource DialogTab}">
                                     <Button.Triggers>
                                         <DataTrigger
                                             Binding="{Binding IsDialogMode}"
@@ -232,7 +232,7 @@
                                     AutomationId="MonologueModeButton"
                                     Command="{Binding SelectMonologueCommand}"
                                     Style="{StaticResource QuietButton}"
-                                    Text="Monologue">
+                                    Text="{DynamicResource MonologueTab}">
                                     <Button.Triggers>
                                         <DataTrigger
                                             Binding="{Binding IsMonologueMode}"
@@ -266,7 +266,7 @@
 
                     <Button
                         Grid.Column="3"
-                        SemanticProperties.Description="Open settings"
+                        SemanticProperties.Description="{DynamicResource OpenSettingsDescription}"
                         Command="{Binding ToggleSettingsCommand}"
                         FontSize="19"
                         Style="{StaticResource QuietButton}"
@@ -283,10 +283,10 @@
                     Padding="28,24,28,16"
                     ColumnDefinitions="*,Auto">
                     <VerticalStackLayout Spacing="4">
-                        <Label Style="{StaticResource SectionTitle}" Text="All recordings" />
+                        <Label Style="{StaticResource SectionTitle}" Text="{DynamicResource RecordingsTab}" />
                         <Label
                             Style="{StaticResource MutedText}"
-                            Text="Meetings, practice takes, and completed AI dialogs, kept locally." />
+                            Text="{DynamicResource RecordingsIntro}" />
                         <Label
                             FontSize="11"
                             Text="{Binding AudioOperationMessage}"
@@ -320,7 +320,7 @@
                                 Margin="0"
                                 BackgroundColor="Transparent"
                                 ClearButtonVisibility="WhileEditing"
-                                Placeholder="Search titles and transcripts"
+                                Placeholder="{DynamicResource SearchPlaceholder}"
                                 ReturnCommand="{Binding RefreshRecordingsCommand}"
                                 Text="{Binding SearchText}" />
                         </Grid>
@@ -329,7 +329,7 @@
                         Grid.Column="1"
                         Command="{Binding RefreshRecordingsCommand}"
                         Style="{StaticResource SecondaryButton}"
-                        Text="Refresh" />
+                        Text="{DynamicResource Refresh}" />
                 </Grid>
 
                 <Grid Grid.Row="2" Padding="28,0,28,24">
@@ -451,8 +451,8 @@
                                             HorizontalOptions="Start"
                                             IsVisible="{Binding IsDialog}"
                                             Padding="0"
-                                            SemanticProperties.Description="Read the complete saved dialog"
-                                            Text="Read full dialog · formatted text and word help ›"
+                                                    SemanticProperties.Description="{DynamicResource ReadSavedDialogDescription}"
+                                            Text="{DynamicResource ReadFullDialog}"
                                             TextColor="#4F50C8" />
 
                                         <Grid
@@ -469,7 +469,7 @@
                                                 Samples="{Binding WaveformSamples}"
                                                 SeekCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SeekRecordingCommand}"
                                                 SeekCommandParameter="{Binding .}"
-                                                SemanticProperties.Description="Recording waveform. Click to seek."
+                                        SemanticProperties.Description="{DynamicResource WaveformSeekDescription}"
                                                 VerticalOptions="Center" />
                                             <Label
                                                 Grid.Column="1"
@@ -530,9 +530,9 @@
                             Grid.Column="1"
                             AutomationId="CloseSavedDialogButton"
                             Command="{Binding Dialog.CloseSavedDialogCommand}"
-                            SemanticProperties.Description="Close saved dialog"
+                            SemanticProperties.Description="{DynamicResource CloseSavedDialogDescription}"
                             Style="{StaticResource SecondaryButton}"
-                            Text="Back to recordings" />
+                            Text="{DynamicResource BackToRecordings}" />
                     </Grid>
 
                     <Border
@@ -595,10 +595,10 @@
                         Grid.ColumnSpan="3"
                         Margin="0,0,0,18"
                         Spacing="4">
-                        <Label Style="{StaticResource SectionTitle}" Text="Monologue" />
+                        <Label Style="{StaticResource SectionTitle}" Text="{DynamicResource MonologueTab}" />
                         <Label
                             Style="{StaticResource MutedText}"
-                            Text="Speak freely, refine your wording and pronunciation, then hear a stronger version." />
+                            Text="{DynamicResource MonologueIntro}" />
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="14">
@@ -613,11 +613,11 @@
                                         <Label
                                             FontFamily="Segoe UI Semibold"
                                             FontSize="15"
-                                            Text="Practice take"
+                                            Text="{DynamicResource PracticeTake}"
                                             TextColor="#242635" />
                                         <Label
                                             Style="{StaticResource MutedText}"
-                                            Text="Your original audio is always preserved." />
+                                            Text="{DynamicResource OriginalAudioPreserved}" />
                                     </VerticalStackLayout>
                                     <Button
                                         Grid.Column="1"
@@ -668,38 +668,33 @@
                                     <Label
                                         FontFamily="Segoe UI Semibold"
                                         FontSize="15"
-                                        Text="What I said"
+                                        Text="{DynamicResource WhatISaid}"
                                         TextColor="#242635" />
                                     <Label
                                         Grid.Column="1"
                                         FontSize="11"
-                                        Text="Editable"
+                                        Text="{DynamicResource Editable}"
                                         TextColor="#5B5CE2" />
                                 </Grid>
                                 <Editor
                                     AutoSize="TextChanges"
                                     BackgroundColor="#F8F9FB"
                                     HeightRequest="190"
-                                    Placeholder="Your recognized text will appear here. You can correct recognition mistakes before improving it."
+                                    Placeholder="{DynamicResource RecognizedTextPlaceholder}"
                                     Text="{Binding TrainerTranscript}" />
                                 <Picker
+                                    ItemsSource="{Binding ImprovementModeNames}"
                                     SelectedIndex="{Binding ImprovementModeIndex}"
-                                    Title="Improvement style">
-                                    <Picker.Items>
-                                        <x:String>Correct only</x:String>
-                                        <x:String>Natural spoken English</x:String>
-                                        <x:String>Clear and concise</x:String>
-                                    </Picker.Items>
-                                </Picker>
+                                    Title="{DynamicResource ImprovementStyle}" />
                                 <Label
                                     FontSize="11"
-                                    Text="Improve sends only the editable text above to the selected AI provider. With local Qwen selected, text and audio stay on this PC."
+                                    Text="{DynamicResource ImprovePrivacyNote}"
                                     TextColor="#767B91" />
                                 <Button
                                     Command="{Binding ImproveTrainerTextCommand}"
                                     IsEnabled="{Binding CanImproveTrainerText}"
                                     Style="{StaticResource PrimaryButton}"
-                                    Text="Improve my wording" />
+                                    Text="{DynamicResource ImproveMyWording}" />
                                 <ActivityIndicator
                                     HorizontalOptions="Center"
                                     IsRunning="{Binding IsTrainerBusy}"
@@ -719,11 +714,11 @@
                                     <Label
                                         FontFamily="Segoe UI Semibold"
                                         FontSize="15"
-                                        Text="Pronunciation review"
+                                        Text="{DynamicResource PronunciationReview}"
                                         TextColor="#242635" />
                                     <Label
                                         Style="{StaticResource MutedText}"
-                                        Text="Word clarity and timing collected from your audio." />
+                                        Text="{DynamicResource PronunciationReviewIntro}" />
                                 </VerticalStackLayout>
 
                                 <Label
@@ -743,7 +738,7 @@
                                         <Label
                                             FontFamily="Segoe UI Semibold"
                                             FontSize="10"
-                                            Text="PHONETIC TRANSCRIPTION · IPA"
+                                            Text="{DynamicResource PhoneticTranscriptionIpa}"
                                             TextColor="#6668B8" />
                                         <Label
                                             FontFamily="Segoe UI"
@@ -816,7 +811,7 @@
                                             WidthRequest="10" />
                                         <Label
                                             FontSize="10"
-                                            Text="Clear"
+                                            Text="{DynamicResource ClearRating}"
                                             TextColor="#686D80"
                                             VerticalTextAlignment="Center" />
                                     </HorizontalStackLayout>
@@ -829,7 +824,7 @@
                                             WidthRequest="10" />
                                         <Label
                                             FontSize="10"
-                                            Text="Review"
+                                            Text="{DynamicResource ReviewRating}"
                                             TextColor="#686D80"
                                             VerticalTextAlignment="Center" />
                                     </HorizontalStackLayout>
@@ -842,7 +837,7 @@
                                             WidthRequest="10" />
                                         <Label
                                             FontSize="10"
-                                            Text="Likely unclear"
+                                            Text="{DynamicResource UnclearRating}"
                                             TextColor="#686D80"
                                             VerticalTextAlignment="Center" />
                                     </HorizontalStackLayout>
@@ -869,16 +864,16 @@
                                     <Label
                                         FontFamily="Segoe UI Semibold"
                                         FontSize="15"
-                                        Text="Better version"
+                                        Text="{DynamicResource BetterVersion}"
                                         TextColor="#242635" />
                                     <Label
                                         Style="{StaticResource MutedText}"
-                                        Text="Review every change before creating audio." />
+                                        Text="{DynamicResource BetterVersionIntro}" />
                                 </VerticalStackLayout>
                                 <Label
                                     Grid.Column="1"
                                     FontSize="11"
-                                    Text="Editable"
+                                    Text="{DynamicResource Editable}"
                                     TextColor="#5B5CE2" />
                             </Grid>
 
@@ -886,7 +881,7 @@
                                 AutoSize="TextChanges"
                                 BackgroundColor="#F8F9FB"
                                 HeightRequest="270"
-                                Placeholder="The corrected and polished version will appear here."
+                                    Placeholder="{DynamicResource BetterVersionPlaceholder}"
                                 Text="{Binding TrainerImprovedText}" />
 
                             <Border
@@ -899,7 +894,7 @@
                                     <Label
                                         FontFamily="Segoe UI Semibold"
                                         FontSize="12"
-                                        Text="What changed"
+                                        Text="{DynamicResource WhatChanged}"
                                         TextColor="#35486A" />
                                     <VerticalStackLayout
                                         BindableLayout.ItemsSource="{Binding TrainerChangeNotes}"
@@ -938,7 +933,7 @@
                                     <Label
                                         FontFamily="Segoe UI Semibold"
                                         FontSize="12"
-                                        Text="Meaning needs review"
+                                                Text="{DynamicResource MeaningNeedsReview}"
                                         TextColor="#815B16" />
                                     <VerticalStackLayout
                                         BindableLayout.ItemsSource="{Binding TrainerAmbiguityNotes}"
@@ -959,18 +954,18 @@
                                 <Picker
                                     ItemsSource="{Binding TrainerVoiceNames}"
                                     SelectedIndex="{Binding SelectedTrainerVoiceIndex}"
-                                    Title="Voice" />
+                                    Title="{DynamicResource Voice}" />
                                 <Picker
                                     Grid.Column="1"
                                     ItemsSource="{Binding TrainerSpeedNames}"
                                     SelectedIndex="{Binding TrainerSpeedIndex}"
-                                    Title="Pace" />
+                                    Title="{DynamicResource Pace}" />
                                 <Button
                                     Grid.Column="2"
                                     Command="{Binding SynthesizeTrainerTextCommand}"
                                     IsEnabled="{Binding CanSynthesizeTrainerText}"
                                     Style="{StaticResource PrimaryButton}"
-                                    Text="Create better audio" />
+                                    Text="{DynamicResource CreateBetterAudio}" />
                             </Grid>
 
                             <Border
@@ -993,7 +988,7 @@
                                     <Label
                                         Grid.Column="2"
                                         FontSize="11"
-                                        Text="Local WAV"
+                                        Text="{DynamicResource LocalWav}"
                                         TextColor="#4F50C8" />
                                 </Grid>
                             </Border>
@@ -1015,10 +1010,10 @@
                     ColumnDefinitions="*,Auto"
                     ColumnSpacing="10">
                     <VerticalStackLayout Spacing="4">
-                        <Label Style="{StaticResource SectionTitle}" Text="AI Dialog" />
+                        <Label Style="{StaticResource SectionTitle}" Text="{DynamicResource DialogTab}" />
                         <Label
                             Style="{StaticResource MutedText}"
-                            Text="Speak naturally. Buddy detects your pause, keeps the full session context, and answers out loud automatically." />
+                            Text="{DynamicResource DialogIntro}" />
                     </VerticalStackLayout>
                     <Button
                         Grid.Column="1"
@@ -1026,7 +1021,7 @@
                         IsEnabled="{Binding Dialog.CanStart}"
                         IsVisible="{Binding Dialog.IsInactive}"
                         Style="{StaticResource PrimaryButton}"
-                        Text="Start dialog" />
+                        Text="{DynamicResource StartDialog}" />
                     <Button
                         Grid.Column="1"
                         Command="{Binding Dialog.FinishDialogCommand}"
@@ -1049,11 +1044,11 @@
                                 <Label
                                     FontFamily="Segoe UI Semibold"
                                     FontSize="15"
-                                    Text="Conversation"
+                                    Text="{DynamicResource Conversation}"
                                     TextColor="#242635" />
                                 <Label
                                     Style="{StaticResource MutedText}"
-                                    Text="Every turn is persisted before the next AI request; each answer speaks automatically." />
+                                    Text="{DynamicResource DialogPersistenceNote}" />
                             </VerticalStackLayout>
                             <Border
                                 Grid.Column="1"
@@ -1095,7 +1090,7 @@
                                     <Label
                                         HorizontalTextAlignment="Center"
                                         Style="{StaticResource MutedText}"
-                                        Text="Start the dialog and speak your first thought." />
+                                        Text="{DynamicResource DialogEmptyHint}" />
                                 </VerticalStackLayout>
                             </CollectionView.EmptyView>
                             <CollectionView.ItemTemplate>
@@ -1136,7 +1131,7 @@
                                                 Padding="11,9"
                                                 BackgroundColor="#FFFDF5"
                                                 IsVisible="{Binding IsWordLookupVisible}"
-                                                SemanticProperties.Description="Word pronunciation and contextual meaning"
+                                                SemanticProperties.Description="{DynamicResource WordHelpTitle}"
                                                 Stroke="#DED8B7"
                                                 StrokeShape="RoundRectangle 9">
                                                 <VerticalStackLayout Spacing="6">
@@ -1194,7 +1189,7 @@
                                                     <Label
                                                         FontSize="11"
                                                         IsVisible="{Binding IsWordPhoneticLoading}"
-                                                        Text="Preparing phonetics locally…"
+                                                        Text="{DynamicResource PreparingPhonetics}"
                                                         TextColor="#777B8D" />
                                                     <Label
                                                         FontSize="12"
@@ -1205,7 +1200,7 @@
                                                     <Label
                                                         FontSize="11"
                                                         IsVisible="{Binding IsWordDefinitionLoading}"
-                                                        Text="Looking up its meaning in this sentence…"
+                                                        Text="{DynamicResource LookingUpMeaning}"
                                                         TextColor="#777B8D" />
                                                     <Label
                                                         FontSize="11"
@@ -1226,7 +1221,7 @@
                                                         <Label
                                                             FontFamily="Segoe UI Semibold"
                                                             FontSize="10"
-                                                            Text="PRONUNCIATION"
+                                                            Text="{DynamicResource PronunciationLabel}"
                                                             TextColor="#6668B8" />
                                                         <Label
                                                             Grid.Column="1"
@@ -1307,7 +1302,7 @@
                                 HorizontalOptions="Start"
                                 InputTransparent="True"
                                 IsVisible="{Binding Dialog.IsGeneratingReply}"
-                                SemanticProperties.Description="The AI model is generating a reply"
+                                        SemanticProperties.Description="{DynamicResource AiGeneratingDescription}"
                                 Stroke="#DAD8FF"
                                 StrokeShape="RoundRectangle 12"
                                 VerticalOptions="End"
@@ -1322,7 +1317,7 @@
                                     <Label
                                         FontFamily="Segoe UI Semibold"
                                         FontSize="11"
-                                        Text="Model is generating a reply…"
+                                        Text="{DynamicResource ModelGenerating}"
                                         TextColor="#4F50C8"
                                         VerticalTextAlignment="Center" />
                                 </HorizontalStackLayout>
@@ -1335,7 +1330,7 @@
                                 HorizontalOptions="End"
                                 IsVisible="False"
                                 Style="{StaticResource PrimaryButton}"
-                                Text="↓ Latest"
+                                Text="{DynamicResource Latest}"
                                 VerticalOptions="End" />
                         </Grid>
 
@@ -1362,12 +1357,12 @@
                                     <Label
                                         FontFamily="Segoe UI Semibold"
                                         FontSize="15"
-                                        Text="Live transcription"
+                                        Text="{DynamicResource LiveTranscription}"
                                         TextColor="#242635" />
                                     <Label
                                         Grid.Column="1"
                                         FontSize="11"
-                                        Text="Local Whisper"
+                                        Text="{DynamicResource LocalWhisper}"
                                         TextColor="#327C5A" />
                                 </Grid>
                                 <Editor
@@ -1375,12 +1370,12 @@
                                     BackgroundColor="#F8F9FB"
                                     HeightRequest="110"
                                     IsReadOnly="True"
-                                    Placeholder="Your current sentence will update here every few seconds…"
+                                    Placeholder="{DynamicResource LiveTranscriptPlaceholder}"
                                     Text="{Binding Dialog.LiveTranscript, Mode=OneWay}" />
                                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
                                     <Label
                                         FontSize="11"
-                                        Text="Allowed pause"
+                                        Text="{DynamicResource AllowedPause}"
                                         TextColor="#656B7F"
                                         VerticalTextAlignment="Center" />
                                     <Picker
@@ -1389,7 +1384,7 @@
                                         HorizontalOptions="Fill"
                                         ItemsSource="{Binding Dialog.AllowedPauseOptions}"
                                         SelectedIndex="{Binding Dialog.SelectedPauseIndex, Mode=TwoWay}"
-                                        Title="Choose pause before sending" />
+                                        Title="{DynamicResource ChoosePause}" />
                                 </Grid>
                                 <Label
                                     FontSize="11"
@@ -1416,9 +1411,9 @@
                                                 Command="{Binding Dialog.KeepTalkingCommand}"
                                                 IsEnabled="{Binding Dialog.CanPostponeSending}"
                                                 Padding="9,3"
-                                                SemanticProperties.Description="Reset the silence countdown and keep the current thought open"
+                                                SemanticProperties.Description="{DynamicResource ResetSilenceDescription}"
                                                 Style="{StaticResource QuietButton}"
-                                                Text="Reset · keep talking" />
+                                                Text="{DynamicResource ResetKeepTalking}" />
                                         </Grid>
                                         <ProgressBar
                                             AutomationId="DialogSilenceProgressBar"
@@ -1429,7 +1424,7 @@
                                 </Border>
                                 <Label
                                     FontSize="10"
-                                    Text="Microphone level"
+                                    Text="{DynamicResource MicrophoneLevel}"
                                     TextColor="#777B8D" />
                                 <ProgressBar
                                     HeightRequest="4"
@@ -1440,13 +1435,13 @@
                                         Command="{Binding Dialog.SendNowCommand}"
                                         IsEnabled="{Binding Dialog.CanSendNow}"
                                         Style="{StaticResource SecondaryButton}"
-                                        Text="Send now" />
+                                        Text="{DynamicResource SendNow}" />
                                     <Button
                                         Grid.Column="1"
                                         Command="{Binding Dialog.RetryAnswerCommand}"
                                         IsEnabled="{Binding Dialog.CanRetryAnswer}"
                                         Style="{StaticResource SecondaryButton}"
-                                        Text="Retry answer" />
+                                        Text="{DynamicResource RetryAnswer}" />
                                 </Grid>
                             </VerticalStackLayout>
                         </Border>
@@ -1460,12 +1455,12 @@
                                 <Label
                                     FontFamily="Segoe UI Semibold"
                                     FontSize="12"
-                                    Text="How context works"
+                                    Text="{DynamicResource HowContextWorks}"
                                     TextColor="#35486A" />
                                 <Label
                                     FontSize="11"
                                     LineBreakMode="WordWrap"
-                                    Text="Buddy stores every turn locally and gives the selected AI provider the complete ordered session history. Earlier turns are never silently dropped."
+                                    Text="{DynamicResource ContextExplanation}"
                                     TextColor="#52627E" />
                             </VerticalStackLayout>
                         </Border>
@@ -1478,7 +1473,7 @@
                             <Label
                                 FontSize="11"
                                 LineBreakMode="WordWrap"
-                                    Text="Answers play automatically, so headphones are recommended. Microphone audio, VAD, transcription, and generated voice stay local. With Qwen selected, dialog text and word definitions are local too; DeepSeek sends only the requested text to its cloud API."
+                                    Text="{DynamicResource DialogPrivacyNote}"
                                 TextColor="#815B16" />
                         </Border>
                     </VerticalStackLayout>
@@ -1502,11 +1497,11 @@
                                 <Label
                                     FontFamily="Segoe UI Semibold"
                                     FontSize="22"
-                                    Text="Settings"
+                                    Text="{DynamicResource Settings}"
                                     TextColor="#1D1F2C" />
                                 <Label
                                     Style="{StaticResource MutedText}"
-                                    Text="Local models, devices, privacy and provider keys." />
+                                    Text="{DynamicResource SettingsIntro}" />
                             </VerticalStackLayout>
                             <Button
                                 Grid.Column="1"
@@ -1522,12 +1517,33 @@
                             <Label
                                 FontFamily="Segoe UI Semibold"
                                 FontSize="14"
-                                Text="Microphone"
+                                Text="{DynamicResource InterfaceLanguage}"
+                                TextColor="#292B39" />
+                            <Picker
+                                ItemsSource="{Binding Settings.InterfaceLanguageNames}"
+                                SelectedIndex="{Binding Settings.SelectedInterfaceLanguageIndex}" />
+                            <Label
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="14"
+                                Text="{DynamicResource DialogLanguage}"
+                                TextColor="#292B39" />
+                            <Picker
+                                ItemsSource="{Binding Settings.DialogLanguageNames}"
+                                SelectedIndex="{Binding Settings.SelectedDialogLanguageIndex}" />
+                        </VerticalStackLayout>
+
+                        <BoxView HeightRequest="1" BackgroundColor="#E7E9EF" />
+
+                        <VerticalStackLayout Spacing="8">
+                            <Label
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="14"
+                                Text="{DynamicResource Microphone}"
                                 TextColor="#292B39" />
                             <Picker
                                 ItemsSource="{Binding Settings.MicrophoneNames}"
                                 SelectedIndex="{Binding Settings.SelectedMicrophoneIndex}"
-                                Title="Recording microphone" />
+                                Title="{DynamicResource RecordingMicrophone}" />
                             <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
                                 <ProgressBar
                                     HeightRequest="5"
@@ -1544,13 +1560,13 @@
                                     Grid.Column="2"
                                     Command="{Binding Settings.SaveMicrophoneCommand}"
                                     Style="{StaticResource SecondaryButton}"
-                                    Text="Use" />
+                                    Text="{DynamicResource Use}" />
                             </Grid>
                             <Button
                                 Command="{Binding Settings.TestMicrophoneCancelCommand}"
                                 IsVisible="{Binding Settings.IsTestingMicrophone}"
                                 Style="{StaticResource QuietButton}"
-                                Text="Stop test" />
+                                Text="{DynamicResource StopTest}" />
                             <Grid ColumnDefinitions="*,Auto">
                                 <Label
                                     FontSize="11"
@@ -1560,11 +1576,11 @@
                                     Grid.Column="1"
                                     Command="{Binding Settings.RefreshMicrophonesCommand}"
                                     Style="{StaticResource QuietButton}"
-                                    Text="Refresh" />
+                                    Text="{DynamicResource Refresh}" />
                             </Grid>
                             <Label
                                 Style="{StaticResource MutedText}"
-                                Text="Buddy records this microphone in shared mode, so meeting apps can use it at the same time." />
+                                Text="{DynamicResource MicrophoneSharedNote}" />
                         </VerticalStackLayout>
 
                         <BoxView HeightRequest="1" BackgroundColor="#E7E9EF" />
@@ -1573,13 +1589,13 @@
                             <Label
                                 FontFamily="Segoe UI Semibold"
                                 FontSize="14"
-                                Text="Speaker"
+                                Text="{DynamicResource Speaker}"
                                 TextColor="#292B39" />
                             <Picker
                                 AutomationId="OutputDevicePicker"
                                 ItemsSource="{Binding Settings.OutputNames}"
                                 SelectedIndex="{Binding Settings.SelectedOutputIndex}"
-                                Title="AI answer speaker" />
+                                Title="{DynamicResource AiAnswerSpeaker}" />
                             <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
                                 <Label
                                     FontSize="11"
@@ -1599,18 +1615,18 @@
                                     AutomationId="SaveOutputButton"
                                     Command="{Binding Settings.SaveOutputCommand}"
                                     Style="{StaticResource SecondaryButton}"
-                                    Text="Use" />
+                                    Text="{DynamicResource Use}" />
                             </Grid>
                             <Grid ColumnDefinitions="*,Auto">
                                 <Label
                                     Style="{StaticResource MutedText}"
-                                    Text="AI replies, replay, recordings, and trainer audio use this speaker."
+                                    Text="{DynamicResource SpeakerNote}"
                                     VerticalTextAlignment="Center" />
                                 <Button
                                     Grid.Column="1"
                                     Command="{Binding Settings.RefreshOutputsCommand}"
                                     Style="{StaticResource QuietButton}"
-                                    Text="Refresh" />
+                                    Text="{DynamicResource Refresh}" />
                             </Grid>
                         </VerticalStackLayout>
 
@@ -1620,7 +1636,7 @@
                             <Label
                                 FontFamily="Segoe UI Semibold"
                                 FontSize="14"
-                                Text="Local storage"
+                                Text="{DynamicResource LocalStorage}"
                                 TextColor="#292B39" />
                             <Border
                                 Padding="12,10"
@@ -1635,7 +1651,7 @@
                             </Border>
                             <Label
                                 Style="{StaticResource MutedText}"
-                                Text="Audio and transcripts stay here unless you explicitly use a cloud action." />
+                                Text="{DynamicResource LocalStorageNote}" />
                         </VerticalStackLayout>
 
                         <BoxView HeightRequest="1" BackgroundColor="#E7E9EF" />
@@ -1644,7 +1660,7 @@
                             <Label
                                 FontFamily="Segoe UI Semibold"
                                 FontSize="14"
-                                Text="AI language provider"
+                                Text="{DynamicResource AiLanguageProvider}"
                                 TextColor="#292B39" />
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                                 <Picker
@@ -1656,7 +1672,7 @@
                                     AutomationId="UseLanguageProviderButton"
                                     Command="{Binding Settings.SaveLanguageProviderCommand}"
                                     Style="{StaticResource PrimaryButton}"
-                                    Text="Use selected" />
+                                    Text="{DynamicResource UseSelected}" />
                             </Grid>
                             <Label
                                 Style="{StaticResource MutedText}"
@@ -1712,18 +1728,18 @@
                                         Command="{Binding Settings.UnloadQwenCommand}"
                                         IsEnabled="{Binding Settings.CanUnloadQwen}"
                                         Style="{StaticResource QuietButton}"
-                                        Text="Unload" />
+                                        Text="{DynamicResource Unload}" />
                                     <Button
                                         Grid.Column="3"
                                         Command="{Binding Settings.LoadQwenCancelCommand}"
                                         IsVisible="{Binding Settings.IsManagingQwen}"
                                         Style="{StaticResource QuietButton}"
-                                        Text="Cancel" />
+                                        Text="{DynamicResource Cancel}" />
                                 </Grid>
                             </Border>
                             <Label
                                 FontSize="11"
-                                Text="Selecting Qwen starts a resumable, SHA-256-verified setup automatically. Load warms it now; Unload releases its RAM and VRAM."
+                                Text="{DynamicResource QwenSetupNote}"
                                 TextColor="#64697B" />
                         </VerticalStackLayout>
 
@@ -1733,26 +1749,26 @@
                             <Label
                                 FontFamily="Segoe UI Semibold"
                                 FontSize="14"
-                                Text="Cloud provider keys"
+                                Text="{DynamicResource CloudProviderKeys}"
                                 TextColor="#292B39" />
                             <Label
                                 Style="{StaticResource MutedText}"
-                                Text="Stored using Windows Current User protection. Existing values are never displayed." />
+                                Text="{DynamicResource ProtectedKeysNote}" />
                             <Label
                                 FontSize="11"
-                                Text="Buddy proxy access is included in release builds and has a shared quota. You can replace it with another proxy key, use your own DeepSeek key directly, or keep all language work local with Qwen."
+                                Text="{DynamicResource ProxyAccessNote}"
                                 TextColor="#815B16" />
 
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
                                 <Entry
                                     IsPassword="True"
-                                    Placeholder="Buddy proxy key (optional override)"
+                                    Placeholder="{DynamicResource ProxyKeyPlaceholder}"
                                     Text="{Binding Settings.ProxyApiKey}" />
                                 <Button
                                     Grid.Column="1"
                                     Command="{Binding Settings.RemoveProxyKeyCommand}"
                                     Style="{StaticResource QuietButton}"
-                                    Text="Use included" />
+                                    Text="{DynamicResource UseIncluded}" />
                                 <Label
                                     Grid.Row="1"
                                     FontSize="10"
@@ -1763,13 +1779,13 @@
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
                                 <Entry
                                     IsPassword="True"
-                                    Placeholder="DeepSeek API key"
+                                    Placeholder="{DynamicResource DeepSeekKey}"
                                     Text="{Binding Settings.DeepSeekApiKey}" />
                                 <Button
                                     Grid.Column="1"
                                     Command="{Binding Settings.RemoveDeepSeekKeyCommand}"
                                     Style="{StaticResource QuietButton}"
-                                    Text="Remove" />
+                                    Text="{DynamicResource Remove}" />
                                 <Label
                                     Grid.Row="1"
                                     FontSize="10"
@@ -1780,13 +1796,13 @@
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
                                 <Entry
                                     IsPassword="True"
-                                    Placeholder="Kimi / Moonshot API key"
+                                    Placeholder="{DynamicResource KimiKeyPlaceholder}"
                                     Text="{Binding Settings.KimiApiKey}" />
                                 <Button
                                     Grid.Column="1"
                                     Command="{Binding Settings.RemoveKimiKeyCommand}"
                                     Style="{StaticResource QuietButton}"
-                                    Text="Remove" />
+                                    Text="{DynamicResource Remove}" />
                                 <Label
                                     Grid.Row="1"
                                     FontSize="10"
@@ -1797,13 +1813,13 @@
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
                                 <Entry
                                     IsPassword="True"
-                                    Placeholder="OpenAI API key (optional)"
+                                    Placeholder="{DynamicResource OpenAiKeyPlaceholder}"
                                     Text="{Binding Settings.OpenAiApiKey}" />
                                 <Button
                                     Grid.Column="1"
                                     Command="{Binding Settings.RemoveOpenAiKeyCommand}"
                                     Style="{StaticResource QuietButton}"
-                                    Text="Remove" />
+                                    Text="{DynamicResource Remove}" />
                                 <Label
                                     Grid.Row="1"
                                     FontSize="10"
@@ -1814,7 +1830,7 @@
                             <Button
                                 Command="{Binding Settings.SaveProviderKeysCommand}"
                                 Style="{StaticResource PrimaryButton}"
-                                Text="Save provided keys" />
+                                Text="{DynamicResource SaveProvidedKeys}" />
                             <Label
                                 FontSize="11"
                                 Text="{Binding Settings.SaveStatus}"
@@ -1827,7 +1843,7 @@
                             <Label
                                 FontFamily="Segoe UI Semibold"
                                 FontSize="14"
-                                Text="Local speech models"
+                                Text="{DynamicResource LocalSpeechModels}"
                                 TextColor="#292B39" />
                             <Border
                                 Padding="12"
@@ -1868,7 +1884,7 @@
                                             Command="{Binding Settings.DownloadWhisperCancelCommand}"
                                             IsVisible="{Binding Settings.IsDownloadingWhisper}"
                                             Style="{StaticResource QuietButton}"
-                                            Text="Pause" />
+                                            Text="{DynamicResource Pause}" />
                                     </VerticalStackLayout>
                                 </Grid>
                             </Border>
@@ -1881,7 +1897,7 @@
                                     <Label
                                         FontFamily="Segoe UI Semibold"
                                         FontSize="12"
-                                        Text="Silero voice activity detector"
+                                        Text="{DynamicResource SileroVadModel}"
                                         TextColor="#343746" />
                                     <Label
                                         FontSize="11"
@@ -1901,7 +1917,7 @@
                                     <Label
                                         FontFamily="Segoe UI Semibold"
                                         FontSize="12"
-                                        Text="Kokoro English"
+                                        Text="{DynamicResource KokoroVoices}"
                                         TextColor="#343746" />
                                     <Label
                                         Grid.Row="1"
@@ -1928,7 +1944,7 @@
                                             Command="{Binding Settings.DownloadKokoroCancelCommand}"
                                             IsVisible="{Binding Settings.IsDownloadingKokoro}"
                                             Style="{StaticResource QuietButton}"
-                                            Text="Pause" />
+                                            Text="{DynamicResource Pause}" />
                                     </VerticalStackLayout>
                                 </Grid>
                             </Border>
@@ -1965,7 +1981,7 @@
                     IsVisible="{Binding LocalSetup.IsActive}"
                     Padding="8,2"
                     Style="{StaticResource QuietButton}"
-                    Text="Pause" />
+                    Text="{DynamicResource Pause}" />
                 <Label
                     Grid.Row="1"
                     Grid.ColumnSpan="2"
@@ -1981,5 +1997,207 @@
                     ProgressColor="#5B5CE2" />
             </Grid>
         </Border>
+
+        <Grid
+            BackgroundColor="#F4F6FA"
+            IsVisible="{Binding Onboarding.IsVisible}"
+            InputTransparent="False"
+            ZIndex="1000">
+            <Border
+                Margin="28"
+                Padding="34"
+                BackgroundColor="White"
+                HorizontalOptions="Center"
+                MaximumWidthRequest="780"
+                WidthRequest="760"
+                Stroke="#E0E3EC"
+                StrokeShape="RoundRectangle 22"
+                VerticalOptions="Fill">
+                <Border.Shadow>
+                    <Shadow Brush="#22000000" Offset="0,10" Opacity="0.35" Radius="28" />
+                </Border.Shadow>
+
+                <Grid>
+                <ScrollView IsVisible="{Binding Onboarding.IsSetupStep}">
+                    <VerticalStackLayout Spacing="18">
+                        <VerticalStackLayout Spacing="5">
+                            <Label
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="29"
+                                Text="{DynamicResource OnboardingTitle}"
+                                TextColor="#171926" />
+                            <Label
+                                FontSize="14"
+                                LineBreakMode="WordWrap"
+                                Text="{DynamicResource OnboardingIntro}"
+                                TextColor="#666B7E" />
+                        </VerticalStackLayout>
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
+                            <VerticalStackLayout Spacing="6">
+                                <Label
+                                    FontFamily="Segoe UI Semibold"
+                                    FontSize="13"
+                                    Text="{DynamicResource InterfaceLanguage}" />
+                                <Picker
+                                    AutomationId="OnboardingInterfaceLanguagePicker"
+                                    IsEnabled="{Binding Onboarding.CanEdit}"
+                                    ItemsSource="{Binding Onboarding.InterfaceLanguageNames}"
+                                    SelectedIndex="{Binding Onboarding.SelectedInterfaceLanguageIndex}" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="6">
+                                <Label
+                                    FontFamily="Segoe UI Semibold"
+                                    FontSize="13"
+                                    Text="{DynamicResource DialogLanguage}" />
+                                <Picker
+                                    AutomationId="OnboardingDialogLanguagePicker"
+                                    IsEnabled="{Binding Onboarding.CanEdit}"
+                                    ItemsSource="{Binding Onboarding.DialogLanguageNames}"
+                                    SelectedIndex="{Binding Onboarding.SelectedDialogLanguageIndex}" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="13"
+                                Text="{DynamicResource ChatbotPlatform}" />
+                            <Picker
+                                AutomationId="OnboardingProviderPicker"
+                                IsEnabled="{Binding Onboarding.CanEdit}"
+                                ItemsSource="{Binding Onboarding.ProviderNames}"
+                                SelectedIndex="{Binding Onboarding.SelectedProviderIndex}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout
+                            IsVisible="{Binding Onboarding.IsTrialSelected}"
+                            Spacing="5">
+                            <Label
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="13"
+                                Text="{DynamicResource TrialCode}" />
+                            <Entry
+                                AutomationId="OnboardingTrialCodeEntry"
+                                CharacterSpacing="1.5"
+                                IsEnabled="{Binding Onboarding.CanEdit}"
+                                MaxLength="13"
+                                Placeholder="{DynamicResource TrialCodePlaceholder}"
+                                Text="{Binding Onboarding.TrialCode}" />
+                            <Label
+                                FontSize="11"
+                                IsVisible="{Binding Onboarding.HasIncludedTrialCode}"
+                                Text="{DynamicResource SetupIncludedCode}"
+                                TextColor="#777C8E" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout
+                            IsVisible="{Binding Onboarding.IsDeepSeekSelected}"
+                            Spacing="5">
+                            <Label
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="13"
+                                Text="{DynamicResource DeepSeekKey}" />
+                            <Entry
+                                AutomationId="OnboardingDeepSeekKeyEntry"
+                                IsEnabled="{Binding Onboarding.CanEdit}"
+                                IsPassword="True"
+                                Text="{Binding Onboarding.DeepSeekApiKey}" />
+                        </VerticalStackLayout>
+
+                        <Border
+                            Padding="16"
+                            BackgroundColor="#F7F8FC"
+                            Stroke="#E5E7F0"
+                            StrokeShape="RoundRectangle 14">
+                            <VerticalStackLayout Spacing="12">
+                                <Label
+                                    FontFamily="Segoe UI Semibold"
+                                    FontSize="14"
+                                    Text="{DynamicResource SetupRequiredFiles}" />
+
+                                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
+                                    <Label Text="{DynamicResource SetupWhisper}" />
+                                    <Label Grid.Column="1" FontSize="11" Text="{Binding Onboarding.WhisperStatus}" TextColor="#666B7E" />
+                                    <ProgressBar Grid.Row="1" Grid.ColumnSpan="2" Margin="0,5,0,0" Progress="{Binding Onboarding.WhisperProgress}" ProgressColor="#5B5CE2" />
+                                </Grid>
+                                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
+                                    <Label Text="{DynamicResource SetupVad}" />
+                                    <Label Grid.Column="1" FontSize="11" Text="{Binding Onboarding.VadStatus}" TextColor="#666B7E" />
+                                    <ProgressBar Grid.Row="1" Grid.ColumnSpan="2" Margin="0,5,0,0" Progress="{Binding Onboarding.VadProgress}" ProgressColor="#5B5CE2" />
+                                </Grid>
+                                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
+                                    <Label Text="{DynamicResource SetupVoice}" />
+                                    <Label Grid.Column="1" FontSize="11" Text="{Binding Onboarding.VoiceStatus}" TextColor="#666B7E" />
+                                    <ProgressBar Grid.Row="1" Grid.ColumnSpan="2" Margin="0,5,0,0" Progress="{Binding Onboarding.VoiceProgress}" ProgressColor="#5B5CE2" />
+                                </Grid>
+                                <Grid
+                                    IsVisible="{Binding Onboarding.ShouldShowQwenProgress}"
+                                    RowDefinitions="Auto,Auto"
+                                    ColumnDefinitions="*,Auto">
+                                    <Label Text="{DynamicResource SetupQwen}" />
+                                    <Label Grid.Column="1" FontSize="11" Text="{Binding Onboarding.QwenStatus}" TextColor="#666B7E" />
+                                    <ProgressBar Grid.Row="1" Grid.ColumnSpan="2" Margin="0,5,0,0" Progress="{Binding Onboarding.QwenProgress}" ProgressColor="#5B5CE2" />
+                                </Grid>
+                                <Label
+                                    FontSize="11"
+                                    IsVisible="{Binding Onboarding.IsQwenSelected}"
+                                    LineBreakMode="WordWrap"
+                                    Text="{DynamicResource SetupQwenNotice}"
+                                    TextColor="#7B5A18" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Label
+                            FontSize="12"
+                            IsVisible="{Binding Onboarding.HasError}"
+                            LineBreakMode="WordWrap"
+                            Text="{Binding Onboarding.StatusMessage}"
+                            TextColor="#B13B3B" />
+                        <Label
+                            FontSize="12"
+                            IsVisible="{Binding Onboarding.IsInstalling}"
+                            Text="{Binding Onboarding.StatusMessage}"
+                            TextColor="#5B5CE2" />
+                        <Button
+                            AutomationId="OnboardingSetupButton"
+                            Command="{Binding Onboarding.RunSetupCommand}"
+                            Style="{StaticResource PrimaryButton}"
+                            Text="{Binding Onboarding.SetupButtonText}" />
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <VerticalStackLayout
+                    HorizontalOptions="Center"
+                    IsVisible="{Binding Onboarding.IsCompletionStep}"
+                    MaximumWidthRequest="560"
+                    Spacing="14"
+                    VerticalOptions="Center">
+                    <Label
+                        FontSize="62"
+                        HorizontalTextAlignment="Center"
+                        Text="{DynamicResource SetupParty}" />
+                    <Label
+                        FontFamily="Segoe UI Semibold"
+                        FontSize="31"
+                        HorizontalTextAlignment="Center"
+                        Text="{DynamicResource SetupDoneTitle}"
+                        TextColor="#171926" />
+                    <Label
+                        FontSize="16"
+                        HorizontalTextAlignment="Center"
+                        LineBreakMode="WordWrap"
+                        Text="{DynamicResource SetupDoneInstruction}"
+                        TextColor="#626779" />
+                    <Button
+                        AutomationId="OnboardingFinishButton"
+                        Command="{Binding Onboarding.FinishCommand}"
+                        Margin="0,12,0,0"
+                        Style="{StaticResource PrimaryButton}"
+                        Text="{DynamicResource SetupFinish}" />
+                </VerticalStackLayout>
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </ContentPage>

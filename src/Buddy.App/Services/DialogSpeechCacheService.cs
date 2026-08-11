@@ -10,22 +10,24 @@ namespace Buddy.App.Services;
 
 public sealed class DialogSpeechCacheService : IDisposable
 {
-    private const string PreferredVoiceId = "af_heart";
     private const float SpeechSpeed = 1.0f;
     private const long MaximumCacheBytes = 512L * 1024 * 1024;
     private const long TrimmedCacheBytes = 448L * 1024 * 1024;
 
     private readonly ISpeechSynthesisService _synthesis;
     private readonly BuddyDataPaths _paths;
+    private readonly LanguagePreferences _languages;
     private readonly SemaphoreSlim _gate = new(1, 1);
     private bool _disposed;
 
     public DialogSpeechCacheService(
         ISpeechSynthesisService synthesis,
-        BuddyDataPaths paths)
+        BuddyDataPaths paths,
+        LanguagePreferences languages)
     {
         _synthesis = synthesis ?? throw new ArgumentNullException(nameof(synthesis));
         _paths = paths ?? throw new ArgumentNullException(nameof(paths));
+        _languages = languages ?? throw new ArgumentNullException(nameof(languages));
     }
 
     public async Task<string> GetOrCreateAsync(
@@ -49,9 +51,9 @@ public sealed class DialogSpeechCacheService : IDisposable
             IReadOnlyList<SpeechVoice> voices = await _synthesis
                 .GetVoicesAsync(cancellationToken)
                 .ConfigureAwait(false);
-            SpeechVoice? voice = voices.FirstOrDefault(
-                    item => item.Id == PreferredVoiceId)
-                ?? (voices.Count > 0 ? voices[0] : null);
+            SpeechVoice? voice = SpeechVoiceSelector.FindPreferred(
+                voices,
+                _languages.DialogLanguage);
             if (voice is null)
             {
                 throw new InvalidOperationException(
@@ -98,7 +100,7 @@ public sealed class DialogSpeechCacheService : IDisposable
     {
         string cacheIdentity = string.Join(
             '\n',
-            KokoroSpeechSynthesisService.SynthesisVersion,
+            LocalSpeechSynthesisService.SynthesisVersion,
             MarkdownTextProcessor.SpeechNormalizationVersion,
             voiceId,
             SpeechSpeed.ToString("R", CultureInfo.InvariantCulture),

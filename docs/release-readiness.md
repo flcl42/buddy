@@ -1,6 +1,6 @@
-# Buddy 0.1 release readiness
+# Chitchat Buddy 0.2 release readiness
 
-Updated: 2026-08-10
+Updated: 2026-08-11
 
 This record separates the working product from later expansion items in the
 broader product specification.
@@ -8,8 +8,23 @@ broader product specification.
 ## Verified in this build
 
 - Debug and Release MAUI builds complete with zero warnings.
-- 138 automated tests pass across App presentation, Core,
+- 150 automated tests pass across App presentation, Core,
   Persistence, Language, Proxy, and Integration.
+- A real clean-state first run passed the blocking localized setup flow. The
+  interface changed to Belarusian without restarting, every dependency status
+  changed language in place, a lowercase trial code normalized to the required
+  `AAAAAA-BBBBBB` shape, and the UI stayed responsive while 1,624,555,275-byte
+  Whisper, 885,098-byte Silero, and 325,508,342-byte Kokoro artifacts downloaded
+  to `H:\Buddy\models` and received verification stamps. The localized party
+  completion screen opened the default AI Dialog workspace with a selected
+  three-second pause.
+- A final clean release run held the visible included-trial selection stable
+  while localized Picker items refreshed, completed setup in 583 ms, and left
+  an existing 2,954,887,168-byte resumable Qwen partial download untouched.
+- Explicit tray exit no longer awaits dialog finalization, transcription, model
+  shutdown, or save completion. It arms the recovery-safe one-second process
+  watchdog before requesting normal MAUI shutdown. A real installed tray-menu
+  invocation exited the process in 117 ms.
 - Capped Buddy DeepSeek access is the default when no explicit provider setting
   exists. Settings persists a choice among the proxy, direct DeepSeek, and local
   Qwen without a schema migration. Selecting Qwen starts resumable verified
@@ -273,7 +288,7 @@ broader product specification.
 - The application recovers pending processing jobs after restart.
 - Provider keys are DPAPI-protected and private content is absent from startup
   diagnostics.
-- The 269.2 MiB self-contained x64 publish contains exactly one file, installs
+- The 270.3 MiB self-contained x64 publish contains exactly one file, installs
   atomically to `C:\Programs\Buddy.exe`, includes exactly four curated Kokoro
   voices, excludes foreign Whisper runtimes, and launches through its Start
   Menu shortcut without relying on the machine-wide .NET runtime.
@@ -287,9 +302,9 @@ broader product specification.
 
 ## Packaging boundary
 
-The installed executable is `C:\Programs\Buddy.exe`, version 0.1.0. Its
+The installed executable is `C:\Programs\Buddy.exe`, version 0.2.0. Its
 installed SHA-256 is
-`F9CBBEBA7B30D8A529A65BDE99899F95135998651321C24432BA5AB3AD5E9928` and
+`12DB5832CB2F344D310A8E39C269A760ACC3B7D2E024ACA71287F0A07F086E95` and
 matches the staged publish. This personal build is intentionally unpackaged and
 unsigned; a public release still requires a trusted code-signing certificate
 and a distribution decision compatible with the bundled GPL-3.0-or-later
@@ -297,7 +312,7 @@ eSpeak NG runtime. See [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md).
 
 ## Release scope
 
-Buddy 0.1 covers the requested recording plus the unified Speak workspace's
+Chitchat Buddy 0.2 covers the requested recording plus the unified Speak workspace's
 Monologue and persistent AI Dialog loops. These broader specification items
 remain later-stage work and are not presented as implemented:
 

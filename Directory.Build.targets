@@ -19,7 +19,7 @@
           Condition="Exists('$(OutputPath)voices')">
     <ItemGroup>
       <UnusedKokoroVoice Include="$(OutputPath)voices\*.npy"
-                         Exclude="$(OutputPath)voices\af_heart.npy;$(OutputPath)voices\am_michael.npy;$(OutputPath)voices\bf_emma.npy;$(OutputPath)voices\bm_george.npy" />
+                         Exclude="$(OutputPath)voices\af_heart.npy;$(OutputPath)voices\am_michael.npy;$(OutputPath)voices\bf_emma.npy;$(OutputPath)voices\bm_george.npy;$(OutputPath)voices\ef_dora.npy;$(OutputPath)voices\ff_siwis.npy" />
       <UnusedEspeakBinary Include="$(OutputPath)espeak\espeak-ng-linux-*.dll;$(OutputPath)espeak\espeak-ng-macos-*.dll;$(OutputPath)espeak\espeak-ng-win-arm64.dll" />
     </ItemGroup>
     <Delete Files="@(UnusedKokoroVoice);@(UnusedEspeakBinary)" />

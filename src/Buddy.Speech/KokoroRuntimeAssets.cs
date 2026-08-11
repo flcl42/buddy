@@ -8,6 +8,8 @@ internal static class KokoroRuntimeAssets
         "am_michael.npy",
         "bf_emma.npy",
         "bm_george.npy",
+        "ef_dora.npy",
+        "ff_siwis.npy",
     ];
 
     private static readonly Lazy<string> RootPath = new(

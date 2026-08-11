@@ -1,6 +1,6 @@
-#define MyAppName "Buddy"
+#define MyAppName "Chitchat Buddy"
 #ifndef MyAppVersion
-  #define MyAppVersion "0.1.0"
+  #define MyAppVersion "0.2.0"
 #endif
 
 [Setup]
@@ -14,7 +14,7 @@ AppSupportURL=https://github.com/flcl42/buddy/issues
 AppUpdatesURL=https://github.com/flcl42/buddy/releases
 VersionInfoVersion={#MyAppVersion}.0
 VersionInfoCompany=flcl42
-VersionInfoDescription=Buddy installer
+VersionInfoDescription=Chitchat Buddy installer
 VersionInfoProductName={#MyAppName}
 VersionInfoProductVersion={#MyAppVersion}
 DefaultDirName={sd}\Programs
@@ -45,17 +45,17 @@ Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 
 [Tasks]
 Name: "desktopicon"; Description: "Create a desktop shortcut"; GroupDescription: "Additional shortcuts:"; Flags: unchecked
-Name: "launch"; Description: "Launch Buddy after setup"; GroupDescription: "After installation:"; Flags: checkedonce
+Name: "launch"; Description: "Launch Chitchat Buddy after setup"; GroupDescription: "After installation:"; Flags: checkedonce
 
 [Files]
 Source: "..\artifacts\release\Buddy.exe"; DestDir: "{app}"; DestName: "Buddy.exe"; Flags: ignoreversion
 
 [Icons]
-Name: "{autoprograms}\Buddy"; Filename: "{app}\Buddy.exe"; WorkingDir: "{app}"; Comment: "Buddy speech recorder, trainer, and AI dialog"
-Name: "{autodesktop}\Buddy"; Filename: "{app}\Buddy.exe"; WorkingDir: "{app}"; Tasks: desktopicon
+Name: "{autoprograms}\Chitchat Buddy"; Filename: "{app}\Buddy.exe"; WorkingDir: "{app}"; Comment: "Chitchat Buddy speech recorder, trainer, and AI dialog"
+Name: "{autodesktop}\Chitchat Buddy"; Filename: "{app}\Buddy.exe"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\Buddy.exe"; Description: "Launch Buddy"; Flags: nowait postinstall skipifsilent; Tasks: launch
+Filename: "{app}\Buddy.exe"; Description: "Launch Chitchat Buddy"; Flags: nowait postinstall skipifsilent; Tasks: launch
 
 [Code]
 function IsBuddyRunning: Boolean;
@@ -81,6 +81,7 @@ begin
   Result := '';
   if IsBuddyRunning then
     Result :=
-      'Buddy is still running in the notification area.' + #13#10 + #13#10 +
-      'Finish and save any active recording or dialog, choose Exit Buddy from the tray menu, then run setup again.';
+      'Chitchat Buddy is still running in the notification area.' + #13#10 + #13#10 +
+      'Choose Exit Chitchat Buddy from the tray menu, then run setup again.' + #13#10 +
+      'You do not need to wait for background saving to finish.';
 end;

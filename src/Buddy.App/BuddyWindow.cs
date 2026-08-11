@@ -14,7 +14,7 @@ public sealed class BuddyWindow : Window
         : base(page)
     {
         StartupDiagnostics.Write("BuddyWindow constructor starting");
-        Title = "Buddy";
+        Title = "Chitchat Buddy";
         Width = 1_180;
         Height = 780;
         MinimumWidth = 900;

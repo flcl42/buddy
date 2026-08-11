@@ -31,6 +31,8 @@ public sealed partial class SettingsViewModel : ObservableObject
     private readonly BuddyProxyClientConfiguration _proxyConfiguration;
     private readonly RecordingCoordinator _recordingCoordinator;
     private readonly SpeechProcessingCoordinator _speechProcessing;
+    private readonly LanguagePreferences _languages;
+    private readonly UiLocalizationService _localization;
     private IReadOnlyList<AudioInputDevice> _microphones = [];
     private IReadOnlyList<AudioOutputDevice> _outputs = [];
 
@@ -48,7 +50,9 @@ public sealed partial class SettingsViewModel : ObservableObject
         LocalSetupCoordinator localSetup,
         BuddyProxyClientConfiguration proxyConfiguration,
         RecordingCoordinator recordingCoordinator,
-        SpeechProcessingCoordinator speechProcessing)
+        SpeechProcessingCoordinator speechProcessing,
+        LanguagePreferences languages,
+        UiLocalizationService localization)
     {
         ArgumentNullException.ThrowIfNull(paths);
         _secrets = secrets ?? throw new ArgumentNullException(nameof(secrets));
@@ -71,12 +75,13 @@ public sealed partial class SettingsViewModel : ObservableObject
             ?? throw new ArgumentNullException(nameof(recordingCoordinator));
         _speechProcessing = speechProcessing
             ?? throw new ArgumentNullException(nameof(speechProcessing));
+        _languages = languages ?? throw new ArgumentNullException(nameof(languages));
+        _localization = localization
+            ?? throw new ArgumentNullException(nameof(localization));
         StoragePath = paths.Root;
         QwenModelPath = _qwenRuntime.Options.ModelPath;
-        foreach (LanguageProviderChoice choice in _languageProviders.Choices)
-        {
-            LanguageProviderNames.Add(choice.DisplayName);
-        }
+        RefreshLanguageNames();
+        _localization.Changed += OnLocalizationChanged;
     }
 
     public string StoragePath { get; }
@@ -87,10 +92,20 @@ public sealed partial class SettingsViewModel : ObservableObject
 
     public ObservableCollection<string> LanguageProviderNames { get; } = [];
 
+    public ObservableCollection<string> InterfaceLanguageNames { get; } = [];
+
+    public ObservableCollection<string> DialogLanguageNames { get; } = [];
+
     public string QwenModelPath { get; }
 
     [ObservableProperty]
     public partial int SelectedLanguageProviderIndex { get; set; } = -1;
+
+    [ObservableProperty]
+    public partial int SelectedInterfaceLanguageIndex { get; set; } = -1;
+
+    [ObservableProperty]
+    public partial int SelectedDialogLanguageIndex { get; set; } = -1;
 
     [ObservableProperty]
     public partial string LanguageProviderDescription { get; set; } =
@@ -276,6 +291,12 @@ public sealed partial class SettingsViewModel : ObservableObject
         try
         {
             await _languageProviders.LoadAsync().ConfigureAwait(true);
+            SelectedInterfaceLanguageIndex = FindLanguageIndex(
+                _languages.AvailableInterfaceLanguages.Select(item => item.Id),
+                _languages.InterfaceLanguageId);
+            SelectedDialogLanguageIndex = FindLanguageIndex(
+                _languages.AvailableDialogLanguages.Select(item => item.Id),
+                _languages.DialogLanguage.Id);
             SelectedLanguageProviderIndex = _languageProviders.Choices
                 .Select((choice, index) => (choice, index))
                 .Single(item => string.Equals(
@@ -284,8 +305,8 @@ public sealed partial class SettingsViewModel : ObservableObject
                     StringComparison.Ordinal))
                 .index;
             UpdateLanguageProviderDescription();
-            LanguageProviderStatus =
-                $"Using {_languageProviders.SelectedChoice.DisplayName}.";
+            LanguageProviderStatus = FormatUsingProvider(
+                _languageProviders.ProviderId);
             ProxyStatus = await GetStatusAsync(
                 ProxySecretKey,
                 BuddyProxyLanguageProvider.EnvironmentVariable,
@@ -317,20 +338,113 @@ public sealed partial class SettingsViewModel : ObservableObject
         UpdateLanguageProviderDescription();
     }
 
+    partial void OnSelectedInterfaceLanguageIndexChanged(int value)
+    {
+        if (value < 0 || value >= _languages.AvailableInterfaceLanguages.Count)
+        {
+            return;
+        }
+
+        _ = _languages.SetInterfaceLanguageAsync(
+            _languages.AvailableInterfaceLanguages[value].Id);
+    }
+
+    partial void OnSelectedDialogLanguageIndexChanged(int value)
+    {
+        if (value < 0 || value >= _languages.AvailableDialogLanguages.Count)
+        {
+            return;
+        }
+
+        _ = _languages.SetDialogLanguageAsync(
+            _languages.AvailableDialogLanguages[value].Id);
+    }
+
+    private void OnLocalizationChanged(object? sender, EventArgs eventArgs)
+    {
+        RefreshLanguageNames();
+        UpdateLanguageProviderDescription();
+        if (SelectedLanguageProviderIndex >= 0)
+        {
+            LanguageProviderStatus = FormatUsingProvider(
+                _languageProviders.ProviderId);
+        }
+    }
+
+    private void RefreshLanguageNames()
+    {
+        UpdateChoices(
+            InterfaceLanguageNames,
+            _languages.AvailableInterfaceLanguages
+                .Select(language => language.NativeName)
+                .ToArray());
+        UpdateChoices(
+            DialogLanguageNames,
+            _languages.AvailableDialogLanguages
+                .Select(language =>
+                    _localization.Get(language.DisplayNameResourceKey))
+                .ToArray());
+        UpdateChoices(
+            LanguageProviderNames,
+            _languageProviders.Choices
+                .Select(choice => GetProviderName(choice.ProviderId))
+                .ToArray());
+    }
+
+    private static void UpdateChoices(
+        ObservableCollection<string> target,
+        string[] values)
+    {
+        if (target.Count != values.Length)
+        {
+            target.Clear();
+            foreach (string value in values)
+            {
+                target.Add(value);
+            }
+
+            return;
+        }
+
+        for (int index = 0; index < values.Length; index++)
+        {
+            if (!string.Equals(target[index], values[index], StringComparison.Ordinal))
+            {
+                target[index] = values[index];
+            }
+        }
+    }
+
+    private static int FindLanguageIndex(IEnumerable<string> ids, string selectedId)
+    {
+        int index = 0;
+        foreach (string id in ids)
+        {
+            if (string.Equals(id, selectedId, StringComparison.Ordinal))
+            {
+                return index;
+            }
+
+            index++;
+        }
+
+        return 0;
+    }
+
     [RelayCommand]
     public async Task SaveLanguageProviderAsync()
     {
         if (SelectedLanguageProviderIndex < 0
             || SelectedLanguageProviderIndex >= _languageProviders.Choices.Count)
         {
-            LanguageProviderStatus = "Choose a language provider first.";
+            LanguageProviderStatus = _localization.Get("ChooseProviderFirst");
             return;
         }
 
         LanguageProviderChoice choice =
             _languageProviders.Choices[SelectedLanguageProviderIndex];
         await _languageProviders.SelectAsync(choice.ProviderId).ConfigureAwait(true);
-        LanguageProviderStatus = $"Using {choice.DisplayName}.";
+        LanguageProviderStatus = FormatUsingProvider(choice.ProviderId);
         if (string.Equals(
                 choice.ProviderId,
                 QwenLanguageProvider.ProviderIdValue,
@@ -694,9 +808,37 @@ public sealed partial class SettingsViewModel : ObservableObject
     {
         LanguageProviderDescription = SelectedLanguageProviderIndex >= 0
             && SelectedLanguageProviderIndex < _languageProviders.Choices.Count
-            ? _languageProviders.Choices[SelectedLanguageProviderIndex].Description
-            : "Choose which model handles wording, titles, definitions, and AI Dialog answers.";
+            ? GetProviderDescription(
+                _languageProviders.Choices[SelectedLanguageProviderIndex].ProviderId)
+            : _localization.Get("ProviderChooseDescription");
     }
+
+    private string GetProviderName(string providerId) => providerId switch
+    {
+        BuddyProxyLanguageProvider.ProviderIdValue =>
+            _localization.Get("ProviderProxyName"),
+        DeepSeekLanguageProvider.ProviderIdValue =>
+            _localization.Get("ProviderDeepSeekName"),
+        QwenLanguageProvider.ProviderIdValue =>
+            _localization.Get("ProviderQwenName"),
+        _ => providerId,
+    };
+
+    private string GetProviderDescription(string providerId) => providerId switch
+    {
+        BuddyProxyLanguageProvider.ProviderIdValue =>
+            _localization.Get("ProviderProxyDescription"),
+        DeepSeekLanguageProvider.ProviderIdValue =>
+            _localization.Get("ProviderDeepSeekDescription"),
+        QwenLanguageProvider.ProviderIdValue =>
+            _localization.Get("ProviderQwenDescription"),
+        _ => _localization.Get("ProviderChooseDescription"),
+    };
+
+    private string FormatUsingProvider(string providerId) => string.Format(
+        System.Globalization.CultureInfo.CurrentCulture,
+        _localization.Get("UsingProviderFormat"),
+        GetProviderName(providerId));
 
     private async Task RefreshQwenStatusAsync(
         CancellationToken cancellationToken = default)

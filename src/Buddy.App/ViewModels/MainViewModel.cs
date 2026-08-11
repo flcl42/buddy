@@ -14,7 +14,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Buddy.App.ViewModels;
 
-public sealed partial class MainViewModel : ObservableObject
+public sealed partial class MainViewModel : ObservableObject, IDisposable
 {
     private readonly IBuddyDatabase _database;
     private readonly IRecordingRepository _recordings;
@@ -24,9 +24,11 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly IAudioPlaybackService _playback;
     private readonly ILanguageImprovementProvider _language;
     private readonly ISpeechSynthesisService _synthesis;
-    private readonly IQwenModelRuntime _qwenRuntime;
     private readonly LocalSetupCoordinator _localSetup;
+    private readonly LanguagePreferences _languages;
+    private readonly UiLocalizationService _localization;
     private readonly BuddyDataPaths _paths;
+    private readonly SemaphoreSlim _workspaceInitializationGate = new(1, 1);
     private readonly List<SpeechVoice> _trainerVoices = [];
     private Guid? _playingRecordingId;
     private Guid? _playingArtifactId;
@@ -42,6 +44,8 @@ public sealed partial class MainViewModel : ObservableObject
     private bool _trainerSourceDirty;
     private bool _trainerImprovedDirty;
     private bool _initialized;
+    private bool _workspaceInitialized;
+    private string? _trainerVoiceLanguageId;
 
     public MainViewModel(
         IBuddyDatabase database,
@@ -52,12 +56,14 @@ public sealed partial class MainViewModel : ObservableObject
         IAudioPlaybackService playback,
         ILanguageImprovementProvider language,
         ISpeechSynthesisService synthesis,
-        IQwenModelRuntime qwenRuntime,
         LocalSetupCoordinator localSetup,
+        LanguagePreferences languages,
+        UiLocalizationService localization,
         BuddyDataPaths paths,
         BuddyRuntimeState runtime,
         SettingsViewModel settings,
-        DialogViewModel dialog)
+        DialogViewModel dialog,
+        OnboardingViewModel onboarding)
     {
         _database = database ?? throw new ArgumentNullException(nameof(database));
         _recordings = recordings ?? throw new ArgumentNullException(nameof(recordings));
@@ -69,14 +75,20 @@ public sealed partial class MainViewModel : ObservableObject
         _playback = playback ?? throw new ArgumentNullException(nameof(playback));
         _language = language ?? throw new ArgumentNullException(nameof(language));
         _synthesis = synthesis ?? throw new ArgumentNullException(nameof(synthesis));
-        _qwenRuntime = qwenRuntime
-            ?? throw new ArgumentNullException(nameof(qwenRuntime));
         _localSetup = localSetup
             ?? throw new ArgumentNullException(nameof(localSetup));
+        _languages = languages ?? throw new ArgumentNullException(nameof(languages));
+        _localization = localization
+            ?? throw new ArgumentNullException(nameof(localization));
         _paths = paths ?? throw new ArgumentNullException(nameof(paths));
         Runtime = runtime ?? throw new ArgumentNullException(nameof(runtime));
         Settings = settings ?? throw new ArgumentNullException(nameof(settings));
         Dialog = dialog ?? throw new ArgumentNullException(nameof(dialog));
+        Onboarding = onboarding ?? throw new ArgumentNullException(nameof(onboarding));
+        RefreshLocalizedChoiceLists();
+        Onboarding.Completed += OnOnboardingCompleted;
+        _localization.Changed += OnLocalizationChanged;
+        _languages.Changed += OnLanguagePreferencesChanged;
         Runtime.PropertyChanged += OnRuntimePropertyChanged;
         _recordingCoordinator.LibraryChanged += OnLibraryChanged;
         _speechProcessing.LibraryChanged += OnLibraryChanged;
@@ -88,6 +100,8 @@ public sealed partial class MainViewModel : ObservableObject
     public SettingsViewModel Settings { get; }
 
     public DialogViewModel Dialog { get; }
+
+    public OnboardingViewModel Onboarding { get; }
 
     public LocalSetupCoordinator LocalSetup => _localSetup;
 
@@ -103,12 +117,9 @@ public sealed partial class MainViewModel : ObservableObject
 
     public ObservableCollection<PronunciationWordViewModel> TrainerPronunciationWords { get; } = [];
 
-    public ObservableCollection<string> TrainerSpeedNames { get; } =
-    [
-        "0.9× · relaxed",
-        "1.0× · natural",
-        "1.1× · focused",
-    ];
+    public ObservableCollection<string> ImprovementModeNames { get; } = [];
+
+    public ObservableCollection<string> TrainerSpeedNames { get; } = [];
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsRecordingsSelected))]
@@ -243,33 +254,33 @@ public sealed partial class MainViewModel : ObservableObject
     public string MeetingButtonText => Runtime.Mode switch
     {
         BuddyRuntimeMode.Recording when Runtime.ActiveRecordingKind == RecordingKind.Meeting =>
-            $"Stop & save · {FormatDuration(Runtime.RecordingElapsed)}",
+            $"{_localization.Get("StopAndSave")} · {FormatDuration(Runtime.RecordingElapsed)}",
         BuddyRuntimeMode.Recording when Runtime.ActiveRecordingKind == RecordingKind.Dialog =>
-            "Finish AI dialog first",
-        BuddyRuntimeMode.Recording => "Stop practice first",
-        BuddyRuntimeMode.Processing => "Saving…",
-        _ => "Start meeting",
+            _localization.Get("FinishAiDialogFirst"),
+        BuddyRuntimeMode.Recording => _localization.Get("StopPracticeFirst"),
+        BuddyRuntimeMode.Processing => _localization.Get("Saving"),
+        _ => _localization.Get("StartMicRecording"),
     };
 
     public string TrayRecordingMenuText => Runtime.IsRecording
-        ? "Stop and save recording"
-        : "Start meeting recording";
+        ? _localization.Get("StopAndSaveRecording")
+        : _localization.Get("StartMicRecording");
 
     public string TrainerRecordingButtonText =>
         Runtime.Mode == BuddyRuntimeMode.Recording
         && Runtime.ActiveRecordingKind == RecordingKind.Trainer
-            ? $"Stop & save · {FormatDuration(Runtime.RecordingElapsed)}"
+            ? $"{_localization.Get("StopAndSave")} · {FormatDuration(Runtime.RecordingElapsed)}"
             : Runtime.ActiveRecordingKind == RecordingKind.Dialog
-                ? "Finish AI dialog first"
+                ? _localization.Get("FinishAiDialogFirst")
             : Runtime.IsRecording
-                ? "Stop meeting first"
-                : "●  Record";
+                ? _localization.Get("StopMeetingFirst")
+                : _localization.Get("Record");
 
     public string TrainerTakeStatusText =>
         Runtime.Mode == BuddyRuntimeMode.Recording
         && Runtime.ActiveRecordingKind == RecordingKind.Trainer
             ? $"{Runtime.RecordingDeviceName} · {FormatDuration(Runtime.RecordingElapsed)}"
-            : "No take recording in progress";
+            : _localization.Get("NoTakeInProgress");
 
     [RelayCommand]
     public async Task InitializeAsync()
@@ -279,20 +290,17 @@ public sealed partial class MainViewModel : ObservableObject
             return;
         }
 
+        _initialized = true;
         IsLoading = true;
         try
         {
             await _database.InitializeAsync().ConfigureAwait(true);
-            await Settings.LoadAsync().ConfigureAwait(true);
-            await LoadTrainerVoicesAsync().ConfigureAwait(true);
-            await _recordingCoordinator
-                .RecoverInterruptedCapturesAsync()
-                .ConfigureAwait(true);
-            await Dialog.InitializeAsync().ConfigureAwait(true);
-            await _speechProcessing.StartAsync().ConfigureAwait(true);
-            await RefreshRecordingsAsync().ConfigureAwait(true);
-            await LoadLatestTrainerAsync().ConfigureAwait(true);
-            _initialized = true;
+            await _languages.LoadAsync().ConfigureAwait(true);
+            await Onboarding.InitializeAsync().ConfigureAwait(true);
+            if (!Onboarding.IsVisible)
+            {
+                await InitializeWorkspaceAsync().ConfigureAwait(true);
+            }
         }
         catch (Exception error) when (
             error is IOException
@@ -306,6 +314,55 @@ public sealed partial class MainViewModel : ObservableObject
         finally
         {
             IsLoading = false;
+        }
+    }
+
+    private async void OnOnboardingCompleted(object? sender, EventArgs eventArgs)
+    {
+        try
+        {
+            IsLoading = true;
+            await InitializeWorkspaceAsync().ConfigureAwait(true);
+        }
+        catch (Exception error) when (
+            error is IOException
+                or UnauthorizedAccessException
+                or InvalidOperationException)
+        {
+            Runtime.AttentionMessage = "Buddy could not open its local library.";
+            Runtime.Mode = BuddyRuntimeMode.Attention;
+            RecordingsMessage = error.Message;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task InitializeWorkspaceAsync()
+    {
+        await _workspaceInitializationGate.WaitAsync().ConfigureAwait(true);
+        try
+        {
+            if (_workspaceInitialized)
+            {
+                return;
+            }
+
+            await Settings.LoadAsync().ConfigureAwait(true);
+            await LoadTrainerVoicesAsync().ConfigureAwait(true);
+            await _recordingCoordinator
+                .RecoverInterruptedCapturesAsync()
+                .ConfigureAwait(true);
+            await Dialog.InitializeAsync().ConfigureAwait(true);
+            await _speechProcessing.StartAsync().ConfigureAwait(true);
+            await RefreshRecordingsAsync().ConfigureAwait(true);
+            await LoadLatestTrainerAsync().ConfigureAwait(true);
+            _workspaceInitialized = true;
+        }
+        finally
+        {
+            _workspaceInitializationGate.Release();
         }
     }
 
@@ -426,19 +483,8 @@ public sealed partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public async Task ExitApplicationAsync()
+    public void ExitApplication()
     {
-        if (Dialog.IsActive)
-        {
-            await Dialog.FinishForShutdownAsync().ConfigureAwait(true);
-        }
-        else if (_recordingCoordinator.IsRecording)
-        {
-            await _recordingCoordinator.StopAsync().ConfigureAwait(true);
-        }
-
-        await _speechProcessing.StopAsync().ConfigureAwait(true);
-        await _qwenRuntime.UnloadAsync().ConfigureAwait(true);
         _window.ExitApplication();
     }
 
@@ -498,7 +544,7 @@ public sealed partial class MainViewModel : ObservableObject
                     new ImprovementRequest(
                         TrainerTranscript.Trim(),
                         mode,
-                        "en-US",
+                        _languages.DialogLanguage.Locale,
                         [],
                         null))
                 .ConfigureAwait(true);
@@ -629,7 +675,10 @@ public sealed partial class MainViewModel : ObservableObject
             outputPath = Path.Combine(
                 directory,
                 $"trainer-generated-{artifactId:N}.wav");
-            await _localSetup.EnsureSpeechSynthesisAsync().ConfigureAwait(true);
+            if (SpeechVoiceSelector.RequiresKokoro(_languages.DialogLanguage))
+            {
+                await _localSetup.EnsureSpeechSynthesisAsync().ConfigureAwait(true);
+            }
             SpeechSynthesisResult result = await _synthesis.SynthesizeAsync(
                     revision.Text,
                     outputPath,
@@ -642,8 +691,8 @@ public sealed partial class MainViewModel : ObservableObject
                 AudioArtifactKind.TrainerGenerated,
                 _paths.ToRecordingRelativePath(result.OutputPath),
                 AudioContainer.Wave,
-                24_000,
-                1,
+                result.SampleRate,
+                result.Channels,
                 result.Duration,
                 file.Length,
                 await ComputeSha256Async(result.OutputPath).ConfigureAwait(true),
@@ -1325,9 +1374,14 @@ public sealed partial class MainViewModel : ObservableObject
         }
     }
 
-    private async Task LoadTrainerVoicesAsync()
+    private async Task LoadTrainerVoicesAsync(bool force = false)
     {
-        if (_trainerVoices.Count > 0)
+        if (!force
+            && _trainerVoices.Count > 0
+            && string.Equals(
+                _trainerVoiceLanguageId,
+                _languages.DialogLanguage.Id,
+                StringComparison.Ordinal))
         {
             return;
         }
@@ -1335,15 +1389,133 @@ public sealed partial class MainViewModel : ObservableObject
         IReadOnlyList<SpeechVoice> voices = await _synthesis
             .GetVoicesAsync()
             .ConfigureAwait(true);
-        foreach (SpeechVoice voice in voices)
+        _trainerVoices.Clear();
+        TrainerVoiceNames.Clear();
+        _trainerVoiceLanguageId = _languages.DialogLanguage.Id;
+
+        SpeechVoice? preferred = SpeechVoiceSelector.FindPreferred(
+            voices,
+            _languages.DialogLanguage);
+        string localePrefix = _languages.DialogLanguage.Locale.Split('-', 2)[0];
+        IEnumerable<SpeechVoice> suitable = voices.Where(voice =>
+            voice.Locale.StartsWith(
+                localePrefix + "-",
+                StringComparison.OrdinalIgnoreCase));
+        if (_languages.DialogLanguage.Id == "be")
+        {
+            suitable = suitable.Concat(voices.Where(voice =>
+                voice.Id.StartsWith(
+                    WindowsSpeechSynthesisService.VoiceIdPrefix,
+                    StringComparison.Ordinal)
+                && voice.Locale.StartsWith(
+                    "ru-",
+                    StringComparison.OrdinalIgnoreCase)));
+        }
+
+        IEnumerable<SpeechVoice> ordered = preferred is null
+            ? suitable
+            : new[] { preferred }.Concat(suitable);
+        foreach (SpeechVoice voice in ordered.DistinctBy(voice => voice.Id))
         {
             _trainerVoices.Add(voice);
             TrainerVoiceNames.Add(voice.DisplayName);
         }
 
-        SelectedTrainerVoiceIndex = Math.Max(
-            0,
-            _trainerVoices.FindIndex(voice => voice.Id == "af_heart"));
+        SelectedTrainerVoiceIndex = preferred is null
+            ? (_trainerVoices.Count == 0 ? -1 : 0)
+            : Math.Max(0, _trainerVoices.IndexOf(preferred));
+    }
+
+    private void OnLocalizationChanged(object? sender, EventArgs eventArgs)
+    {
+        RefreshLocalizedChoiceLists();
+        OnPropertyChanged(nameof(MeetingButtonText));
+        OnPropertyChanged(nameof(TrayRecordingMenuText));
+        OnPropertyChanged(nameof(TrainerRecordingButtonText));
+        OnPropertyChanged(nameof(TrainerTakeStatusText));
+    }
+
+    private void RefreshLocalizedChoiceLists()
+    {
+        UpdateLocalizedChoices(
+            ImprovementModeNames,
+            [
+                _localization.Get("CorrectOnly"),
+                _localization.Get("NaturalSpoken"),
+                _localization.Get("ClearConcise"),
+            ]);
+        UpdateLocalizedChoices(
+            TrainerSpeedNames,
+            [
+                _localization.Get("SpeedRelaxed"),
+                _localization.Get("SpeedNatural"),
+                _localization.Get("SpeedFocused"),
+            ]);
+    }
+
+    private static void UpdateLocalizedChoices(
+        ObservableCollection<string> target,
+        IReadOnlyList<string> values)
+    {
+        if (target.Count != values.Count)
+        {
+            target.Clear();
+            foreach (string value in values)
+            {
+                target.Add(value);
+            }
+
+            return;
+        }
+
+        for (int index = 0; index < values.Count; index++)
+        {
+            if (!string.Equals(target[index], values[index], StringComparison.Ordinal))
+            {
+                target[index] = values[index];
+            }
+        }
+    }
+
+    private void OnLanguagePreferencesChanged(object? sender, EventArgs eventArgs)
+    {
+        if (!_workspaceInitialized
+            || string.Equals(
+                _trainerVoiceLanguageId,
+                _languages.DialogLanguage.Id,
+                StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        MainThread.BeginInvokeOnMainThread(
+            async () =>
+            {
+                try
+                {
+                    await LoadTrainerVoicesAsync(force: true)
+                        .ConfigureAwait(true);
+                }
+                catch (Exception error) when (
+                    error is InvalidOperationException
+                        or IOException
+                        or UnauthorizedAccessException)
+                {
+                    TrainerStatusMessage = error.Message;
+                }
+            });
+    }
+
+    public void Dispose()
+    {
+        Onboarding.Completed -= OnOnboardingCompleted;
+        _localization.Changed -= OnLocalizationChanged;
+        _languages.Changed -= OnLanguagePreferencesChanged;
+        Runtime.PropertyChanged -= OnRuntimePropertyChanged;
+        _recordingCoordinator.LibraryChanged -= OnLibraryChanged;
+        _speechProcessing.LibraryChanged -= OnLibraryChanged;
+        _playback.StateChanged -= OnPlaybackStateChanged;
+        _workspaceInitializationGate.Dispose();
     }
 
     private static async Task<string> ComputeSha256Async(string path)

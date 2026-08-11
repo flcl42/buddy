@@ -19,7 +19,7 @@ public sealed record DialogTurnBoundaryEvaluation(
 public static class DialogTurnBoundaryDetector
 {
     public static readonly TimeSpan DefaultAllowedPause =
-        TimeSpan.FromMilliseconds(1_100);
+        TimeSpan.FromSeconds(3);
     public static readonly TimeSpan MinimumAllowedPause =
         TimeSpan.FromMilliseconds(750);
     public static readonly TimeSpan MaximumAllowedPause =

@@ -27,6 +27,7 @@ public sealed class SpeechProcessingCoordinator : IAsyncDisposable
     private readonly IAudioWaveformService _waveforms;
     private readonly ILocalModelManager _models;
     private readonly ILanguageImprovementProvider _language;
+    private readonly LanguagePreferences _languages;
     private readonly BuddyDataPaths _paths;
     private readonly string _workerId = $"{Environment.ProcessId}:{Guid.NewGuid():N}";
     private readonly SemaphoreSlim _lifecycleGate = new(1, 1);
@@ -46,6 +47,7 @@ public sealed class SpeechProcessingCoordinator : IAsyncDisposable
         IAudioWaveformService waveforms,
         ILocalModelManager models,
         ILanguageImprovementProvider language,
+        LanguagePreferences languages,
         BuddyDataPaths paths)
     {
         _jobs = jobs ?? throw new ArgumentNullException(nameof(jobs));
@@ -59,6 +61,7 @@ public sealed class SpeechProcessingCoordinator : IAsyncDisposable
         _waveforms = waveforms ?? throw new ArgumentNullException(nameof(waveforms));
         _models = models ?? throw new ArgumentNullException(nameof(models));
         _language = language ?? throw new ArgumentNullException(nameof(language));
+        _languages = languages ?? throw new ArgumentNullException(nameof(languages));
         _paths = paths ?? throw new ArgumentNullException(nameof(paths));
     }
 
@@ -666,9 +669,11 @@ public sealed class SpeechProcessingCoordinator : IAsyncDisposable
             result = await _transcription.TranscribeAsync(
                     analysisPath,
                     new TranscriptionOptions(
-                        Language: recording.Kind == RecordingKind.Trainer ? "en" : "auto",
+                        Language: recording.Kind == RecordingKind.Trainer
+                            ? _languages.DialogLanguage.WhisperLanguage
+                            : "auto",
                         InitialPrompt: recording.Kind == RecordingKind.Trainer
-                            ? "Natural spoken English with accurate punctuation."
+                            ? _languages.DialogLanguage.InitialPrompt
                             : null,
                         IncludeWordTimestamps: recording.Kind == RecordingKind.Trainer),
                     cancellationToken: cancellationToken)
@@ -697,6 +702,7 @@ public sealed class SpeechProcessingCoordinator : IAsyncDisposable
         {
             string phoneticTranscript = await TryCreatePhoneticAsync(
                     result.Text,
+                    _languages.DialogLanguage.Locale,
                     cancellationToken)
                 .ConfigureAwait(false);
             PronunciationAssessment? assessment = PronunciationAssessmentBuilder.Build(
@@ -752,7 +758,10 @@ public sealed class SpeechProcessingCoordinator : IAsyncDisposable
             }
 
             string existingPhonetic = await _phonetics
-                .TranscribeAsync(existing.Transcript, cancellationToken: cancellationToken)
+                .TranscribeAsync(
+                    existing.Transcript,
+                    _languages.DialogLanguage.Locale,
+                    cancellationToken)
                 .ConfigureAwait(false);
             await _recordings.ReplacePronunciationAssessmentAsync(
                     recording.Id,
@@ -806,8 +815,8 @@ public sealed class SpeechProcessingCoordinator : IAsyncDisposable
             result = await _transcription.TranscribeAsync(
                     analysisPath,
                     new TranscriptionOptions(
-                        Language: "en",
-                        InitialPrompt: "Natural spoken English with accurate punctuation.",
+                        Language: _languages.DialogLanguage.WhisperLanguage,
+                        InitialPrompt: _languages.DialogLanguage.InitialPrompt,
                         IncludeWordTimestamps: true),
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
@@ -824,7 +833,10 @@ public sealed class SpeechProcessingCoordinator : IAsyncDisposable
             DateTimeOffset.Now,
             result.Tokens,
             await _phonetics
-                .TranscribeAsync(result.Text, cancellationToken: cancellationToken)
+                .TranscribeAsync(
+                    result.Text,
+                    _languages.DialogLanguage.Locale,
+                    cancellationToken)
                 .ConfigureAwait(false));
         if (assessment is null)
         {
@@ -909,7 +921,7 @@ public sealed class SpeechProcessingCoordinator : IAsyncDisposable
                 new TitleRequest(
                     current.Text,
                     recording.Kind,
-                    "en-US"),
+                    _languages.DialogLanguage.Locale),
                 cancellationToken)
             .ConfigureAwait(false);
         recording = await GetRecordingAsync(recording.Id, cancellationToken)
@@ -1037,12 +1049,13 @@ public sealed class SpeechProcessingCoordinator : IAsyncDisposable
 
     private async Task<string> TryCreatePhoneticAsync(
         string transcript,
+        string locale,
         CancellationToken cancellationToken)
     {
         try
         {
             return await _phonetics
-                .TranscribeAsync(transcript, cancellationToken: cancellationToken)
+                .TranscribeAsync(transcript, locale, cancellationToken)
                 .ConfigureAwait(false);
         }
         catch (Exception error) when (

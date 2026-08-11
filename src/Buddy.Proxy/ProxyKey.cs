@@ -16,12 +16,19 @@ public sealed partial class ProxyKeyHasher
 
     public static string CreateKey()
     {
-        Span<byte> bytes = stackalloc byte[16];
-        RandomNumberGenerator.Fill(bytes);
-        return "bpk_" + Convert.ToBase64String(bytes)
-            .TrimEnd('=')
-            .Replace('+', '-')
-            .Replace('/', '_');
+        Span<char> key = stackalloc char[13];
+        for (int index = 0; index < key.Length; index++)
+        {
+            if (index == 6)
+            {
+                key[index] = '-';
+                continue;
+            }
+
+            key[index] = (char)('A' + RandomNumberGenerator.GetInt32(26));
+        }
+
+        return new string(key);
     }
 
     public static bool IsWellFormed(string? value) =>
@@ -37,9 +44,9 @@ public sealed partial class ProxyKeyHasher
     public static string GetDisplayPrefix(string key)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key);
-        return key.Length <= 10 ? key : key[..10];
+        return key.Length <= 3 ? key : key[..3] + "…";
     }
 
-    [GeneratedRegex("^bpk_[A-Za-z0-9_-]{22}$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("^[A-Z]{6}-[A-Z]{6}$", RegexOptions.CultureInvariant)]
     private static partial Regex KeyPattern();
 }

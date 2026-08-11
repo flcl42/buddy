@@ -47,10 +47,13 @@ public sealed class DialogTurnBoundaryDetectorTests
         ];
 
         DialogTurnDecision decision = DialogTurnBoundaryDetector.Evaluate(
-            TimeSpan.FromMilliseconds(2_150),
+            TimeSpan.FromMilliseconds(4_150),
             speech,
             "Tell me about this");
 
+        Assert.Equal(
+            TimeSpan.FromSeconds(3),
+            DialogTurnBoundaryDetector.DefaultAllowedPause);
         Assert.Equal(DialogTurnDecision.Complete, decision);
     }
 

@@ -1,6 +1,6 @@
 # Buddy product specification
 
-Status: Buddy 0.1 core implemented; later-stage expansion retained below
+Status: Chitchat Buddy 0.2 core implemented; later-stage expansion retained below
 Target: Windows 11 desktop, personal-use first
 UI technology: .NET MAUI on WinUI 3
 
@@ -30,7 +30,7 @@ While capture is active:
 - the tray icon changes to a high-contrast recording state containing a literal
   lowercase `r`;
 - the tooltip shows `Recording · hh:mm:ss`;
-- the tray menu changes from `Start meeting recording` to `Stop and save`;
+- the tray menu changes from `Start mic recording` to `Stop and save`;
 - the main window shows the live duration, input device, and level meter;
 - a crash-safe recording journal is updated continuously.
 
@@ -188,7 +188,7 @@ are requested only when the reader selects a word.
 
 The tab header provides:
 
-- `Start meeting recording`;
+- `Start mic recording`;
 - search across titles and transcripts;
 - filters for source, date, and status;
 - a compact storage indicator.
@@ -283,12 +283,14 @@ messages must never fan out dictionary or synthesis requests.
 - Double-clicking the tray icon opens the window, restores it if minimized, and
   activates it if already open.
 - A normal window close hides the window to the tray.
-- `Exit Buddy` in the tray menu actually terminates the process after safely
-  finalizing an active capture.
+- `Exit Buddy` in the tray menu is never blocked by transcription, AI, or a
+  long-running save. It requests normal shutdown after arming a one-second
+  watchdog; the durable capture journal and SQLite transactions recover any
+  interrupted work on the next launch.
 - Only one application instance may run. Launching a second instance activates
   the first.
 - Tray menu:
-  - Start/stop meeting recording
+  - Start/stop microphone recording
   - Open Speak · Monologue
   - Open Speak · AI Dialog
   - Open Buddy
@@ -299,6 +301,14 @@ messages must never fan out dictionary or synthesis requests.
   processing, and attention required.
 
 ### 2.8 Settings
+
+Before Settings or any workspace can be used, a one-time blocking setup screen
+chooses the interface language (English, Беларуская, Русский), dialog language
+(English, German, Spanish, French, Belarusian), and provider (included trial
+code, direct DeepSeek, local Qwen). It verifies Whisper, Silero, and the selected
+voice in sequence. Qwen progress appears only after the speech dependencies are
+ready. A localized completion screen then instructs the user to choose AI
+Dialog, press Start, and talk. The initial allowed pause is three seconds.
 
 The first release needs:
 
