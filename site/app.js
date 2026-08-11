@@ -7,36 +7,36 @@
   const supportedLocales = new Set(["en", "es", "de", "be"]);
   const copy = {
     en: {
-      latest: "Windows 11 x64 · Latest GitHub release",
-      release: (tag, date) => `Windows 11 x64 · ${tag}${date ? ` · ${date}` : ""}`,
-      pending: "Windows 11 x64 · First public release coming soon",
+      latest: "Windows stable · macOS beta · Linux preview",
+      release: (tag, date) => `${tag} · Windows stable · macOS beta · Linux preview${date ? ` · ${date}` : ""}`,
+      pending: "Desktop builds · First public release coming soon",
       pendingNote: "The first download is being prepared. Follow the GitHub releases page for availability.",
-      incompleteNote: "The latest release is published, but an expected Windows download is not attached yet. Open the release notes for details.",
-      unavailable: "Windows 11 x64 · Open GitHub for release availability"
+      incompleteNote: "The latest release is published, but one or more expected platform files are not attached yet. Open the release notes for details.",
+      unavailable: "Desktop builds · Open GitHub for release availability"
     },
     es: {
-      latest: "Windows 11 x64 · Última versión de GitHub",
-      release: (tag, date) => `Windows 11 x64 · ${tag}${date ? ` · ${date}` : ""}`,
-      pending: "Windows 11 x64 · La primera versión pública llegará pronto",
+      latest: "Windows estable · macOS beta · Linux preliminar",
+      release: (tag, date) => `${tag} · Windows estable · macOS beta · Linux preliminar${date ? ` · ${date}` : ""}`,
+      pending: "Versiones de escritorio · La primera versión pública llegará pronto",
       pendingNote: "La primera descarga está en preparación. Consulta la página de versiones de GitHub para saber cuándo estará disponible.",
-      incompleteNote: "La última versión está publicada, pero aún falta una descarga esperada para Windows. Consulta las notas de la versión.",
-      unavailable: "Windows 11 x64 · Consulta la disponibilidad en GitHub"
+      incompleteNote: "La última versión está publicada, pero aún faltan uno o más archivos esperados para las plataformas. Consulta las notas de la versión.",
+      unavailable: "Versiones de escritorio · Consulta la disponibilidad en GitHub"
     },
     de: {
-      latest: "Windows 11 x64 · Neueste GitHub-Version",
-      release: (tag, date) => `Windows 11 x64 · ${tag}${date ? ` · ${date}` : ""}`,
-      pending: "Windows 11 x64 · Erste öffentliche Version folgt bald",
+      latest: "Windows stabil · macOS Beta · Linux Vorschau",
+      release: (tag, date) => `${tag} · Windows stabil · macOS Beta · Linux Vorschau${date ? ` · ${date}` : ""}`,
+      pending: "Desktop-Builds · Erste öffentliche Version folgt bald",
       pendingNote: "Der erste Download wird vorbereitet. Den aktuellen Stand findest du auf der GitHub-Releases-Seite.",
-      incompleteNote: "Die neueste Version ist veröffentlicht, aber eine erwartete Windows-Datei fehlt noch. Einzelheiten stehen in den Versionshinweisen.",
-      unavailable: "Windows 11 x64 · Verfügbarkeit auf GitHub prüfen"
+      incompleteNote: "Die neueste Version ist veröffentlicht, aber mindestens eine erwartete Plattformdatei fehlt noch. Einzelheiten stehen in den Versionshinweisen.",
+      unavailable: "Desktop-Builds · Verfügbarkeit auf GitHub prüfen"
     },
     be: {
-      latest: "Windows 11 x64 · Апошні выпуск на GitHub",
-      release: (tag, date) => `Windows 11 x64 · ${tag}${date ? ` · ${date}` : ""}`,
-      pending: "Windows 11 x64 · Першы публічны выпуск неўзабаве",
+      latest: "Windows стабільная · macOS бэта · Linux папярэдняя",
+      release: (tag, date) => `${tag} · Windows стабільная · macOS бэта · Linux папярэдняя${date ? ` · ${date}` : ""}`,
+      pending: "Настольныя зборкі · Першы публічны выпуск неўзабаве",
       pendingNote: "Першая спампоўка рыхтуецца. Сачыце за даступнасцю на старонцы выпускаў GitHub.",
-      incompleteNote: "Апошні выпуск ужо апублікаваны, але адна з чаканых спамповак для Windows яшчэ не далучана. Падрабязнасці ёсць у заўвагах да выпуску.",
-      unavailable: "Windows 11 x64 · Праверце даступнасць на GitHub"
+      incompleteNote: "Апошні выпуск ужо апублікаваны, але адзін або некалькі чаканых файлаў для платформ яшчэ не далучаны. Падрабязнасці ёсць у заўвагах да выпуску.",
+      unavailable: "Настольныя зборкі · Праверце даступнасць на GitHub"
     }
   }[locale];
 

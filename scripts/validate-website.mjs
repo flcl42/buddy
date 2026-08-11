@@ -125,6 +125,20 @@ function pngDimensions(filePath) {
 }
 
 const pages = ["index.html", "es/index.html", "de/index.html", "be/index.html"];
+const releaseAssets = [
+  "Buddy-Setup.exe",
+  "Buddy.exe",
+  "Buddy-macOS-arm64-beta.zip",
+  "Buddy-macOS-x64-beta.zip",
+  "Buddy-Linux-x64-preview.deb",
+  "Buddy-Linux-x64-preview.tar.gz"
+];
+const recordingCopy = {
+  "index.html": /Pause-cut playback, seeking, and transcription/,
+  "es/index.html": /Reproducción, búsqueda y transcripción sobre audio sin pausas/,
+  "de/index.html": /Wiedergabe, Suche und Transkription mit entfernten Pausen/,
+  "be/index.html": /Прайграванне, пошук і распазнаванне па аўдыя без паўз/
+};
 for (const relativePage of pages) {
   const pagePath = path.join(siteDirectory, relativePage);
   const html = fs.readFileSync(pagePath, "utf8");
@@ -132,6 +146,14 @@ for (const relativePage of pages) {
   assert.equal((html.match(/data-carousel-index/g) || []).length, 4, `${relativePage} must have four slide selectors`);
   assert.match(html, /data-carousel tabindex="0" aria-roledescription="carousel"/, `${relativePage} needs a keyboard-focusable carousel`);
   assert.doesNotMatch(html, /class="app-window"/, `${relativePage} still contains the old mock preview`);
+  assert.match(html, /"softwareVersion": "0\.4\.0"/, `${relativePage} has stale release metadata`);
+  assert.match(html, /"operatingSystem": \["Windows 10\/11 x64", "macOS 13\+", "Ubuntu 24\.04\+ x64"\]/, `${relativePage} needs all desktop hosts in structured data`);
+  assert.match(html, recordingCopy[relativePage], `${relativePage} does not explain pause-cut recording transcription`);
+
+  const linkedAssets = [...new Set(
+    [...html.matchAll(/data-download-asset="([^"]+)"/g)].map((match) => match[1]))
+  ].sort();
+  assert.deepEqual(linkedAssets, [...releaseAssets].sort(), `${relativePage} has incomplete release downloads`);
 
   const screenshotSources = [...html.matchAll(/<img[^>]+src="([^"]*screenshots\/[^"]+)"/g)].map((match) => match[1]);
   assert.equal(screenshotSources.length, 4, `${relativePage} must reference four screenshots`);
@@ -190,4 +212,4 @@ for (const relativePage of pages) {
   assert.equal(current.textContent, "1");
 }
 
-console.log("Buddy website validation passed: four localized carousels, language routing, controls, and 1284x842 assets.");
+console.log("Buddy website validation passed: four localized carousels, desktop tiers, six release assets, recording copy, language routing, controls, and 1284x842 screenshots.");

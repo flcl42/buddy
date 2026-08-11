@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Chitchat Buddy — Asistente de voz con IA privada para Windows</title>
-  <meta name="description" content="Graba tus intervenciones en reuniones, practica un inglés más claro y mantén conversaciones de voz con contexto en un asistente privado para Windows 11.">
+  <title>Chitchat Buddy — Asistente de voz con IA privada para escritorio</title>
+  <meta name="description" content="Graba tus intervenciones, elimina pausas, transcribe bajo demanda y practica conversaciones con IA en Windows, macOS y Linux.">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#5b46d8">
   <meta name="color-scheme" content="light">
@@ -18,14 +18,14 @@
   <meta property="og:site_name" content="Chitchat Buddy">
   <meta property="og:locale" content="es_ES">
   <meta property="og:title" content="Chitchat Buddy — Recuerda tus palabras. Exprésalas mejor.">
-  <meta property="og:description" content="Un asistente de voz local para Windows que recuerda reuniones, mejora la pronunciación y mantiene diálogos con IA.">
+  <meta property="og:description" content="Un asistente de voz local para escritorio con grabaciones sin pausas largas, transcripción editable, pronunciación y diálogo con IA.">
   <meta property="og:url" content="__SITE_BASE_URL__/es/">
   <meta property="og:image" content="__SITE_BASE_URL__/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Buddy con una conversación de voz y una forma de onda de audio">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Chitchat Buddy — Asistente de voz privado para Windows">
+  <meta name="twitter:title" content="Chitchat Buddy — Asistente de voz privado para escritorio">
   <meta name="twitter:description" content="Graba, mejora y vuelve a escuchar lo que dices, con procesamiento local y el proveedor de IA que elijas.">
   <meta name="twitter:image" content="__SITE_BASE_URL__/og.png">
   <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
@@ -38,12 +38,12 @@
     "@type": "SoftwareApplication",
     "name": "Chitchat Buddy",
     "alternateName": "Buddy",
-    "description": "Asistente de voz privado para Windows, pensado para recordar reuniones, mejorar la pronunciación y conversar con IA manteniendo el contexto.",
+    "description": "Asistente de voz privado para escritorio, pensado para recordar reuniones sin pausas largas, transcribir, mejorar la pronunciación y conversar con IA.",
     "url": "__SITE_BASE_URL__/es/",
     "downloadUrl": "https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe",
     "applicationCategory": "ProductivityApplication",
-    "operatingSystem": "Windows 11 x64",
-    "softwareVersion": "0.3.0",
+    "operatingSystem": ["Windows 10/11 x64", "macOS 13+", "Ubuntu 24.04+ x64"],
+    "softwareVersion": "0.4.0",
     "isAccessibleForFree": true,
     "inLanguage": "es",
     "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
@@ -84,14 +84,14 @@
   <main id="main">
     <section class="hero section-shell">
       <div class="hero-copy">
-        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Asistente de voz local para Windows 11</p>
+        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Windows estable · macOS beta · Linux preliminar</p>
         <h1>Recuerda tus palabras.<br><span>Exprésalas mejor.</span></h1>
         <p class="hero-lede">Buddy graba tus intervenciones, convierte la voz en un proceso de mejora editable y mantiene el contexto de una conversación hablada con IA, mientras el núcleo de audio permanece en tu PC.</p>
         <div class="hero-actions">
-          <a class="button button-primary" data-download-asset="Buddy-Setup.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe">Descargar instalador</a>
-          <a class="button button-secondary" data-download-asset="Buddy.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy.exe">Ejecutable portátil</a>
+          <a class="button button-primary" data-download-asset="Buddy-Setup.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe">Instalador de Windows</a>
+          <a class="button button-secondary" href="#download">Otras plataformas</a>
         </div>
-        <p class="release-status" id="release-status" aria-live="polite">Windows 11 x64 · Última versión de GitHub</p>
+        <p class="release-status" id="release-status" aria-live="polite">Windows estable · macOS beta · Linux preliminar</p>
         <ul class="hero-trust" aria-label="Ventajas principales">
           <li><span aria-hidden="true">✓</span> Sin cuenta para las funciones esenciales</li>
           <li><span aria-hidden="true">✓</span> Audio procesado localmente</li>
@@ -143,12 +143,12 @@
       <div class="feature-grid">
         <article class="feature-card feature-dialog"><div class="feature-number">01</div><div class="feature-icon icon-dialog" aria-hidden="true"><span></span><span></span></div><h3>Diálogo hablado con IA</h3><p>Habla con libertad, mira la transcripción en directo y escucha cada respuesta automáticamente. Buddy conserva todo el contexto y espera el tiempo de pausa que elijas.</p><ul><li>Respuestas con formato y narración natural</li><li>Tiempo de fin de turno ajustable</li><li>DeepSeek limitado de Buddy por defecto, tu clave o Qwen local</li></ul></article>
         <article class="feature-card feature-coach"><div class="feature-number">02</div><div class="feature-icon icon-coach" aria-hidden="true"><span>Aa</span></div><h3>Entrenador de expresión oral</h3><p>Corrige errores de reconocimiento antes de pedir ayuda. Mejora gramática, vocabulario, claridad y tono sin perder tu intención.</p><ul><li>AFI e indicadores de confianza por palabra</li><li>Modos corregir, natural o conciso</li><li>Escucha tu versión original y la mejorada</li></ul></article>
-        <article class="feature-card feature-record"><div class="feature-number">03</div><div class="feature-icon icon-record" aria-hidden="true"><span>r</span></div><h3>Memoria de reuniones</h3><p>Graba el micrófono elegido desde la bandeja. Vuelve a oír lo importante sin silencios largos y navega por una forma de onda real.</p><ul><li>Fragmentos de audio recuperables tras un fallo</li><li>Títulos, fechas y transcripciones consultables</li><li>Conserva la reproducción original y compacta</li></ul></article>
+        <article class="feature-card feature-record"><div class="feature-number">03</div><div class="feature-icon icon-record" aria-hidden="true"><span>r</span></div><h3>Memoria de reuniones</h3><p>Graba el micrófono elegido, vuelve a oír solo lo importante sin silencios largos y solicita una transcripción local inteligente cuando la necesites.</p><ul><li>Fragmentos de audio recuperables tras un fallo</li><li>Transcripciones editables y repetibles para cada grabación</li><li>Reproducción, búsqueda y transcripción sobre audio sin pausas</li></ul></article>
       </div>
     </section>
 
     <section class="how-section" id="how-it-works"><div class="section-shell how-layout">
-      <div class="section-heading left-heading"><p class="eyebrow">Pensado para cada día</p><h2>Empieza a hablar.<br>Buddy se ocupa del resto.</h2><p>Instala una sola aplicación de Windows. Los paquetes locales opcionales se descargan solo cuando hacen falta, con progreso claro y notificaciones del escritorio.</p></div>
+      <div class="section-heading left-heading"><p class="eyebrow">Pensado para cada día</p><h2>Empieza a hablar.<br>Buddy se ocupa del resto.</h2><p>Instala la versión para tu escritorio. Los paquetes locales opcionales se descargan solo cuando hacen falta, con progreso claro y notificaciones.</p></div>
       <ol class="steps-list">
         <li><span class="step-index">1</span><div><h3>Elige un modo</h3><p>Inicia un diálogo con IA, practica un monólogo o empieza a grabar una reunión desde la bandeja.</p></div></li>
         <li><span class="step-index">2</span><div><h3>Habla con naturalidad</h3><p>La detección de voz y Whisper, ambos locales, convierten el micrófono en texto duradero y editable.</p></div></li>
@@ -158,7 +158,7 @@
 
     <section class="privacy-section section-shell" id="privacy"><div class="privacy-panel">
       <div class="privacy-copy"><p class="eyebrow eyebrow-light">Privacidad desde el diseño</p><h2>Tu voz no es el precio de entrada.</h2><p>El audio del micrófono, el reconocimiento, el análisis de pronunciación, la eliminación de silencios y la síntesis de voz permanecen en tu ordenador. Las tareas lingüísticas usan por defecto el acceso limitado de Buddy a DeepSeek y solo envían el texto solicitado, nunca la grabación. La pasarela guarda hashes de claves y cifras de uso, no el texto del diálogo. Con Qwen local, el texto solicitado también permanece en tu PC.</p><a href="#faq" class="text-link">Leer las respuestas sobre privacidad <span aria-hidden="true">→</span></a></div>
-      <div class="privacy-facts"><div><span class="fact-mark">01</span><strong>Audio local</strong><p>Tus grabaciones permanecen en tu perfil de Windows.</p></div><div><span class="fact-mark">02</span><strong>Claves protegidas</strong><p>Las credenciales se protegen con DPAPI de Windows.</p></div><div><span class="fact-mark">03</span><strong>Tú eliges</strong><p>Usa IA de texto alojada o descarga Qwen para respuestas locales.</p></div></div>
+      <div class="privacy-facts"><div><span class="fact-mark">01</span><strong>Audio local</strong><p>Tus grabaciones permanecen en el perfil de tu sistema.</p></div><div><span class="fact-mark">02</span><strong>Claves protegidas</strong><p>Las credenciales usan el almacenamiento seguro del sistema.</p></div><div><span class="fact-mark">03</span><strong>Tú eliges</strong><p>Usa IA alojada o descarga Qwen en Windows.</p></div></div>
     </div></section>
 
     <section class="detail-section section-shell"><div class="detail-grid">
@@ -178,15 +178,20 @@
         <details><summary>¿Sale mi audio del ordenador?</summary><p>No. La captura, Whisper, el análisis de pronunciación y la voz de Kokoro se ejecutan localmente. El proveedor limitado predeterminado envía a DeepSeek solo el texto necesario para la tarea. Qwen local conserva también ese texto en tu PC.</p></details>
         <details><summary>¿Puedo usar Buddy sin una cuenta en la nube?</summary><p>Sí. La grabación, la reproducción, la transcripción y la voz local no necesitan una. La versión incluye hasta 1.000 respuestas o 1.000.000 de tokens de acceso limitado a DeepSeek, según el límite que se alcance primero. Descarga Qwen local para conservar también en tu PC las respuestas y mejoras.</p></details>
         <details><summary>¿Qué descarga el instalador?</summary><p>La aplicación es autocontenida. Los paquetes más grandes de voz e IA local se instalan bajo demanda, con progreso y aviso al terminar, para que no esperes por componentes que quizá no utilices.</p></details>
+        <details><summary>¿Qué plataformas de escritorio son compatibles?</summary><p>Windows 10/11 x64 es estable. Las versiones para macOS 13+ en Apple Silicon e Intel son beta y por ahora usan el Dock. Ubuntu 24.04+ x64 es una versión preliminar experimental con GTK4; su icono necesita un escritorio compatible con StatusNotifier. Qwen local sigue disponible solo en Windows.</p></details>
         <details><summary>¿La evaluación de pronunciación puntúa mi acento?</summary><p>No. Buddy usa tiempos y confianza del reconocimiento para señalar pasajes que conviene revisar. El AFI sirve de guía; no juzga tu acento ni tu identidad.</p></details>
       </div>
     </section>
 
     <section class="download-section" id="download"><div class="section-shell download-panel">
-      <div><p class="eyebrow eyebrow-light">Chitchat Buddy 0.3.0 · Windows 11 x64</p><h2>Tu próxima idea merece una segunda versión mejor.</h2><p>Instala Buddy, elige tu micrófono y empieza con funciones que trabajan localmente desde el primer día.</p></div>
+      <div><p class="eyebrow eyebrow-light">Chitchat Buddy 0.4.0 · tres sistemas de escritorio</p><h2>Tu próxima idea merece una segunda versión mejor.</h2><p>Instala Buddy, elige tu micrófono y empieza con funciones que trabajan localmente desde el primer día.</p></div>
       <div class="download-options">
-        <a class="download-card primary-download" data-download-asset="Buddy-Setup.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe"><span class="download-copy"><strong>Descargar instalador</strong><small>Recomendado · instalación guiada en Windows</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
-        <a class="download-card" data-download-asset="Buddy.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy.exe"><span class="download-copy"><strong>Ejecutable portátil</strong><small>Aplicación en un solo archivo · sin instalar</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card primary-download" data-download-asset="Buddy-Setup.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe"><span class="download-copy"><strong>Instalador de Windows</strong><small>Estable · x64 · configuración guiada</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card" data-download-asset="Buddy.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy.exe"><span class="download-copy"><strong>Windows portátil</strong><small>Estable · x64 · un solo ejecutable</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card" data-download-asset="Buddy-macOS-arm64-beta.zip" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-macOS-arm64-beta.zip"><span class="download-copy"><strong>macOS Apple Silicon</strong><small>Beta · arm64 · firma ad hoc</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card" data-download-asset="Buddy-macOS-x64-beta.zip" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-macOS-x64-beta.zip"><span class="download-copy"><strong>macOS Intel</strong><small>Beta · x64 · firma ad hoc</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card" data-download-asset="Buddy-Linux-x64-preview.deb" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Linux-x64-preview.deb"><span class="download-copy"><strong>Paquete Debian para Linux</strong><small>Preliminar · Ubuntu 24.04+ x64</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card" data-download-asset="Buddy-Linux-x64-preview.tar.gz" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Linux-x64-preview.tar.gz"><span class="download-copy"><strong>Paquete portátil para Linux</strong><small>Preliminar · GTK4 · x64</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
         <a class="release-link" data-release-link href="https://github.com/__BUDDY_REPOSITORY__/releases/latest">Notas de versión y sumas de comprobación <span aria-hidden="true">↗</span></a>
         <p class="download-note" id="release-note" data-release-note>Las descargas apuntan a la última versión de GitHub. Las primeras versiones pueden no estar firmadas; comprueba las sumas publicadas.</p>
       </div>
@@ -194,9 +199,9 @@
   </main>
 
   <footer class="site-footer"><div class="section-shell footer-grid">
-    <div><a class="brand footer-brand" href="../"><span class="brand-mark" aria-hidden="true">b</span><span>Chitchat Buddy</span></a><p>Un asistente de voz atento para Windows.</p></div>
+    <div><a class="brand footer-brand" href="../"><span class="brand-mark" aria-hidden="true">b</span><span>Chitchat Buddy</span></a><p>Un asistente de voz atento para Windows, macOS y Linux.</p></div>
     <div class="footer-links"><a href="#features">Funciones</a><a href="#privacy">Privacidad</a><a data-release-link href="https://github.com/__BUDDY_REPOSITORY__/releases/latest">Versiones en GitHub</a></div>
-    <p class="footer-note">Creado para Windows 11. Consulta los avisos de terceros incluidos antes de redistribuir los binarios.</p>
+    <p class="footer-note">Windows es estable; macOS está en beta; Linux GTK4 es preliminar. Consulta los avisos de terceros antes de redistribuir.</p>
   </div></footer>
   <script src="../config.js"></script><script src="../app.js"></script>
 </body>

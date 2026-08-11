@@ -1,8 +1,8 @@
 # Buddy third-party notices
 
-This file documents the principal third-party components in the Buddy Windows
-build. It is not legal advice and does not replace the license texts supplied by
-their authors.
+This file documents the principal third-party components in the Buddy desktop
+builds. It is not legal advice and does not replace the license texts supplied
+by their authors.
 
 ## Speech models and runtimes
 
@@ -23,8 +23,10 @@ Kokoro voices at `voices/LICENSE`, and the full GPL version 3 text beside the
 eSpeak runtime at `espeak/LICENSE`.
 
 The Qwen GGUF and llama.cpp runtime are separately installed under
-`D:\ai\Buddy`; they are not embedded in the single-file Buddy executable. Their
-source pages and license identifiers are recorded above for provenance.
+`H:\BuddyAI` when that drive is available, or under Buddy's per-user data root;
+they are not embedded in the single-file Buddy executable. `BUDDY_AI_ROOT` can
+override that location. Their source pages and license identifiers are recorded
+above for provenance.
 
 Important: eSpeak NG is GPL-3.0-or-later software. Anyone redistributing a Buddy
 binary that includes it must independently satisfy the GPL's source,
@@ -37,12 +39,17 @@ distribution package.
 | Component | License | Source |
 | --- | --- | --- |
 | NAudio 2.3.0 | MIT | <https://github.com/naudio/NAudio> |
+| MiniAudioExNET 3.3.5 | MIT | <https://github.com/japajoe/MiniAudioExNET> |
+| miniaudio | Public domain or MIT-0, at the user's option | <https://github.com/mackron/miniaudio> |
 | Concentus 2.2.2 / Opus | 3-clause BSD-style Opus license | <https://github.com/lostromb/concentus> |
 | Concentus.Oggfile 1.0.7 | MIT | <https://github.com/lostromb/concentus.oggfile> |
 | CommunityToolkit.Mvvm 8.4.2 | MIT | <https://github.com/CommunityToolkit/dotnet> |
 | H.NotifyIcon 2.4.1 | MIT | <https://github.com/HavenDV/H.NotifyIcon> |
 | Markdig 1.3.2 | BSD-2-Clause | <https://github.com/xoofx/markdig> |
 | .NET MAUI and Microsoft.Extensions | MIT | <https://github.com/dotnet/maui> |
+| Microsoft MAUI Linux GTK4 preview | MIT | <https://github.com/dotnet/maui-labs/tree/main/platforms/Linux.Gtk4> |
+| Tmds.DBus.Protocol 0.94.2 | MIT | <https://github.com/tmds/Tmds.DBus> |
+| Tmds.DBus.Generator 0.94.2 | MIT | <https://github.com/tmds/Tmds.DBus> |
 | SQLite | Public domain | <https://www.sqlite.org/copyright.html> |
 | SQLitePCLRaw 3.0.5 | Apache-2.0 | <https://github.com/ericsink/SQLitePCL.raw> |
 
@@ -80,7 +87,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 MIT attributions in this build include the .NET Foundation and contributors;
 Mark Heath and NAudio contributors; Logan Stromberg and Andrew Ward;
-HavenDV/H.NotifyIcon contributors; Lyrcaxis/KokoroSharp contributors;
+HavenDV/H.NotifyIcon contributors; japajoe/MiniAudioExNET contributors;
+Tmds.DBus contributors;
+the dotnet/maui-labs contributors; Lyrcaxis/KokoroSharp contributors;
 sandrohanea/Whisper.net contributors; Microsoft/ONNX Runtime contributors;
 ggml-org/llama.cpp contributors; and
 the respective contributors to other MIT packages listed above.

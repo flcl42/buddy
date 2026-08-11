@@ -1,7 +1,7 @@
 {
   "name": "Chitchat Buddy speech companion",
   "short_name": "Buddy",
-  "description": "A private AI speech companion for Windows 11.",
+  "description": "A private AI speech companion for Windows, macOS, and Linux.",
   "lang": "en",
   "start_url": "./",
   "display": "browser",

@@ -1,14 +1,17 @@
-# Chitchat Buddy 0.3 release readiness
+# Chitchat Buddy 0.4 release readiness
 
-Updated: 2026-08-11
+Updated: 2026-08-12
 
 This record separates the working product from later expansion items in the
 broader product specification.
 
 ## Verified in this build
 
-- Debug and Release MAUI builds complete with zero warnings.
-- 174 automated tests pass across App presentation, Core,
+- Windows and Linux Debug/Release builds complete with zero warnings. A full
+  Windows-hosted solution build also compiles both Mac Catalyst RIDs; the only
+  two messages are the expected Apple SDK warnings that linking is disabled
+  without a connected Mac.
+- 186 automated tests pass across App presentation, Core,
   Persistence, Language, Proxy, and Integration.
 - A real clean-state first run passed the blocking localized setup flow. The
   interface changed to Belarusian without restarting, every dependency status
@@ -131,6 +134,32 @@ broader product specification.
 - Every recording card now uses one icon-only play/pause button and a cached
   96-bar sound-level envelope. The waveform is a real decoded-audio summary,
   shows played progress and a playhead, and supports direct click-to-seek.
+- Compact Opus is now the canonical artifact for recording playback, waveform,
+  click-to-seek, and transcription. The primary duration is the actual
+  pause-cut duration; captured wall time remains visible separately, and the
+  immutable original stays available only as a recovery source.
+- Every recording card can request or retry smart local Whisper transcription
+  on demand. The editable result is stored as a separate user revision, and a
+  later recognition retry cannot overwrite that edit. Focused selector and
+  presentation tests cover compact-artifact routing, revision precedence,
+  editing, retry state, and recording-card transcript markup.
+- The experimental Linux GTK4 x64 host restored and published natively under
+  Ubuntu, remained alive through a headless desktop startup smoke window, and
+  registered a Buddy StatusNotifierItem against a real D-Bus test watcher. The
+  watcher read `chitchat-buddy` and the current title, invoked activation, and
+  the app stayed responsive. The verified Debian package is version 0.4.0,
+  declares GTK 4.12 and eSpeak NG dependencies, installs `/usr/bin/buddy`, and
+  is 68,796,192 bytes in this build.
+- The obsolete Linux tray package was removed rather than downgraded around its
+  vulnerable legacy D-Bus dependency. Buddy now generates its small
+  StatusNotifier protocol surface against Tmds.DBus 0.94.2 and renders the
+  `b`, `r`, and attention pixmaps itself. If a desktop has no watcher, the
+  preview remains open and usable without a tray instead of crashing.
+- The Mac Catalyst beta compiles for both `maccatalyst-arm64` and
+  `maccatalyst-x64`, uses Core Audio through the portable capture/playback
+  layer, and provides system speech through `/usr/bin/say`. Native packaging,
+  direct microphone/speaker QA, and Gatekeeper/notarization checks run only on
+  the macOS CI host and remain beta gates rather than Windows-host claims.
 - Whisper large-v3-turbo and Silero artifacts download resumably and pass
   SHA-256 verification before use.
 - DeepSeek returns schema-validated improvement results and generated titles.
@@ -318,17 +347,20 @@ broader product specification.
 
 ## Packaging boundary
 
-The installed executable is `C:\Programs\Buddy.exe`, version 0.3.0, and matches
-the staged portable release. Exact portable and installer hashes are published
-in `SHA256SUMS.txt` alongside each release. This personal build is intentionally
-unpackaged and unsigned; a public release still requires a trusted code-signing
-certificate and a distribution decision compatible with the bundled
-GPL-3.0-or-later eSpeak NG runtime. See
+Version 0.4.0 retains the stable Windows assets `Buddy.exe` and
+`Buddy-Setup.exe` and adds beta `Buddy-macOS-arm64-beta.zip` and
+`Buddy-macOS-x64-beta.zip` archives plus preview
+`Buddy-Linux-x64-preview.deb` and `Buddy-Linux-x64-preview.tar.gz` bundles.
+Exact hashes are combined in `SHA256SUMS.txt` alongside each tagged release.
+The current binaries are unsigned or ad-hoc signed; a broadly promoted public
+release still requires trusted Windows signing, Apple notarization, and a
+distribution decision compatible with the bundled GPL-3.0-or-later eSpeak NG
+runtime. See
 [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md).
 
 ## Release scope
 
-Chitchat Buddy 0.3 covers the requested recording plus the unified Speak workspace's
+Chitchat Buddy 0.4 covers the requested recording plus the unified Speak workspace's
 Monologue and persistent AI Dialog loops. These broader specification items
 remain later-stage work and are not presented as implemented:
 
@@ -343,6 +375,14 @@ remain later-stage work and are not presented as implemented:
 - privacy-safe diagnostics export;
 - formal two-hour soak, forced-crash, sleep/resume, and device-unplug test
   matrix;
+- native macOS microphone, speaker, sleep/resume, Dock lifecycle, signing, and
+  notarization acceptance on representative Intel and Apple Silicon hardware;
+- Linux microphone/speaker/device-unplug acceptance on physical PulseAudio and
+  ALSA desktops beyond the native headless GTK4, tray-protocol, and package
+  checks;
+- a true macOS menu-bar status item (the Catalyst beta intentionally uses the
+  Dock); Linux desktops without a StatusNotifier watcher intentionally run
+  without a tray icon;
 - a formal multi-accent acoustic corpus for Dialog end-of-turn latency and
   very-long-session provider-limit testing.
 

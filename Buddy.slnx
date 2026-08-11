@@ -1,7 +1,9 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/Buddy.App/Buddy.App.csproj" />
+    <Project Path="src/Buddy.App.Linux/Buddy.App.Linux.csproj" />
     <Project Path="src/Buddy.Audio.Windows/Buddy.Audio.Windows.csproj" />
+    <Project Path="src/Buddy.Audio.Portable/Buddy.Audio.Portable.csproj" />
     <Project Path="src/Buddy.Core/Buddy.Core.csproj" />
     <Project Path="src/Buddy.Language/Buddy.Language.csproj" />
     <Project Path="src/Buddy.Persistence/Buddy.Persistence.csproj" />

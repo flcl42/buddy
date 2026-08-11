@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <TargetFrameworks>net10.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">net10.0;net10.0-windows10.0.19041.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -8,7 +9,12 @@
     <PackageReference Include="NAudio" />
     <PackageReference Include="Whisper.net" />
     <PackageReference Include="Whisper.net.Runtime" />
-    <PackageReference Include="Whisper.net.Runtime.Cuda.Windows" />
+    <PackageReference Include="Whisper.net.Runtime.Cuda.Windows"
+                      Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">
+    <Compile Remove="WindowsSpeechSynthesisService.cs" />
   </ItemGroup>
 
   <ItemGroup>

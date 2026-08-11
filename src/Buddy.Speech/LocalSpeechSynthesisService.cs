@@ -7,14 +7,15 @@ public sealed class LocalSpeechSynthesisService : ISpeechSynthesisService
     public const string SynthesisVersion = "buddy.local-speech.multilingual.v1";
 
     private readonly KokoroSpeechSynthesisService _kokoro;
-    private readonly WindowsSpeechSynthesisService _windows;
+    private readonly IReadOnlyList<IPlatformSpeechSynthesisService> _platforms;
 
     public LocalSpeechSynthesisService(
         KokoroSpeechSynthesisService kokoro,
-        WindowsSpeechSynthesisService windows)
+        IEnumerable<IPlatformSpeechSynthesisService> platforms)
     {
         _kokoro = kokoro ?? throw new ArgumentNullException(nameof(kokoro));
-        _windows = windows ?? throw new ArgumentNullException(nameof(windows));
+        ArgumentNullException.ThrowIfNull(platforms);
+        _platforms = platforms.ToArray();
     }
 
     public async Task<IReadOnlyList<SpeechVoice>> GetVoicesAsync(
@@ -23,10 +24,16 @@ public sealed class LocalSpeechSynthesisService : ISpeechSynthesisService
         IReadOnlyList<SpeechVoice> kokoro = await _kokoro
             .GetVoicesAsync(cancellationToken)
             .ConfigureAwait(false);
-        IReadOnlyList<SpeechVoice> windows = await _windows
-            .GetVoicesAsync(cancellationToken)
-            .ConfigureAwait(false);
-        return kokoro.Concat(windows).ToArray();
+        List<SpeechVoice> voices = new(kokoro);
+        foreach (IPlatformSpeechSynthesisService platform in _platforms)
+        {
+            voices.AddRange(
+                await platform
+                    .GetVoicesAsync(cancellationToken)
+                    .ConfigureAwait(false));
+        }
+
+        return voices;
     }
 
     public Task<SpeechSynthesisResult> SynthesizeAsync(
@@ -36,10 +43,27 @@ public sealed class LocalSpeechSynthesisService : ISpeechSynthesisService
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(options);
-        return options.VoiceId.StartsWith(
-            WindowsSpeechSynthesisService.VoiceIdPrefix,
-            StringComparison.Ordinal)
-            ? _windows.SynthesizeAsync(text, outputPath, options, cancellationToken)
-            : _kokoro.SynthesizeAsync(text, outputPath, options, cancellationToken);
+        IPlatformSpeechSynthesisService? platform = _platforms.FirstOrDefault(
+            candidate => candidate.CanSynthesize(options.VoiceId));
+        if (platform is not null)
+        {
+            return platform.SynthesizeAsync(
+                text,
+                outputPath,
+                options,
+                cancellationToken);
+        }
+
+        if (options.VoiceId.Contains(':', StringComparison.Ordinal))
+        {
+            throw new NotSupportedException(
+                $"Voice '{options.VoiceId}' is not available on this platform.");
+        }
+
+        return _kokoro.SynthesizeAsync(
+            text,
+            outputPath,
+            options,
+            cancellationToken);
     }
 }

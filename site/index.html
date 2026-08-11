@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Chitchat Buddy — Private AI speech companion for Windows</title>
-  <meta name="description" content="Record your own meeting speech, practise clearer English, and hold contextual voice conversations with a privacy-first Windows 11 desktop companion.">
+  <title>Chitchat Buddy — Private AI speech companion for desktop</title>
+  <meta name="description" content="Record your own meeting speech, cut pauses, transcribe on demand, practise clearer English, and hold contextual voice conversations on Windows, macOS, and Linux.">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#5b46d8">
   <meta name="color-scheme" content="light">
@@ -17,14 +17,14 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Chitchat Buddy">
   <meta property="og:title" content="Chitchat Buddy — Remember your words. Say them better.">
-  <meta property="og:description" content="A local-first Windows speech companion for meeting recall, pronunciation coaching, and contextual AI dialog.">
+  <meta property="og:description" content="A local-first desktop speech companion for pause-cut meeting recall, editable transcription, pronunciation coaching, and contextual AI dialog.">
   <meta property="og:url" content="__SITE_BASE_URL__/">
   <meta property="og:image" content="__SITE_BASE_URL__/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Buddy speech companion with a conversation and audio waveform">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Chitchat Buddy — Private AI speech companion for Windows">
+  <meta name="twitter:title" content="Chitchat Buddy — Private AI speech companion for desktop">
   <meta name="twitter:description" content="Record, improve, and revisit what you say — with local speech processing and your choice of AI provider.">
   <meta name="twitter:image" content="__SITE_BASE_URL__/og.png">
   <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png">
@@ -37,13 +37,13 @@
     "@type": "SoftwareApplication",
     "name": "Chitchat Buddy",
     "alternateName": "Buddy",
-    "description": "A privacy-first Windows speech companion for meeting recall, pronunciation coaching, and contextual AI dialog.",
+    "description": "A privacy-first desktop speech companion for pause-cut meeting recall, editable transcription, pronunciation coaching, and contextual AI dialog.",
     "url": "__SITE_BASE_URL__/",
     "downloadUrl": "https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe",
     "applicationCategory": "ProductivityApplication",
     "applicationSubCategory": "Speech companion",
-    "operatingSystem": "Windows 11 x64",
-    "softwareVersion": "0.3.0",
+    "operatingSystem": ["Windows 10/11 x64", "macOS 13+", "Ubuntu 24.04+ x64"],
+    "softwareVersion": "0.4.0",
     "isAccessibleForFree": true,
     "offers": {
       "@type": "Offer",
@@ -53,6 +53,7 @@
     "featureList": [
       "Local microphone recording",
       "Silence-compacted playback",
+      "Smart editable transcription on demand",
       "Live speech transcription",
       "Pronunciation feedback with IPA",
       "Editable grammar and vocabulary coaching",
@@ -120,14 +121,14 @@
   <main id="main">
     <section class="hero section-shell">
       <div class="hero-copy">
-        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Local-first speech companion for Windows 11</p>
+        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Windows stable · macOS beta · Linux preview</p>
         <h1>Remember your words.<br><span>Say them better.</span></h1>
         <p class="hero-lede">Buddy records your own remarks, turns speech into an editable coaching loop, and keeps a spoken AI conversation in context — while the core speech stack stays on your PC.</p>
         <div class="hero-actions">
-          <a class="button button-primary" data-download-asset="Buddy-Setup.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe">Download installer</a>
-          <a class="button button-secondary" data-download-asset="Buddy.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy.exe">Portable executable</a>
+          <a class="button button-primary" data-download-asset="Buddy-Setup.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe">Windows installer</a>
+          <a class="button button-secondary" href="#download">Other platforms</a>
         </div>
-        <p class="release-status" id="release-status" aria-live="polite">Windows 11 x64 · Latest GitHub release</p>
+        <p class="release-status" id="release-status" aria-live="polite">Windows stable · macOS beta · Linux preview</p>
         <ul class="hero-trust" aria-label="Key benefits">
           <li><span aria-hidden="true">✓</span> No account for core features</li>
           <li><span aria-hidden="true">✓</span> Local audio processing</li>
@@ -213,11 +214,11 @@
           <div class="feature-number">03</div>
           <div class="feature-icon icon-record" aria-hidden="true"><span>r</span></div>
           <h3>Meeting memory</h3>
-          <p>Record your selected microphone from the tray. Replay the useful speech with long silence collapsed, then seek through a real waveform.</p>
+          <p>Record your selected microphone, replay only the useful speech with long silence collapsed, and request a smart local transcript whenever you need one.</p>
           <ul>
             <li>Crash-recoverable audio chunks</li>
-            <li>Searchable titles, dates, and transcripts</li>
-            <li>Original and compact playback retained</li>
+            <li>Editable, retryable transcripts for every recording</li>
+            <li>Pause-cut playback, seeking, and transcription</li>
           </ul>
         </article>
       </div>
@@ -228,7 +229,7 @@
         <div class="section-heading left-heading">
           <p class="eyebrow">Built for everyday use</p>
           <h2>Start speaking.<br>Buddy handles the rest.</h2>
-          <p>Install one Windows app. Optional local AI packs are downloaded only when needed, with clear progress and desktop notifications.</p>
+          <p>Install the build for your desktop. Optional local AI packs are downloaded only when needed, with clear progress and notifications.</p>
         </div>
         <ol class="steps-list">
           <li>
@@ -256,8 +257,8 @@
           <a href="#faq" class="text-link">Read the privacy answers <span aria-hidden="true">→</span></a>
         </div>
         <div class="privacy-facts">
-          <div><span class="fact-mark" aria-hidden="true">01</span><strong>Local audio</strong><p>Your recordings remain in your Windows profile.</p></div>
-          <div><span class="fact-mark" aria-hidden="true">02</span><strong>Protected keys</strong><p>Provider credentials are protected with Windows DPAPI.</p></div>
+          <div><span class="fact-mark" aria-hidden="true">01</span><strong>Local audio</strong><p>Your recordings remain in your operating-system profile.</p></div>
+          <div><span class="fact-mark" aria-hidden="true">02</span><strong>Protected keys</strong><p>Provider credentials use operating-system secure storage.</p></div>
           <div><span class="fact-mark" aria-hidden="true">03</span><strong>Your choice</strong><p>Use hosted text AI or download Qwen for local answers.</p></div>
         </div>
       </div>
@@ -301,6 +302,10 @@
           <p>The app is self-contained. Larger speech and local AI model packs are installed on demand with progress and completion notifications, so you do not wait for components you may never use.</p>
         </details>
         <details>
+          <summary>Which desktop platforms are supported?</summary>
+          <p>Windows 10/11 x64 is stable. macOS 13+ builds for Apple Silicon and Intel are beta and currently use the Dock instead of a menu-bar item. Ubuntu 24.04+ x64 is an experimental GTK4 preview; its tray needs a StatusNotifier-compatible desktop. Local Qwen remains Windows-only.</p>
+        </details>
+        <details>
           <summary>Is pronunciation feedback an accent score?</summary>
           <p>No. Buddy uses word timing and recognition confidence to flag passages worth reviewing. IPA is a guide, not a judgement of your accent or identity.</p>
         </details>
@@ -310,17 +315,33 @@
     <section class="download-section" id="download">
       <div class="section-shell download-panel">
         <div>
-          <p class="eyebrow eyebrow-light">Chitchat Buddy 0.3.0 · Windows 11 x64</p>
+          <p class="eyebrow eyebrow-light">Chitchat Buddy 0.4.0 · three desktop hosts</p>
           <h2>Your next thought deserves a better second take.</h2>
           <p>Install Buddy, choose your microphone, and start with the features that work locally from day one.</p>
         </div>
         <div class="download-options">
           <a class="download-card primary-download" data-download-asset="Buddy-Setup.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe">
-            <span class="download-copy"><strong>Download installer</strong><small>Recommended · guided Windows setup</small></span>
+            <span class="download-copy"><strong>Windows installer</strong><small>Stable · x64 · guided setup</small></span>
             <span class="download-arrow" aria-hidden="true">↓</span>
           </a>
           <a class="download-card" data-download-asset="Buddy.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy.exe">
-            <span class="download-copy"><strong>Portable executable</strong><small>Single-file app · no installer</small></span>
+            <span class="download-copy"><strong>Windows portable</strong><small>Stable · x64 · single executable</small></span>
+            <span class="download-arrow" aria-hidden="true">↓</span>
+          </a>
+          <a class="download-card" data-download-asset="Buddy-macOS-arm64-beta.zip" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-macOS-arm64-beta.zip">
+            <span class="download-copy"><strong>macOS Apple Silicon</strong><small>Beta · arm64 · ad-hoc signed</small></span>
+            <span class="download-arrow" aria-hidden="true">↓</span>
+          </a>
+          <a class="download-card" data-download-asset="Buddy-macOS-x64-beta.zip" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-macOS-x64-beta.zip">
+            <span class="download-copy"><strong>macOS Intel</strong><small>Beta · x64 · ad-hoc signed</small></span>
+            <span class="download-arrow" aria-hidden="true">↓</span>
+          </a>
+          <a class="download-card" data-download-asset="Buddy-Linux-x64-preview.deb" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Linux-x64-preview.deb">
+            <span class="download-copy"><strong>Linux Debian package</strong><small>Preview · Ubuntu 24.04+ x64</small></span>
+            <span class="download-arrow" aria-hidden="true">↓</span>
+          </a>
+          <a class="download-card" data-download-asset="Buddy-Linux-x64-preview.tar.gz" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Linux-x64-preview.tar.gz">
+            <span class="download-copy"><strong>Linux portable bundle</strong><small>Preview · GTK4 · x64</small></span>
             <span class="download-arrow" aria-hidden="true">↓</span>
           </a>
           <a class="release-link" data-release-link href="https://github.com/__BUDDY_REPOSITORY__/releases/latest">Release notes and file checksums <span aria-hidden="true">↗</span></a>
@@ -334,14 +355,14 @@
     <div class="section-shell footer-grid">
       <div>
         <a class="brand footer-brand" href="./"><span class="brand-mark" aria-hidden="true">b</span><span>Chitchat Buddy</span></a>
-        <p>A thoughtful speech companion for Windows.</p>
+        <p>A thoughtful speech companion for Windows, macOS, and Linux.</p>
       </div>
       <div class="footer-links">
         <a href="#features">Features</a>
         <a href="#privacy">Privacy</a>
         <a data-release-link href="https://github.com/__BUDDY_REPOSITORY__/releases/latest">GitHub releases</a>
       </div>
-      <p class="footer-note">Built for Windows 11. Review bundled third-party notices before redistributing binaries.</p>
+      <p class="footer-note">Windows is stable; macOS is beta; Linux GTK4 is preview. Review bundled third-party notices before redistributing binaries.</p>
     </div>
   </footer>
 

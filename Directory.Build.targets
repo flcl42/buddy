@@ -20,10 +20,47 @@
     <ItemGroup>
       <UnusedKokoroVoice Include="$(OutputPath)voices\*.npy"
                          Exclude="$(OutputPath)voices\af_heart.npy;$(OutputPath)voices\am_michael.npy;$(OutputPath)voices\bf_emma.npy;$(OutputPath)voices\bm_george.npy;$(OutputPath)voices\ef_dora.npy;$(OutputPath)voices\ff_siwis.npy" />
-      <UnusedEspeakBinary Include="$(OutputPath)espeak\espeak-ng-linux-*.dll;$(OutputPath)espeak\espeak-ng-macos-*.dll;$(OutputPath)espeak\espeak-ng-win-arm64.dll" />
+      <UnusedEspeakBinary Include="$(OutputPath)espeak\espeak-ng-win-*.dll"
+                         Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'" />
+      <UnusedEspeakBinary Include="$(OutputPath)espeak\espeak-ng-linux-*.dll"
+                         Condition="!$([System.String]::Copy('$(RuntimeIdentifier)').StartsWith('linux-'))" />
+      <UnusedEspeakBinary Include="$(OutputPath)espeak\espeak-ng-macos-*.dll"
+                         Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'maccatalyst'" />
+      <UnusedEspeakBinary Include="$(OutputPath)espeak\espeak-ng-macos-amd64.dll"
+                         Condition="'$(RuntimeIdentifier)' == 'maccatalyst-arm64'" />
+      <UnusedEspeakBinary Include="$(OutputPath)espeak\espeak-ng-macos-arm64.dll"
+                         Condition="'$(RuntimeIdentifier)' == 'maccatalyst-x64'" />
+      <UnusedEspeakBinary Include="$(OutputPath)espeak\espeak-ng-win-arm64.dll"
+                         Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' and '$(RuntimeIdentifier)' != 'win-arm64'" />
     </ItemGroup>
     <Delete Files="@(UnusedKokoroVoice);@(UnusedEspeakBinary)" />
     <RemoveDir Directories="$(OutputPath)voices\voices-zh" />
+  </Target>
+
+  <Target Name="PrepareBuddyPortablePublishContent"
+          BeforeTargets="_HandleFileConflictsForPublish"
+          DependsOnTargets="CopyContent;PruneUnusedKokoroRuntimeContent"
+          Condition="'$(MSBuildProjectName)' == 'Buddy.App.Linux' or ('$(MSBuildProjectName)' == 'Buddy.App' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst')">
+    <PropertyGroup>
+      <BuddyWhisperRuntimeFolder Condition="'$(RuntimeIdentifier)' == 'linux-x64'">linux-x64</BuddyWhisperRuntimeFolder>
+      <BuddyWhisperRuntimeFolder Condition="'$(RuntimeIdentifier)' == 'linux-arm64'">linux-arm64</BuddyWhisperRuntimeFolder>
+      <BuddyWhisperRuntimeFolder Condition="'$(RuntimeIdentifier)' == 'maccatalyst-x64'">macos-x64</BuddyWhisperRuntimeFolder>
+      <BuddyWhisperRuntimeFolder Condition="'$(RuntimeIdentifier)' == 'maccatalyst-arm64'">macos-arm64</BuddyWhisperRuntimeFolder>
+    </PropertyGroup>
+    <ItemGroup>
+      <BuddyVoiceFile Include="$(OutputPath)voices\**\*" />
+      <BuddyEspeakFile Include="$(OutputPath)espeak\**\*" />
+      <BuddyForeignWhisperRuntime Include="@(ResolvedFileToPublish)"
+          Condition="'$(BuddyWhisperRuntimeFolder)' != '' and $([System.Text.RegularExpressions.Regex]::IsMatch('%(ResolvedFileToPublish.RelativePath)', '^runtimes[\\/](?!$(BuddyWhisperRuntimeFolder)[\\/])(?:linux|macos|win)[^\\/]*[\\/].*(?:whisper|ggml)', System.Text.RegularExpressions.RegexOptions.IgnoreCase))" />
+
+      <ResolvedFileToPublish Remove="@(BuddyForeignWhisperRuntime)" />
+      <ResolvedFileToPublish Include="@(BuddyVoiceFile)"
+          RelativePath="voices\%(RecursiveDir)%(Filename)%(Extension)"
+          CopyToPublishDirectory="PreserveNewest" />
+      <ResolvedFileToPublish Include="@(BuddyEspeakFile)"
+          RelativePath="espeak\%(RecursiveDir)%(Filename)%(Extension)"
+          CopyToPublishDirectory="PreserveNewest" />
+    </ItemGroup>
   </Target>
 
   <Target Name="PruneForeignWhisperRuntimes"

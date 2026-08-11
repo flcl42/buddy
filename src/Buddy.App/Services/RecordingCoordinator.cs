@@ -1,6 +1,5 @@
 using Buddy.App.State;
 using Buddy.App.WinUI;
-using Buddy.Audio.Windows;
 using Buddy.Core.Abstractions;
 using Buddy.Core.Domain;
 using Buddy.Persistence;

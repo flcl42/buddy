@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Buddy.Audio.Portable\Buddy.Audio.Portable.csproj" />
     <ProjectReference Include="..\..\src\Buddy.Core\Buddy.Core.csproj" />
   </ItemGroup>
 

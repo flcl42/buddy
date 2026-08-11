@@ -6,6 +6,7 @@ using Buddy.App.Services;
 using Buddy.App.State;
 using Buddy.Core.Abstractions;
 using Buddy.Core.Domain;
+using Buddy.Core.Services;
 using Buddy.Language;
 using Buddy.Persistence;
 using Buddy.Speech;
@@ -383,6 +384,10 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         IsLoading = true;
         try
         {
+            Dictionary<Guid, RecordingTranscriptUiState> transcriptUiStates =
+                Recordings.ToDictionary(
+                    card => card.Id,
+                    card => card.CaptureTranscriptUiState());
             IReadOnlyList<Recording> recordings = await _recordings.ListAsync(
                     new RecordingQuery(
                         Search: string.IsNullOrWhiteSpace(SearchText) ? null : SearchText.Trim()))
@@ -394,21 +399,35 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
                 IReadOnlyList<AudioArtifact> artifacts = await _recordings
                     .GetAudioArtifactsAsync(recording.Id)
                     .ConfigureAwait(true);
-                AudioArtifact? playbackArtifact = SelectPlaybackArtifact(artifacts);
+                AudioArtifact? playbackArtifact =
+                    CanonicalAudioArtifactSelector.Select(artifacts);
                 AudioWaveform? waveform = playbackArtifact is null
                     ? null
                     : await _recordings
                         .GetAudioWaveformAsync(playbackArtifact.Id)
                         .ConfigureAwait(true);
+                IReadOnlyList<TranscriptRevision> revisions = await _recordings
+                    .GetTranscriptRevisionsAsync(recording.Id)
+                    .ConfigureAwait(true);
+                TranscriptRevision? sourceTranscript =
+                    EditableRecordingTranscriptSelector.Select(revisions);
                 RecordingCardViewModel card = new(
                     recording,
                     playbackArtifact,
-                    waveform)
+                    waveform,
+                    sourceTranscript)
                 {
                     IsPlaying = playbackArtifact is not null
                         && IsArtifactLoaded(playbackArtifact)
                         && _playback.IsPlaying,
                 };
+                if (transcriptUiStates.TryGetValue(
+                        recording.Id,
+                        out RecordingTranscriptUiState? transcriptState))
+                {
+                    card.RestoreTranscriptUiState(transcriptState);
+                }
+
                 Recordings.Add(card);
             }
 
@@ -849,6 +868,109 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     }
 
     [RelayCommand]
+    private void ToggleRecordingTranscript(RecordingCardViewModel card)
+    {
+        ArgumentNullException.ThrowIfNull(card);
+        AudioOperationMessage = null;
+        card.IsTranscriptExpanded = !card.IsTranscriptExpanded;
+    }
+
+    [RelayCommand]
+    private async Task RequestRecordingTranscriptionAsync(
+        RecordingCardViewModel card)
+    {
+        ArgumentNullException.ThrowIfNull(card);
+        if (!card.CanRequestTranscription)
+        {
+            return;
+        }
+
+        card.IsTranscriptExpanded = true;
+        AudioOperationMessage = null;
+        try
+        {
+            if (card.IsTranscriptDirty)
+            {
+                await SaveRecordingTranscriptCoreAsync(card).ConfigureAwait(true);
+            }
+
+            await _localSetup
+                .EnsureSpeechRecognitionAsync()
+                .ConfigureAwait(true);
+            await _speechProcessing
+                .QueueTranscriptionAsync(
+                    card.Id,
+                    replaceCurrent: card.HasTranscript)
+                .ConfigureAwait(true);
+        }
+        catch (OperationCanceledException)
+        {
+            AudioOperationMessage =
+                _localization.Get("TranscriptionSetupPaused");
+        }
+        catch (Exception error) when (
+            error is HttpRequestException
+                or IOException
+                or InvalidDataException
+                or UnauthorizedAccessException
+                or InvalidOperationException
+                or NotSupportedException)
+        {
+            AudioOperationMessage = error.Message;
+        }
+    }
+
+    [RelayCommand]
+    private async Task SaveRecordingTranscriptAsync(
+        RecordingCardViewModel card)
+    {
+        ArgumentNullException.ThrowIfNull(card);
+        if (!card.CanSaveTranscript)
+        {
+            return;
+        }
+
+        try
+        {
+            AudioOperationMessage = null;
+            await SaveRecordingTranscriptCoreAsync(card).ConfigureAwait(true);
+            AudioOperationMessage = _localization.Get("TranscriptSaved");
+        }
+        catch (Exception error) when (
+            error is IOException
+                or InvalidOperationException
+                or UnauthorizedAccessException)
+        {
+            AudioOperationMessage = error.Message;
+        }
+    }
+
+    [RelayCommand]
+    private async Task CopyRecordingTranscriptAsync(
+        RecordingCardViewModel card)
+    {
+        ArgumentNullException.ThrowIfNull(card);
+        if (!card.HasTranscript)
+        {
+            return;
+        }
+
+        try
+        {
+            await Clipboard.Default
+                .SetTextAsync(card.TranscriptText)
+                .ConfigureAwait(true);
+            AudioOperationMessage = _localization.Get("TranscriptCopied");
+        }
+        catch (Exception error) when (
+            error is InvalidOperationException
+                or NotSupportedException)
+        {
+            AudioOperationMessage = error.Message;
+        }
+    }
+
+    [RelayCommand]
     private async Task SeekRecordingAsync(WaveformSeekRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
@@ -1124,16 +1246,7 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         IReadOnlyList<AudioArtifact> artifacts = await _recordings
             .GetAudioArtifactsAsync(recordingId)
             .ConfigureAwait(true);
-        return SelectPlaybackArtifact(artifacts);
-    }
-
-    private static AudioArtifact? SelectPlaybackArtifact(
-        IReadOnlyList<AudioArtifact> artifacts)
-    {
-        return artifacts.FirstOrDefault(
-                artifact => artifact.Kind == AudioArtifactKind.Compact)
-            ?? artifacts.FirstOrDefault(
-                artifact => artifact.Kind == AudioArtifactKind.Original);
+        return CanonicalAudioArtifactSelector.Select(artifacts);
     }
 
     private bool IsArtifactLoaded(AudioArtifact artifact)
@@ -1196,10 +1309,7 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         IReadOnlyList<AudioArtifact> artifacts = await _recordings
             .GetAudioArtifactsAsync(trainer.Id)
             .ConfigureAwait(true);
-        AudioArtifact? take = artifacts.FirstOrDefault(
-                artifact => artifact.Kind == AudioArtifactKind.Compact)
-            ?? artifacts.FirstOrDefault(
-                artifact => artifact.Kind == AudioArtifactKind.Original);
+        AudioArtifact? take = CanonicalAudioArtifactSelector.Select(artifacts);
         AudioArtifact? generated = artifacts
             .Where(artifact => artifact.Kind == AudioArtifactKind.TrainerGenerated)
             .OrderBy(artifact => artifact.CreatedAt)
@@ -1361,6 +1471,23 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         return edited;
     }
 
+    private async Task SaveRecordingTranscriptCoreAsync(
+        RecordingCardViewModel card)
+    {
+        string text = card.TranscriptText.Trim();
+        ArgumentException.ThrowIfNullOrWhiteSpace(text);
+        TranscriptRevision edited = CreateTranscriptRevision(
+            card.Id,
+            card.TranscriptRevisionId,
+            TranscriptRevisionKind.UserEdited,
+            text,
+            "user",
+            null,
+            isCurrent: true);
+        await _recordings.AddTranscriptRevisionAsync(edited).ConfigureAwait(true);
+        card.AcceptSavedTranscript(edited);
+    }
+
     private async Task<TranscriptRevision> SaveTrainerImprovedEditAsync(
         Guid recordingId)
     {
@@ -1459,18 +1586,24 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
             _languages.DialogLanguage);
         string localePrefix = _languages.DialogLanguage.Locale.Split('-', 2)[0];
         IEnumerable<SpeechVoice> suitable = voices.Where(voice =>
-            voice.Locale.StartsWith(
+            string.Equals(
+                voice.Locale,
+                localePrefix,
+                StringComparison.OrdinalIgnoreCase)
+            || voice.Locale.StartsWith(
                 localePrefix + "-",
                 StringComparison.OrdinalIgnoreCase));
         if (_languages.DialogLanguage.Id == "be")
         {
             suitable = suitable.Concat(voices.Where(voice =>
-                voice.Id.StartsWith(
-                    WindowsSpeechSynthesisService.VoiceIdPrefix,
-                    StringComparison.Ordinal)
-                && voice.Locale.StartsWith(
-                    "ru-",
-                    StringComparison.OrdinalIgnoreCase)));
+                PlatformSpeechVoiceIds.IsPlatformVoice(voice.Id)
+                && (string.Equals(
+                        voice.Locale,
+                        "ru",
+                        StringComparison.OrdinalIgnoreCase)
+                    || voice.Locale.StartsWith(
+                        "ru-",
+                        StringComparison.OrdinalIgnoreCase))));
         }
 
         IEnumerable<SpeechVoice> ordered = preferred is null

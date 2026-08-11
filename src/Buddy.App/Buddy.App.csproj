@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <TargetFrameworks>net10.0-windows10.0.19041.0;net10.0-maccatalyst</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <RootNamespace>Buddy.App</RootNamespace>
     <AssemblyName>Buddy</AssemblyName>
@@ -12,8 +12,18 @@
     <Description>Private microphone recorder, speech trainer, and AI dialog companion</Description>
     <Company>Buddy</Company>
     <ApplicationId>com.flcl.buddy</ApplicationId>
-    <ApplicationDisplayVersion>0.3.0</ApplicationDisplayVersion>
-    <ApplicationVersion>3</ApplicationVersion>
+    <ApplicationDisplayVersion>0.4.0</ApplicationDisplayVersion>
+    <ApplicationVersion>4</ApplicationVersion>
+    <PublishTrimmed>false</PublishTrimmed>
+    <PublishReadyToRun>false</PublishReadyToRun>
+    <PublishReadyToRunComposite>false</PublishReadyToRunComposite>
+    <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
+    <BuddyProxyEndpoint Condition="'$(BuddyProxyEndpoint)' == ''">https://rs.flcl.me:38472/v1/</BuddyProxyEndpoint>
+    <BuddyProxyCertSha256 Condition="'$(BuddyProxyCertSha256)' == ''">$(BUDDY_PROXY_CERT_SHA256)</BuddyProxyCertSha256>
+    <BuddyProxyClientKey Condition="'$(BuddyProxyClientKey)' == ''">$(BUDDY_PROXY_CLIENT_KEY)</BuddyProxyClientKey>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
     <WindowsPackageType>None</WindowsPackageType>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <WindowsAppSdkUndockedRegFreeWinRTInitialize>false</WindowsAppSdkUndockedRegFreeWinRTInitialize>
@@ -27,16 +37,18 @@
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
-    <PublishTrimmed>false</PublishTrimmed>
-    <PublishReadyToRun>false</PublishReadyToRun>
-    <PublishReadyToRunComposite>false</PublishReadyToRunComposite>
     <UseAppHost>true</UseAppHost>
-    <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
     <PublishDir Condition="'$(PublishDir)' == ''">C:\Programs\</PublishDir>
     <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
-    <BuddyProxyEndpoint Condition="'$(BuddyProxyEndpoint)' == ''">https://rs.flcl.me:38472/v1/</BuddyProxyEndpoint>
-    <BuddyProxyCertSha256 Condition="'$(BuddyProxyCertSha256)' == ''">$(BUDDY_PROXY_CERT_SHA256)</BuddyProxyCertSha256>
-    <BuddyProxyClientKey Condition="'$(BuddyProxyClientKey)' == ''">$(BUDDY_PROXY_CLIENT_KEY)</BuddyProxyClientKey>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+    <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
+    <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers>
+    <ApplicationVersion>4</ApplicationVersion>
+    <CodesignEntitlements>Platforms\MacCatalyst\Entitlements.plist</CodesignEntitlements>
+    <CreatePackage>false</CreatePackage>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -57,6 +69,10 @@
                LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">
+    <Compile Remove="Services\DpapiSecretStore.cs;Services\WindowController.cs;WinUI\**\*.cs" />
+  </ItemGroup>
+
   <ItemGroup>
     <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
       <_Parameter1>BuddyProxyEndpoint</_Parameter1>
@@ -74,14 +90,19 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" />
-    <PackageReference Include="H.NotifyIcon.Maui" />
+    <PackageReference Include="H.NotifyIcon.Maui"
+                      Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
     <PackageReference Include="Microsoft.Maui.Controls" />
-    <PackageReference Include="System.Security.Cryptography.ProtectedData" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData"
+                      Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Buddy.Audio.Windows\Buddy.Audio.Windows.csproj" />
+    <ProjectReference Include="..\Buddy.Audio.Windows\Buddy.Audio.Windows.csproj"
+                      Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'" />
+    <ProjectReference Include="..\Buddy.Audio.Portable\Buddy.Audio.Portable.csproj"
+                      Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'" />
     <ProjectReference Include="..\Buddy.Core\Buddy.Core.csproj" />
     <ProjectReference Include="..\Buddy.Language\Buddy.Language.csproj" />
     <ProjectReference Include="..\Buddy.Persistence\Buddy.Persistence.csproj" />

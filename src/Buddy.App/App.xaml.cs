@@ -20,7 +20,9 @@ public partial class App : Application
         (localization ?? throw new ArgumentNullException(nameof(localization)))
             .Apply("en");
         UserAppTheme = AppTheme.Light;
+#if WINDOWS
         SingleInstanceCoordinator.ActivationRequested += OnActivationRequested;
+#endif
         StartupDiagnostics.Write("MAUI App constructor complete");
     }
 
@@ -30,8 +32,10 @@ public partial class App : Application
         return new BuddyWindow(_mainPage);
     }
 
+#if WINDOWS
     private void OnActivationRequested(object? sender, EventArgs eventArgs)
     {
         MainThread.BeginInvokeOnMainThread(_window.Show);
     }
+#endif
 }

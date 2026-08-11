@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Chitchat Buddy — прыватны маўленчы ШІ-памочнік для Windows</title>
-  <meta name="description" content="Запісвайце свае рэплікі на сустрэчах, трэніруйце больш выразнае англійскае маўленне і вядзіце галасавыя дыялогі з кантэкстам у прыватнай праграме для Windows 11.">
+  <title>Chitchat Buddy — прыватны маўленчы ШІ-памочнік для камп'ютара</title>
+  <meta name="description" content="Запісвайце свае рэплікі, выразайце паўзы, атрымлівайце транскрыпцыю па запыце і трэніруйце дыялогі з ШІ ў Windows, macOS і Linux.">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#5b46d8">
   <meta name="color-scheme" content="light">
@@ -18,14 +18,14 @@
   <meta property="og:site_name" content="Chitchat Buddy">
   <meta property="og:locale" content="be_BY">
   <meta property="og:title" content="Chitchat Buddy — Памятайце свае словы. Кажыце іх лепш.">
-  <meta property="og:description" content="Лакальны памочнік для Windows: захоўвае вашы рэплікі, дапамагае з вымаўленнем і падтрымлівае кантэкст дыялогу з ШІ.">
+  <meta property="og:description" content="Лакальны настольны памочнік з запісамі без доўгіх паўз, рэдагаванай транскрыпцыяй, трэніроўкай вымаўлення і дыялогам з ШІ.">
   <meta property="og:url" content="__SITE_BASE_URL__/be/">
   <meta property="og:image" content="__SITE_BASE_URL__/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Buddy з галасавым дыялогам і гукавой хваляй">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Chitchat Buddy — прыватны маўленчы памочнік для Windows">
+  <meta name="twitter:title" content="Chitchat Buddy — прыватны маўленчы памочнік для камп'ютара">
   <meta name="twitter:description" content="Запісвайце, удасканальвайце і пераслухоўвайце сваё маўленне з лакальнай апрацоўкай і ШІ на ваш выбар.">
   <meta name="twitter:image" content="__SITE_BASE_URL__/og.png">
   <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
@@ -38,12 +38,12 @@
     "@type": "SoftwareApplication",
     "name": "Chitchat Buddy",
     "alternateName": "Buddy",
-    "description": "Прыватны памочнік для Windows, які захоўвае вашы рэплікі, дапамагае з вымаўленнем і падтрымлівае кантэкст дыялогу з ШІ.",
+    "description": "Прыватны настольны памочнік, які захоўвае рэплікі без доўгіх паўз, транскрыбуе, дапамагае з вымаўленнем і падтрымлівае кантэкст дыялогу з ШІ.",
     "url": "__SITE_BASE_URL__/be/",
     "downloadUrl": "https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe",
     "applicationCategory": "ProductivityApplication",
-    "operatingSystem": "Windows 11 x64",
-    "softwareVersion": "0.3.0",
+    "operatingSystem": ["Windows 10/11 x64", "macOS 13+", "Ubuntu 24.04+ x64"],
+    "softwareVersion": "0.4.0",
     "isAccessibleForFree": true,
     "inLanguage": "be",
     "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
@@ -80,11 +80,11 @@
   <main id="main">
     <section class="hero section-shell">
       <div class="hero-copy">
-        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Лакальны маўленчы памочнік для Windows 11</p>
+        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Windows стабільная · macOS бэта · Linux папярэдняя</p>
         <h1>Памятайце свае словы.<br><span>Кажыце іх лепш.</span></h1>
         <p class="hero-lede">Buddy запісвае вашы рэплікі, ператварае маўленне ў рэдагавальны працэс навучання і захоўвае кантэкст галасавога дыялогу з ШІ, а асноўная апрацоўка гуку застаецца на вашым ПК.</p>
-        <div class="hero-actions"><a class="button button-primary" data-download-asset="Buddy-Setup.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe">Спампаваць усталёўшчык</a><a class="button button-secondary" data-download-asset="Buddy.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy.exe">Партатыўная праграма</a></div>
-        <p class="release-status" id="release-status" aria-live="polite">Windows 11 x64 · Апошні выпуск на GitHub</p>
+        <div class="hero-actions"><a class="button button-primary" data-download-asset="Buddy-Setup.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe">Усталёўшчык Windows</a><a class="button button-secondary" href="#download">Іншыя платформы</a></div>
+        <p class="release-status" id="release-status" aria-live="polite">Windows стабільная · macOS бэта · Linux папярэдняя</p>
         <ul class="hero-trust" aria-label="Асноўныя перавагі"><li><span aria-hidden="true">✓</span> Асноўныя функцыі без рэгістрацыі</li><li><span aria-hidden="true">✓</span> Лакальная апрацоўка гуку</li><li><span aria-hidden="true">✓</span> Аднаўляльныя запісы</li></ul>
       </div>
       <div class="product-preview">
@@ -130,12 +130,12 @@
       <div class="feature-grid">
         <article class="feature-card feature-dialog"><div class="feature-number">01</div><div class="feature-icon icon-dialog" aria-hidden="true"><span></span><span></span></div><h3>Галасавы дыялог з ШІ</h3><p>Размаўляйце свабодна, назірайце жывую транскрыпцыю і аўтаматычна слухайце кожны адказ. Buddy захоўвае ўвесь кантэкст сеанса і чакае столькі, колькі вы задасце.</p><ul><li>Фарматаваныя адказы і натуральнае агучванне</li><li>Наладжвальная паўза перад адпраўкай рэплікі</li><li>Стандартны абмежаваны DeepSeek ад Buddy, ваш ключ або лакальны Qwen</li></ul></article>
         <article class="feature-card feature-coach"><div class="feature-number">02</div><div class="feature-icon icon-coach" aria-hidden="true"><span>Aa</span></div><h3>Трэнер маўлення</h3><p>Выпраўце памылкі распазнавання, перш чым звяртацца па дапамогу. Палепшыце граматыку, лексіку, яснасць і тон, не змяняючы сваёй думкі.</p><ul><li>МФА і ўзровень упэўненасці для кожнага слова</li><li>Рэжымы выпраўлення, натуральнасці і сцісласці</li><li>Параўнанне арыгінальнай і палепшанай версій на слых</li></ul></article>
-        <article class="feature-card feature-record"><div class="feature-number">03</div><div class="feature-icon icon-record" aria-hidden="true"><span>r</span></div><h3>Памяць сустрэч</h3><p>Запісвайце абраны мікрафон з сістэмнага трэя. Пераслухоўвайце карыснае маўленне без доўгай цішыні і пераходзьце да патрэбнага моманту на гукавой хвалі.</p><ul><li>Аўдыяфрагменты аднаўляюцца пасля збою</li><li>Пошук па назвах, датах і транскрыптах</li><li>Захоўваюцца арыгінальная і сціснутая версіі</li></ul></article>
+        <article class="feature-card feature-record"><div class="feature-number">03</div><div class="feature-icon icon-record" aria-hidden="true"><span>r</span></div><h3>Памяць сустрэч</h3><p>Запісвайце абраны мікрафон, пераслухоўвайце толькі карыснае маўленне без доўгіх паўз і запытвайце разумную лакальную транскрыпцыю калі спатрэбіцца.</p><ul><li>Аўдыяфрагменты аднаўляюцца пасля збою</li><li>Рэдагаваная паўторная транскрыпцыя кожнага запісу</li><li>Прайграванне, пошук і распазнаванне па аўдыя без паўз</li></ul></article>
       </div>
     </section>
 
     <section class="how-section" id="how-it-works"><div class="section-shell how-layout">
-      <div class="section-heading left-heading"><p class="eyebrow">Створана для штодзённай працы</p><h2>Пачніце гаварыць.<br>Астатняе зробіць Buddy.</h2><p>Усталюйце адну праграму для Windows. Дадатковыя пакеты лакальнага ШІ спампоўваюцца толькі пры патрэбе, з выразным індыкатарам прагрэсу і апавяшчэннямі.</p></div>
+      <div class="section-heading left-heading"><p class="eyebrow">Створана для штодзённай працы</p><h2>Пачніце гаварыць.<br>Астатняе зробіць Buddy.</h2><p>Усталюйце версію для сваёй сістэмы. Дадатковыя пакеты лакальнага ШІ спампоўваюцца толькі пры патрэбе, з выразным індыкатарам прагрэсу і апавяшчэннямі.</p></div>
       <ol class="steps-list">
         <li><span class="step-index">1</span><div><h3>Выберыце рэжым</h3><p>Пачніце дыялог з ШІ, запішыце трэніровачны маналог або ўключыце запіс сустрэчы з трэя.</p></div></li>
         <li><span class="step-index">2</span><div><h3>Гаварыце натуральна</h3><p>Лакальныя дэтэктар голасу і Whisper ператвараюць гук мікрафона ў надзейны тэкст, які можна рэдагаваць.</p></div></li>
@@ -145,7 +145,7 @@
 
     <section class="privacy-section section-shell" id="privacy"><div class="privacy-panel">
       <div class="privacy-copy"><p class="eyebrow eyebrow-light">Прыватнасць у самой архітэктуры</p><h2>Ваш голас не павінен быць платай за доступ.</h2><p>Аўдыя з мікрафона, распазнаванне, аналіз вымаўлення, выдаленне цішыні і сінтэз маўлення застаюцца на вашым камп'ютары. Моўныя задачы стандартна выкарыстоўваюць абмежаваны доступ Buddy да DeepSeek і адпраўляюць толькі патрэбны тэкст, але ніколі не запіс. Шлюз захоўвае хэшы ключоў і лікавыя звесткі пра выкарыстанне, а не тэкст дыялогу. З лакальным Qwen патрэбны тэкст таксама застаецца на вашым ПК.</p><a href="#faq" class="text-link">Прачытайце адказы пра прыватнасць <span aria-hidden="true">→</span></a></div>
-      <div class="privacy-facts"><div><span class="fact-mark">01</span><strong>Лакальны гук</strong><p>Запісы застаюцца ў вашым профілі Windows.</p></div><div><span class="fact-mark">02</span><strong>Абароненыя ключы</strong><p>Уліковыя даныя пастаўшчыкоў абаронены праз Windows DPAPI.</p></div><div><span class="fact-mark">03</span><strong>Выбар за вамі</strong><p>Карыстайцеся хмарным ШІ для тэксту або спампуйце Qwen для лакальных адказаў.</p></div></div>
+      <div class="privacy-facts"><div><span class="fact-mark">01</span><strong>Лакальны гук</strong><p>Запісы застаюцца ў профілі вашай аперацыйнай сістэмы.</p></div><div><span class="fact-mark">02</span><strong>Абароненыя ключы</strong><p>Уліковыя даныя захоўваюцца ў бяспечным сховішчы сістэмы.</p></div><div><span class="fact-mark">03</span><strong>Выбар за вамі</strong><p>Карыстайцеся хмарным ШІ або Qwen у Windows.</p></div></div>
     </div></section>
 
     <section class="detail-section section-shell"><div class="detail-grid">
@@ -165,15 +165,20 @@
         <details><summary>Ці пакідае мой аўдыязапіс камп'ютар?</summary><p>Не. Запіс, Whisper, аналіз вымаўлення і агучванне Kokoro выконваюцца лакальна. Стандартны абмежаваны пастаўшчык адпраўляе ў DeepSeek толькі патрэбны для задачы тэкст. Лакальны Qwen пакідае і гэты тэкст на вашым ПК.</p></details>
         <details><summary>Ці можна карыстацца Buddy без хмарнага ўліковага запісу?</summary><p>Так. Запіс, прайграванне, транскрыпцыя і лакальнае агучванне не патрабуюць яго. Выпуск утрымлівае да 1 000 адказаў або 1 000 000 токенаў абмежаванага доступу да DeepSeek — у залежнасці ад таго, які ліміт будзе дасягнуты раней. Спампуйце лакальны Qwen, каб адказы і паляпшэнні таксама заставаліся на вашым ПК.</p></details>
         <details><summary>Што спампоўвае ўсталёўшчык?</summary><p>Сама праграма аўтаномная. Буйныя маўленчыя і лакальныя ШІ-мадэлі ўсталёўваюцца пры патрэбе, з індыкатарам прагрэсу і паведамленнем пра завяршэнне. Таму не давядзецца чакаць кампанентаў, якімі вы можаце не карыстацца.</p></details>
+        <details><summary>Якія настольныя платформы падтрымліваюцца?</summary><p>Windows 10/11 x64 мае стабільную версію. Зборкі для macOS 13+ на Apple Silicon і Intel маюць статус бэта і пакуль працуюць праз Dock. Ubuntu 24.04+ x64 — эксперыментальная папярэдняя версія на GTK4; значок у трэі патрабуе сумяшчальнага з StatusNotifier асяроддзя. Лакальны Qwen пакуль толькі для Windows.</p></details>
         <details><summary>Ці з'яўляецца аналіз вымаўлення ацэнкай акцэнту?</summary><p>Не. Buddy выкарыстоўвае час слоў і ўпэўненасць распазнавання, каб адзначыць месцы, якія варта праверыць. МФА — гэта падказка, а не ацэнка вашага акцэнту або асобы.</p></details>
       </div>
     </section>
 
     <section class="download-section" id="download"><div class="section-shell download-panel">
-      <div><p class="eyebrow eyebrow-light">Chitchat Buddy 0.3.0 · Windows 11 x64</p><h2>Ваша наступная думка заслугоўвае лепшай другой спробы.</h2><p>Усталюйце Buddy, выберыце мікрафон і пачніце з функцый, якія працуюць лакальна з першага дня.</p></div>
+      <div><p class="eyebrow eyebrow-light">Chitchat Buddy 0.4.0 · тры настольныя сістэмы</p><h2>Ваша наступная думка заслугоўвае лепшай другой спробы.</h2><p>Усталюйце Buddy, выберыце мікрафон і пачніце з функцый, якія працуюць лакальна з першага дня.</p></div>
       <div class="download-options">
-        <a class="download-card primary-download" data-download-asset="Buddy-Setup.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe"><span class="download-copy"><strong>Спампаваць усталёўшчык</strong><small>Рэкамендуецца · пакрокавае ўсталяванне</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
-        <a class="download-card" data-download-asset="Buddy.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy.exe"><span class="download-copy"><strong>Партатыўная праграма</strong><small>Адзін файл · без усталявання</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card primary-download" data-download-asset="Buddy-Setup.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe"><span class="download-copy"><strong>Усталёўшчык Windows</strong><small>Стабільная · x64 · пакрокавая наладка</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card" data-download-asset="Buddy.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy.exe"><span class="download-copy"><strong>Партатыўная Windows</strong><small>Стабільная · x64 · адзін EXE-файл</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card" data-download-asset="Buddy-macOS-arm64-beta.zip" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-macOS-arm64-beta.zip"><span class="download-copy"><strong>macOS Apple Silicon</strong><small>Бэта · arm64 · часовы подпіс</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card" data-download-asset="Buddy-macOS-x64-beta.zip" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-macOS-x64-beta.zip"><span class="download-copy"><strong>macOS Intel</strong><small>Бэта · x64 · часовы подпіс</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card" data-download-asset="Buddy-Linux-x64-preview.deb" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Linux-x64-preview.deb"><span class="download-copy"><strong>Пакет Debian для Linux</strong><small>Папярэдняя · Ubuntu 24.04+ x64</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card" data-download-asset="Buddy-Linux-x64-preview.tar.gz" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Linux-x64-preview.tar.gz"><span class="download-copy"><strong>Партатыўны пакет Linux</strong><small>Папярэдняя · GTK4 · x64</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
         <a class="release-link" data-release-link href="https://github.com/__BUDDY_REPOSITORY__/releases/latest">Заўвагі да выпуску і кантрольныя сумы <span aria-hidden="true">↗</span></a>
         <p class="download-note" id="release-note" data-release-note>Спасылкі вядуць на апошні выпуск GitHub. Першыя версіі могуць быць без лічбавага подпісу; праверце апублікаваныя кантрольныя сумы.</p>
       </div>
@@ -181,9 +186,9 @@
   </main>
 
   <footer class="site-footer"><div class="section-shell footer-grid">
-    <div><a class="brand footer-brand" href="../"><span class="brand-mark" aria-hidden="true">b</span><span>Chitchat Buddy</span></a><p>Уважлівы маўленчы памочнік для Windows.</p></div>
+    <div><a class="brand footer-brand" href="../"><span class="brand-mark" aria-hidden="true">b</span><span>Chitchat Buddy</span></a><p>Уважлівы маўленчы памочнік для Windows, macOS і Linux.</p></div>
     <div class="footer-links"><a href="#features">Магчымасці</a><a href="#privacy">Прыватнасць</a><a data-release-link href="https://github.com/__BUDDY_REPOSITORY__/releases/latest">Выпускі на GitHub</a></div>
-    <p class="footer-note">Створана для Windows 11. Перад распаўсюджваннем праграмы азнаёмцеся з далучанымі паведамленнямі пра староннія кампаненты.</p>
+    <p class="footer-note">Windows стабільная, macOS бэта, Linux GTK4 папярэдняя. Перад распаўсюджваннем азнаёмцеся з паведамленнямі пра староннія кампаненты.</p>
   </div></footer>
   <script src="../config.js"></script><script src="../app.js"></script>
 </body>

@@ -1,7 +1,9 @@
 # Buddy
 
-Buddy is a Windows 11 speech companion built with .NET MAUI. It has three linked
-workflows:
+Buddy is a local-first desktop speech companion built with .NET MAUI. Windows
+11 x64 is the stable host, macOS 13+ is a Mac Catalyst beta, and Ubuntu 24.04+
+x64 is an experimental GTK4 preview. All three hosts share the same three
+linked workflows:
 
 1. Open into **Speak**, choose **AI Dialog**, talk freely, watch the local
    transcript update, get contextual answers with automatic local voice
@@ -17,15 +19,20 @@ The recorder is local-first and remains useful without a cloud provider.
 
 ## Implemented product
 
-- A tray icon with idle, recording (`r`), processing, and attention states.
+- A native Windows tray icon and Linux StatusNotifier icon with idle `b`,
+  recording `r`, processing, and attention states. The Mac Catalyst beta uses
+  its Dock icon until a native AppKit menu-bar host is added.
 - Click or double-click to reopen the window, close-to-tray behavior, and
-  single-instance activation.
+  single-instance activation on Windows; Linux tray activation reopens the
+  preview window.
 - Meeting, Monologue, and AI Dialog microphone capture through Windows WASAPI
-  shared mode.
+  shared mode or MiniAudio/Core Audio/PulseAudio/ALSA on the portable hosts.
 - Persistent microphone selection plus a four-second live input test.
 - Crash-recoverable capture chunks and a durable SQLite catalog: five-second
   chunks normally and two-second checkpoints for live dialogs.
-- Original Ogg Opus archives and compact derivatives made with Silero VAD.
+- Original Ogg Opus recovery archives and compact derivatives made with Silero
+  VAD. Compact audio is canonical for playback, seeking, waveform generation,
+  and transcription; the original remains hidden as a recovery source.
 - Natural pause compaction: speech lead-in/tail, 200 ms collapsed gaps, fades,
   and a compact-to-original timeline map.
 - Local Whisper large-v3-turbo transcription with CUDA preference and CPU
@@ -36,6 +43,9 @@ The recorder is local-first and remains useful without a cloud provider.
   complete saved conversation in a dedicated reader: Markdown formatting,
   pronunciation feedback, per-turn replay, and click-to-load word meanings all
   remain available after restart.
+- Smart transcription on demand for every recording. Recognition runs locally
+  against the pause-cut audio, can be retried, and keeps user edits as separate
+  revisions so a later recognition pass cannot overwrite a correction.
 - An editable Monologue transcript, three improvement modes, versioned
   provider-neutral results, change notes, ambiguity warnings, and
   protected-term checks.
@@ -91,8 +101,9 @@ The recorder is local-first and remains useful without a cloud provider.
   offload reserves GPU memory for Whisper, stays warm across nearby dialog
   turns, sleeps after two idle minutes, and uses a fresh process-local bearer
   key.
-- Bring-your-own credentials protected with Windows DPAPI; keys, transcript
-  content, and audio content are excluded from diagnostics.
+- Bring-your-own credentials protected with the operating system's secure
+  storage; keys, transcript content, and audio content are excluded from
+  diagnostics.
 - An in-app feedback form accepts a message and one optional PNG, JPEG, or WebP
   screenshot. It states exactly what is sent, never attaches audio or
   transcripts automatically, and routes authenticated submissions through the
@@ -106,15 +117,15 @@ See the [product specification](docs/product-specification.md), the
 
 | Job | Active implementation |
 | --- | --- |
-| Capture and playback | NAudio, Windows WASAPI shared mode |
+| Capture and playback | NAudio/WASAPI on Windows; MiniAudioEx with Core Audio or PulseAudio/ALSA on macOS and Linux |
 | Storage | Ogg Opus through Concentus; generated speech as PCM WAV |
 | Voice activity detection | Silero VAD, local |
 | Recognition | Whisper large-v3-turbo through Whisper.net, local |
 | Phonetic transcription | eSpeak NG through the bundled KokoroSharp tokenizer, local |
 | Grammar, vocabulary, titles, dialog answers | Capped Buddy DeepSeek proxy by default; direct DeepSeek with your key; or local Qwen 3.6 27B Q4_K_M through llama.cpp |
-| Speech synthesis | Kokoro 82M through KokoroSharp plus installed Windows multilingual voices, local |
+| Speech synthesis | Kokoro 82M plus Windows installed voices, macOS `say`, or Linux eSpeak NG, local |
 | Metadata and recovery queue | SQLite in WAL mode |
-| Tray integration | H.NotifyIcon.Maui |
+| Tray integration | H.NotifyIcon.Maui on Windows; StatusNotifierItem over current Tmds.DBus on Linux; Dock on Mac Catalyst beta |
 
 Kimi and OpenAI key slots are reserved for optional adapters and are explicitly
 labelled as inactive in the current build. OpenAI speech-to-text and
@@ -124,10 +135,12 @@ billing.
 
 ## Run from source
 
-Requirements:
+Requirements are .NET SDK 10.0.302 (or a compatible .NET 10 SDK) plus the host
+below.
 
-- Windows 11 x64
-- .NET SDK 10.0.302 or a compatible .NET 10 SDK
+### Windows stable
+
+- Windows 10 version 1809+ or Windows 11 x64
 - the .NET MAUI Windows workload
 
 ```powershell
@@ -135,6 +148,35 @@ dotnet workload install maui-windows
 dotnet restore Buddy.slnx
 dotnet run --project src/Buddy.App/Buddy.App.csproj
 ```
+
+### macOS beta
+
+- macOS 13+ on Apple Silicon or Intel
+- Xcode and the .NET MAUI Mac Catalyst workload
+
+```bash
+dotnet workload install maui-maccatalyst
+dotnet run --project src/Buddy.App/Buddy.App.csproj -f net10.0-maccatalyst
+```
+
+The beta has native microphone, playback, local recognition, and macOS system
+speech. It currently uses the Dock rather than a menu-bar status item, and the
+Windows-only local Qwen runtime is not offered as a supported path.
+
+### Linux GTK4 preview
+
+- Ubuntu 24.04+ x64 with GTK 4.12+, eSpeak NG, PulseAudio or ALSA, and a
+  StatusNotifier-compatible desktop for the tray icon
+- the experimental .NET MAUI GTK4 backend restored by the Linux head project
+
+```bash
+sudo apt install libgtk-4-1 espeak-ng
+dotnet run --project src/Buddy.App.Linux/Buddy.App.Linux.csproj -r linux-x64
+```
+
+GNOME requires an AppIndicator/StatusNotifier extension for tray icons. The
+preview remains usable from its application window when no watcher is present.
+Local Qwen is currently Windows-only; choose Buddy Trial or direct DeepSeek.
 
 The first launch is blocked by a one-time setup screen. Interface language can
 be switched immediately among English, Беларуская, and Русский; dialog speech
@@ -215,7 +257,7 @@ the installed executable. To create both distributable assets, install Inno
 Setup 6 and run:
 
 ```powershell
-.\scripts\build-installer.ps1 -Version 0.3.0
+.\scripts\build-installer.ps1 -Version 0.4.0
 ```
 
 This produces `artifacts\release\Buddy-Setup.exe` and the portable
@@ -227,13 +269,21 @@ so Windows may show an unknown-publisher warning. Run
 
 On first launch, .NET extracts the versioned native speech runtime into its
 per-user bundle cache; the portable app needs no companion files beside
-`Buddy.exe`. Personal recordings and speech models remain in `H:\Buddy` when
-`H:` is available, or `%LOCALAPPDATA%\Buddy` on other PCs; `BUDDY_DATA_ROOT`
-overrides that choice. Whisper, Silero, and Kokoro are fetched only when needed
-with resumable verified downloads. Selecting local Qwen starts
+`Buddy.exe`. On Windows, personal recordings and speech models remain in
+`H:\Buddy` when `H:` is available, or `%LOCALAPPDATA%\Buddy` on other PCs;
+`BUDDY_DATA_ROOT` overrides that choice. Whisper, Silero, and Kokoro are fetched
+only when needed with resumable verified downloads. Selecting local Qwen starts
 its approximately 21.5 GB verified model/runtime setup. Qwen lives under
 `H:\BuddyAI` when `H:` is available; set `BUDDY_AI_ROOT` before launch to use
 another root.
+
+Tagged releases also build `Buddy-macOS-arm64-beta.zip`,
+`Buddy-macOS-x64-beta.zip`, `Buddy-Linux-x64-preview.deb`, and
+`Buddy-Linux-x64-preview.tar.gz`. macOS archives are ad-hoc signed rather than
+notarized; Linux uses an experimental MAUI backend. Those tiers are intentional
+and are not represented as having the same production maturity as Windows.
+On macOS and Linux, data defaults to the platform local-application-data folder;
+`BUDDY_DATA_ROOT` and `BUDDY_AI_ROOT` remain available overrides.
 
 ## Data and privacy
 
@@ -263,7 +313,7 @@ dotnet format Buddy.slnx --no-restore --verify-no-changes
 dotnet build src/Buddy.App/Buddy.App.csproj --no-restore
 ```
 
-The application has 138 automated tests across domain and turn rules,
+The application has automated tests across domain and turn rules,
 schema reset/archive recovery and dialog persistence, speaker-aware provider
 routing and local-Qwen authentication/context handling,
 configurable/resettable silence boundaries, durable

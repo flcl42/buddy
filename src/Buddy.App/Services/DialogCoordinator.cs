@@ -1440,7 +1440,7 @@ public sealed class DialogCoordinator : IAsyncDisposable
             if (started)
             {
                 string outputName = _playback.OutputDeviceName
-                    ?? "the Windows default speaker";
+                    ?? "the system default speaker";
                 StartupDiagnostics.Write(
                     $"Dialog automatic playback started; artifact={artifact.Id:D}; "
                     + $"output={outputName}; duration_ms={_playback.Duration.TotalMilliseconds:F0}");

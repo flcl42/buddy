@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Concentus" />
+    <PackageReference Include="Concentus.Oggfile" />
+    <PackageReference Include="JAJ.Packages.MiniAudioEx" />
+    <PackageReference Include="NAudio" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Buddy.Core\Buddy.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Buddy.Audio.Windows\AudioWaveformService.cs"
+             Link="Processing\AudioWaveformService.cs" />
+    <Compile Include="..\Buddy.Audio.Windows\ISeekablePlaybackSource.cs"
+             Link="Processing\ISeekablePlaybackSource.cs" />
+    <Compile Include="..\Buddy.Audio.Windows\MonoMixingSampleProvider.cs"
+             Link="Processing\MonoMixingSampleProvider.cs" />
+    <Compile Include="..\Buddy.Audio.Windows\OggOpusAudioArchiveService.cs"
+             Link="Processing\OggOpusAudioArchiveService.cs" />
+    <Compile Include="..\Buddy.Audio.Windows\OpusOggPlaybackSource.cs"
+             Link="Processing\OpusOggPlaybackSource.cs" />
+    <Compile Include="..\Buddy.Audio.Windows\RawCaptureSampleProvider.cs"
+             Link="Processing\RawCaptureSampleProvider.cs" />
+    <Compile Include="..\Buddy.Audio.Windows\SpeechAudioPreparationService.cs"
+             Link="Processing\SpeechAudioPreparationService.cs" />
+    <Compile Include="..\Buddy.Audio.Windows\WavePlaybackSource.cs"
+             Link="Processing\WavePlaybackSource.cs" />
+  </ItemGroup>
+</Project>

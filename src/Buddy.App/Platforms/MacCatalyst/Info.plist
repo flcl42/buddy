@@ -17,10 +17,8 @@
 	</array>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.lifestyle</string>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>arm64</string>
-	</array>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Chitchat Buddy records your microphone for meetings, speech training, and AI dialog.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

@@ -1,0 +1,109 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Buddy.App</RootNamespace>
+    <AssemblyName>Buddy</AssemblyName>
+    <ApplicationId>com.flcl.buddy</ApplicationId>
+    <ApplicationTitle>Chitchat Buddy</ApplicationTitle>
+    <ApplicationDisplayVersion>0.4.0-preview</ApplicationDisplayVersion>
+    <ApplicationVersion>4</ApplicationVersion>
+    <Authors>Buddy</Authors>
+    <Description>Private microphone recorder, speech trainer, and AI dialog companion</Description>
+    <PackageProjectUrl>https://github.com/flcl42/buddy</PackageProjectUrl>
+    <DebMaintainer>Buddy</DebMaintainer>
+    <DebDescription>Chitchat Buddy local-first speech companion</DebDescription>
+    <DebCategories>AudioVideo;Utility;</DebCategories>
+    <DebDepends>libgtk-4-1 (&gt;= 4.12.0), espeak-ng</DebDepends>
+    <MauiXamlInflator>SourceGen</MauiXamlInflator>
+    <PublishTrimmed>false</PublishTrimmed>
+    <PublishSingleFile>false</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <BuddyProxyEndpoint Condition="'$(BuddyProxyEndpoint)' == ''">https://rs.flcl.me:38472/v1/</BuddyProxyEndpoint>
+    <BuddyProxyCertSha256 Condition="'$(BuddyProxyCertSha256)' == ''">$(BUDDY_PROXY_CERT_SHA256)</BuddyProxyCertSha256>
+    <BuddyProxyClientKey Condition="'$(BuddyProxyClientKey)' == ''">$(BUDDY_PROXY_CLIENT_KEY)</BuddyProxyClientKey>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>None</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
+    <PackageReference Include="Microsoft.Maui.Controls" />
+    <PackageReference Include="Microsoft.Maui.Platforms.Linux.Gtk4" />
+    <PackageReference Include="NAudio" />
+    <PackageReference Include="Tmds.DBus.Protocol" />
+    <PackageReference Include="Tmds.DBus.Generator"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false"
+                      PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="DBusXml\org.kde.StatusNotifierItem.xml"
+                     Namespace="Buddy.App.LinuxTray"
+                     DBusGeneratorMode="Handler" />
+    <AdditionalFiles Include="DBusXml\org.kde.StatusNotifierWatcher.xml"
+                     Namespace="Buddy.App.LinuxTray"
+                     DBusGeneratorMode="Proxy" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Buddy.Audio.Portable\Buddy.Audio.Portable.csproj" />
+    <ProjectReference Include="..\Buddy.Core\Buddy.Core.csproj" />
+    <ProjectReference Include="..\Buddy.Language\Buddy.Language.csproj" />
+    <ProjectReference Include="..\Buddy.Persistence\Buddy.Persistence.csproj" />
+    <ProjectReference Include="..\Buddy.Speech\Buddy.Speech.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Buddy.App\App.xaml.cs" Link="App.xaml.cs" />
+    <Compile Include="..\Buddy.App\BuddyWindow.cs" Link="BuddyWindow.cs" />
+    <Compile Include="..\Buddy.App\MainPage.xaml.cs" Link="MainPage.xaml.cs" />
+    <Compile Include="..\Buddy.App\WindowPlacement.cs" Link="WindowPlacement.cs" />
+    <Compile Include="..\Buddy.App\Controls\**\*.cs" Link="Controls\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\Buddy.App\Services\**\*.cs"
+             Exclude="..\Buddy.App\Services\DpapiSecretStore.cs;..\Buddy.App\Services\WindowController.cs"
+             Link="Services\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\Buddy.App\State\**\*.cs" Link="State\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\Buddy.App\ViewModels\**\*.cs" Link="ViewModels\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <MauiXaml Include="..\Buddy.App\App.xaml" Link="App.xaml" />
+    <MauiXaml Include="..\Buddy.App\MainPage.xaml" Link="MainPage.xaml" />
+    <MauiXaml Include="..\Buddy.App\Controls\DialogMessageCardView.xaml"
+               Link="Controls\DialogMessageCardView.xaml" />
+    <MauiXaml Include="..\Buddy.App\Resources\Styles\Colors.xaml"
+               Link="Resources\Styles\Colors.xaml" />
+    <MauiXaml Include="..\Buddy.App\Resources\Styles\Styles.xaml"
+               Link="Resources\Styles\Styles.xaml" />
+    <MauiIcon Include="..\Buddy.App\Resources\AppIcon\appicon.svg"
+              Link="Resources\AppIcon\appicon.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>BuddyProxyEndpoint</_Parameter1>
+      <_Parameter2>$(BuddyProxyEndpoint)</_Parameter2>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>BuddyProxyCertSha256</_Parameter1>
+      <_Parameter2>$(BuddyProxyCertSha256)</_Parameter2>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>BuddyProxyClientKey</_Parameter1>
+      <_Parameter2>$(BuddyProxyClientKey)</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\THIRD-PARTY-NOTICES.md"
+          Link="THIRD-PARTY-NOTICES.md"
+          CopyToOutputDirectory="PreserveNewest"
+          CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

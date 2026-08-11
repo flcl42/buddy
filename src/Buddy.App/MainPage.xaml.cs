@@ -1,3 +1,4 @@
+#if WINDOWS
 using System.Collections.Specialized;
 using System.ComponentModel;
 using Buddy.App.State;
@@ -609,3 +610,286 @@ public partial class MainPage : ContentPage
         return largest;
     }
 }
+#else
+using System.Collections.Specialized;
+using System.ComponentModel;
+using Buddy.App.Services;
+using Buddy.App.State;
+using Buddy.App.ViewModels;
+using Buddy.App.WinUI;
+
+namespace Buddy.App;
+
+public partial class MainPage : ContentPage
+{
+    private readonly MainViewModel _viewModel;
+    private readonly IDesktopTrayService _tray;
+    private readonly DialogScrollFollowState _dialogScrollFollow = new();
+    private readonly HashSet<DialogMessageViewModel> _observedDialogMessages = [];
+    private bool _loaded;
+    private bool _dialogScrollScheduled;
+    private int _dialogScrollGeneration;
+
+    public MainPage(
+        MainViewModel viewModel,
+        IDesktopTrayService tray)
+    {
+        StartupDiagnostics.Write("MainPage constructor before InitializeComponent");
+        _viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
+        _tray = tray ?? throw new ArgumentNullException(nameof(tray));
+        InitializeComponent();
+        BindingContext = _viewModel;
+        _viewModel.Dialog.Messages.CollectionChanged += OnDialogMessagesChanged;
+        SynchronizeDialogMessageSubscriptions();
+        _viewModel.PropertyChanged += OnViewModelPropertyChanged;
+        _viewModel.Runtime.PropertyChanged += OnRuntimePropertyChanged;
+        _tray.Update(_viewModel.Runtime.Mode, _viewModel.Runtime.TrayToolTip);
+        StartupDiagnostics.Write("MainPage constructor complete");
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        if (_loaded)
+        {
+            return;
+        }
+
+        _loaded = true;
+        StartupDiagnostics.Write("MainPage InitializeAsync starting");
+        await _tray.InitializeAsync(_viewModel);
+        await _viewModel.InitializeAsync();
+        if (_viewModel.IsDialogMode
+            && _viewModel.Dialog.Messages.Count > 0
+            && _dialogScrollFollow.IsFollowing)
+        {
+            QueueDialogScrollToBottom();
+        }
+
+        StartupDiagnostics.Write("MainPage InitializeAsync complete");
+    }
+
+    private void OnDialogMessagesScrolled(
+        object? sender,
+        ItemsViewScrolledEventArgs eventArgs)
+    {
+        if (_dialogScrollScheduled)
+        {
+            return;
+        }
+
+        int count = _viewModel.Dialog.Messages.Count;
+        bool isAtBottom = count == 0
+            || eventArgs.LastVisibleItemIndex >= count - 1;
+        _dialogScrollFollow.UpdatePosition(isAtBottom);
+        UpdateDialogJumpToLatestButton();
+    }
+
+    private void OnDialogMessagesChanged(
+        object? sender,
+        NotifyCollectionChangedEventArgs eventArgs)
+    {
+        SynchronizeDialogMessageSubscriptions();
+        int count = _viewModel.Dialog.Messages.Count;
+        if (count == 0)
+        {
+            CancelDialogScroll();
+            _dialogScrollFollow.Reset();
+        }
+        else if (_dialogScrollFollow.ShouldFollowAppend(eventArgs, count))
+        {
+            QueueDialogScrollToBottom();
+        }
+
+        UpdateDialogJumpToLatestButton();
+    }
+
+    private void OnDialogMessagePropertyChanged(
+        object? sender,
+        PropertyChangedEventArgs eventArgs)
+    {
+        if (sender is not DialogMessageViewModel message
+            || !AffectsDialogMessageHeight(eventArgs.PropertyName))
+        {
+            return;
+        }
+
+        int count = _viewModel.Dialog.Messages.Count;
+        int index = _viewModel.Dialog.Messages.IndexOf(message);
+        if (_dialogScrollFollow.ShouldFollowTailContentChange(index, count))
+        {
+            QueueDialogScrollToBottom();
+        }
+    }
+
+    private void OnViewModelPropertyChanged(
+        object? sender,
+        PropertyChangedEventArgs eventArgs)
+    {
+        if (eventArgs.PropertyName != nameof(MainViewModel.SelectedTabIndex)
+            && eventArgs.PropertyName != nameof(MainViewModel.SelectedSpeakMode))
+        {
+            return;
+        }
+
+        if (_viewModel.IsDialogMode && _dialogScrollFollow.IsFollowing)
+        {
+            QueueDialogScrollToBottom();
+        }
+        else if (!_viewModel.IsDialogMode)
+        {
+            CancelDialogScroll();
+        }
+
+        UpdateDialogJumpToLatestButton();
+    }
+
+    private void OnDialogMessagesHandlerChanged(object? sender, EventArgs eventArgs)
+    {
+        if (_viewModel.IsDialogMode && _dialogScrollFollow.IsFollowing)
+        {
+            QueueDialogScrollToBottom();
+        }
+    }
+
+    private void OnDialogJumpToLatestClicked(object? sender, EventArgs eventArgs)
+    {
+        _dialogScrollFollow.FollowLatest();
+        UpdateDialogJumpToLatestButton();
+        QueueDialogScrollToBottom();
+    }
+
+    private void OnRuntimePropertyChanged(
+        object? sender,
+        PropertyChangedEventArgs eventArgs)
+    {
+        if (eventArgs.PropertyName is nameof(BuddyRuntimeState.Mode)
+            or nameof(BuddyRuntimeState.TrayToolTip)
+            or nameof(BuddyRuntimeState.RecordingElapsed))
+        {
+            Dispatcher.Dispatch(
+                () => _tray.Update(
+                    _viewModel.Runtime.Mode,
+                    _viewModel.Runtime.TrayToolTip));
+        }
+    }
+
+    private void QueueDialogScrollToBottom()
+    {
+        if (!_dialogScrollFollow.IsFollowing
+            || !_viewModel.IsDialogMode
+            || _viewModel.Dialog.Messages.Count == 0)
+        {
+            UpdateDialogJumpToLatestButton();
+            return;
+        }
+
+        int generation = ++_dialogScrollGeneration;
+        _dialogScrollScheduled = true;
+        DialogMessages.Dispatcher.DispatchDelayed(
+            TimeSpan.FromMilliseconds(45),
+            () => ScrollDialogToBottom(generation, animate: _loaded));
+    }
+
+    private void ScrollDialogToBottom(int generation, bool animate)
+    {
+        if (generation != _dialogScrollGeneration
+            || !_dialogScrollFollow.IsFollowing
+            || !_viewModel.IsDialogMode
+            || _viewModel.Dialog.Messages.Count == 0)
+        {
+            CompleteDialogScroll(generation);
+            return;
+        }
+
+        DialogMessages.ScrollTo(
+            _viewModel.Dialog.Messages.Count - 1,
+            groupIndex: -1,
+            ScrollToPosition.End,
+            animate);
+        DialogMessages.Dispatcher.DispatchDelayed(
+            TimeSpan.FromMilliseconds(220),
+            () =>
+            {
+                if (generation == _dialogScrollGeneration
+                    && _dialogScrollFollow.IsFollowing
+                    && _viewModel.Dialog.Messages.Count > 0)
+                {
+                    DialogMessages.ScrollTo(
+                        _viewModel.Dialog.Messages.Count - 1,
+                        groupIndex: -1,
+                        ScrollToPosition.End,
+                        animate: false);
+                }
+
+                CompleteDialogScroll(generation);
+            });
+    }
+
+    private void CompleteDialogScroll(int generation)
+    {
+        if (generation != _dialogScrollGeneration)
+        {
+            return;
+        }
+
+        _dialogScrollScheduled = false;
+        if (_dialogScrollFollow.IsFollowing)
+        {
+            _dialogScrollFollow.UpdatePosition(isAtBottom: true);
+        }
+
+        UpdateDialogJumpToLatestButton();
+    }
+
+    private void CancelDialogScroll()
+    {
+        _dialogScrollGeneration++;
+        _dialogScrollScheduled = false;
+    }
+
+    private void SynchronizeDialogMessageSubscriptions()
+    {
+        foreach (DialogMessageViewModel message in _observedDialogMessages
+            .Where(message => !_viewModel.Dialog.Messages.Contains(message))
+            .ToArray())
+        {
+            message.PropertyChanged -= OnDialogMessagePropertyChanged;
+            _observedDialogMessages.Remove(message);
+        }
+
+        foreach (DialogMessageViewModel message in _viewModel.Dialog.Messages)
+        {
+            if (_observedDialogMessages.Add(message))
+            {
+                message.PropertyChanged += OnDialogMessagePropertyChanged;
+            }
+        }
+    }
+
+    private void UpdateDialogJumpToLatestButton()
+    {
+        DialogJumpToLatestButton.IsVisible = _viewModel.IsDialogMode
+            && _viewModel.Dialog.Messages.Count > 0
+            && !_dialogScrollFollow.IsFollowing;
+        DialogJumpToLatestButton.Text = _dialogScrollFollow.HasUnseenTail
+            ? "↓ New reply"
+            : "↓ Latest";
+    }
+
+    private static bool AffectsDialogMessageHeight(string? propertyName)
+    {
+        return propertyName is nameof(DialogMessageViewModel.HasAudio)
+            or nameof(DialogMessageViewModel.HasPronunciation)
+            or nameof(DialogMessageViewModel.HasPronunciationWords)
+            or nameof(DialogMessageViewModel.PhoneticTranscriptText)
+            or nameof(DialogMessageViewModel.PronunciationSummary)
+            or nameof(DialogMessageViewModel.IsWordLookupVisible)
+            or nameof(DialogMessageViewModel.IsWordLookupLoading)
+            or nameof(DialogMessageViewModel.WordPhoneticText)
+            or nameof(DialogMessageViewModel.WordDefinitionText)
+            or nameof(DialogMessageViewModel.WordPartOfSpeechText)
+            or nameof(DialogMessageViewModel.WordLookupError);
+    }
+}
+#endif

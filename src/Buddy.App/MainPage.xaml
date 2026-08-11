@@ -5,7 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:cards="clr-namespace:Buddy.App.ViewModels"
     xmlns:controls="clr-namespace:Buddy.App.Controls"
-    xmlns:tb="https://notifyicon.com/"
     xmlns:vm="clr-namespace:Buddy.App.ViewModels"
     x:DataType="vm:MainViewModel"
     BackgroundColor="#F4F6FA"
@@ -103,7 +102,7 @@
     </ContentPage.Resources>
 
     <Grid>
-        <tb:TaskbarIcon
+        <controls:BuddyTrayIcon
             x:Name="TrayIcon"
             DoubleClickCommand="{Binding OpenWindowCommand}"
             LeftClickCommand="{Binding OpenWindowCommand}"
@@ -136,7 +135,7 @@
                         Text="{DynamicResource ExitBuddy}" />
                 </MenuFlyout>
             </FlyoutBase.ContextFlyout>
-        </tb:TaskbarIcon>
+        </controls:BuddyTrayIcon>
 
         <Grid RowDefinitions="72,*">
             <Border
@@ -373,9 +372,9 @@
                                     <Grid
                                         ColumnDefinitions="Auto,*,Auto"
                                         ColumnSpacing="14"
-                                        RowDefinitions="Auto,Auto,Auto,44">
+                                        RowDefinitions="Auto,Auto,Auto,44,Auto">
                                         <Button
-                                            Grid.RowSpan="4"
+                                            Grid.RowSpan="5"
                                             WidthRequest="42"
                                             HeightRequest="42"
                                             BackgroundColor="#F0EFFF"
@@ -432,23 +431,37 @@
                                             Text="{Binding SpeechDurationText}"
                                             TextColor="#8A8E9E" />
 
-                                        <Button
+                                        <HorizontalStackLayout
                                             Grid.Row="2"
                                             Grid.Column="1"
                                             Grid.ColumnSpan="2"
-                                            AutomationId="OpenDialogTranscriptLink"
-                                            BackgroundColor="Transparent"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.OpenSavedDialogCommand}"
-                                            CommandParameter="{Binding .}"
-                                            FontFamily="Segoe UI Semibold"
-                                            FontSize="11"
-                                            HeightRequest="28"
-                                            HorizontalOptions="Start"
-                                            IsVisible="{Binding IsDialog}"
-                                            Padding="0"
-                                                    SemanticProperties.Description="{DynamicResource ReadSavedDialogDescription}"
-                                            Text="{DynamicResource ReadFullDialog}"
-                                            TextColor="#4F50C8" />
+                                            Spacing="16">
+                                            <Button
+                                                AutomationId="RecordingTranscriptButton"
+                                                BackgroundColor="Transparent"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ToggleRecordingTranscriptCommand}"
+                                                CommandParameter="{Binding .}"
+                                                FontFamily="Segoe UI Semibold"
+                                                FontSize="11"
+                                                HeightRequest="28"
+                                                Padding="0"
+                                                SemanticProperties.Description="{DynamicResource RecordingTranscriptDescription}"
+                                                Text="{DynamicResource Transcript}"
+                                                TextColor="#4F50C8" />
+                                            <Button
+                                                AutomationId="OpenDialogTranscriptLink"
+                                                BackgroundColor="Transparent"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dialog.OpenSavedDialogCommand}"
+                                                CommandParameter="{Binding .}"
+                                                FontFamily="Segoe UI Semibold"
+                                                FontSize="11"
+                                                HeightRequest="28"
+                                                IsVisible="{Binding IsDialog}"
+                                                Padding="0"
+                                                SemanticProperties.Description="{DynamicResource ReadSavedDialogDescription}"
+                                                Text="{DynamicResource ReadFullDialog}"
+                                                TextColor="#4F50C8" />
+                                        </HorizontalStackLayout>
 
                                         <Grid
                                             Grid.Row="3"
@@ -474,6 +487,107 @@
                                                 TextColor="#72778A"
                                                 VerticalTextAlignment="Center" />
                                         </Grid>
+
+                                        <Border
+                                            Grid.Row="4"
+                                            Grid.Column="1"
+                                            Grid.ColumnSpan="2"
+                                            Margin="0,10,0,0"
+                                            Padding="14"
+                                            BackgroundColor="#F7F8FC"
+                                            IsVisible="{Binding IsTranscriptExpanded}"
+                                            Stroke="#DDE0EC"
+                                            StrokeShape="RoundRectangle 10">
+                                            <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
+                                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                                    <VerticalStackLayout Spacing="2">
+                                                        <Label
+                                                            FontFamily="Segoe UI Semibold"
+                                                            FontSize="13"
+                                                            Text="{DynamicResource SmartTranscript}"
+                                                            TextColor="#252736" />
+                                                        <Label
+                                                            FontSize="10"
+                                                            IsVisible="{Binding HasTranscript}"
+                                                            Text="{Binding TranscriptProvenanceText}"
+                                                            TextColor="#7A7F92" />
+                                                    </VerticalStackLayout>
+                                                    <ActivityIndicator
+                                                        Grid.Column="1"
+                                                        WidthRequest="20"
+                                                        HeightRequest="20"
+                                                        Color="#5B5CE2"
+                                                        IsRunning="{Binding IsTranscribing}"
+                                                        IsVisible="{Binding IsTranscribing}" />
+                                                </Grid>
+
+                                                <Grid Grid.Row="1">
+                                                    <controls:FramedEditor
+                                                        AutomationId="RecordingTranscriptEditor"
+                                                        AutoSize="TextChanges"
+                                                        IsReadOnly="{Binding IsTranscribing}"
+                                                        IsVisible="{Binding HasTranscript}"
+                                                        MaximumHeightRequest="220"
+                                                        MinimumHeightRequest="92"
+                                                        Placeholder="{DynamicResource TranscriptPlaceholder}"
+                                                        Style="{StaticResource AppEditor}"
+                                                        Text="{Binding TranscriptText, Mode=TwoWay}"
+                                                        TextColor="#252736" />
+                                                    <Label
+                                                        FontSize="12"
+                                                        IsVisible="{Binding NeedsTranscript}"
+                                                        LineBreakMode="WordWrap"
+                                                        Text="{DynamicResource NoTranscriptYet}"
+                                                        TextColor="#666B7D" />
+                                                </Grid>
+
+                                                <FlexLayout
+                                                    Grid.Row="2"
+                                                    AlignItems="Center"
+                                                    Direction="Row"
+                                                    JustifyContent="Start"
+                                                    Wrap="Wrap">
+                                                    <Button
+                                                        Margin="0,0,8,6"
+                                                        AutomationId="TranscribeRecordingButton"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RequestRecordingTranscriptionCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        IsEnabled="{Binding CanRequestTranscription}"
+                                                        IsVisible="{Binding NeedsTranscript}"
+                                                        Style="{StaticResource PrimaryButton}"
+                                                        Text="{DynamicResource TranscribeRecording}" />
+                                                    <Button
+                                                        Margin="0,0,8,6"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RequestRecordingTranscriptionCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        IsEnabled="{Binding CanRequestTranscription}"
+                                                        IsVisible="{Binding HasTranscript}"
+                                                        Style="{StaticResource SecondaryButton}"
+                                                        Text="{DynamicResource TranscribeAgain}" />
+                                                    <Button
+                                                        Margin="0,0,8,6"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SaveRecordingTranscriptCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        IsEnabled="{Binding CanSaveTranscript}"
+                                                        IsVisible="{Binding HasTranscript}"
+                                                        Style="{StaticResource PrimaryButton}"
+                                                        Text="{DynamicResource SaveTranscript}" />
+                                                    <Button
+                                                        Margin="0,0,8,6"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CopyRecordingTranscriptCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        IsVisible="{Binding HasTranscript}"
+                                                        Style="{StaticResource SecondaryButton}"
+                                                        Text="{DynamicResource Copy}" />
+                                                    <Button
+                                                        Margin="0,0,0,6"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ToggleRecordingTranscriptCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        Style="{StaticResource SecondaryButton}"
+                                                        Text="{DynamicResource Close}" />
+                                                </FlexLayout>
+                                            </Grid>
+                                        </Border>
                                     </Grid>
                                 </Border>
                             </DataTemplate>

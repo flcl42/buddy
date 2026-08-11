@@ -551,7 +551,7 @@ public sealed partial class SettingsViewModel : ObservableObject
                 await _settings
                     .RemoveAsync(BuddySettings.OutputDeviceId)
                     .ConfigureAwait(true);
-                OutputStatus = $"Windows default · {_playback.OutputDeviceName}";
+                OutputStatus = $"System default · {_playback.OutputDeviceName}";
                 return;
             }
 
@@ -1005,13 +1005,13 @@ public sealed partial class SettingsViewModel : ObservableObject
         else if (!string.IsNullOrWhiteSpace(savedDeviceId))
         {
             MicrophoneStatus =
-                "The saved microphone is unavailable; recordings will use the Windows default.";
+                "The saved microphone is unavailable; recordings will use the system default.";
         }
         else
         {
             AudioInputDevice defaultDevice =
                 devices.FirstOrDefault(device => device.IsDefault) ?? devices[0];
-            MicrophoneStatus = $"Windows default · {defaultDevice.DisplayName}";
+            MicrophoneStatus = $"System default · {defaultDevice.DisplayName}";
         }
     }
 
@@ -1094,7 +1094,7 @@ public sealed partial class SettingsViewModel : ObservableObject
         }
         else
         {
-            OutputStatus = $"Windows default · {_playback.OutputDeviceName}";
+            OutputStatus = $"System default · {_playback.OutputDeviceName}";
         }
     }
 
@@ -1122,7 +1122,7 @@ public sealed partial class SettingsViewModel : ObservableObject
             return _outputs[deviceIndex].DisplayName;
         }
 
-        return _playback.OutputDeviceName ?? "the Windows default speaker";
+        return _playback.OutputDeviceName ?? "the system default speaker";
     }
 
     private static string FormatModelStatus(

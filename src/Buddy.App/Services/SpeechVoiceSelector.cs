@@ -35,8 +35,8 @@ public static class SpeechVoiceSelector
 
         if (language.Id == "be")
         {
-            preferred = FindWindowsVoiceByLanguage(voices, "be");
-            preferred ??= FindWindowsVoiceByLanguage(voices, "ru");
+            preferred = FindPlatformVoiceByLanguage(voices, "be");
+            preferred ??= FindPlatformVoiceByLanguage(voices, "ru");
             if (preferred is not null)
             {
                 return preferred;
@@ -55,22 +55,24 @@ public static class SpeechVoiceSelector
 
         string languagePrefix = language.Locale.Split('-', 2)[0];
         preferred = voices.FirstOrDefault(
-            voice => voice.Locale.StartsWith(
-                languagePrefix + "-",
-                StringComparison.OrdinalIgnoreCase));
+            voice => string.Equals(
+                    voice.Locale,
+                    languagePrefix,
+                    StringComparison.OrdinalIgnoreCase)
+                || voice.Locale.StartsWith(
+                    languagePrefix + "-",
+                    StringComparison.OrdinalIgnoreCase));
         return preferred;
     }
 
     public static bool RequiresKokoro(DialogLanguageOption language) =>
         language.Id is "en" or "es" or "fr";
 
-    private static SpeechVoice? FindWindowsVoiceByLanguage(
+    private static SpeechVoice? FindPlatformVoiceByLanguage(
         IReadOnlyList<SpeechVoice> voices,
         string languagePrefix) =>
         voices.FirstOrDefault(voice =>
-            voice.Id.StartsWith(
-                WindowsSpeechSynthesisService.VoiceIdPrefix,
-                StringComparison.Ordinal)
+            PlatformSpeechVoiceIds.IsPlatformVoice(voice.Id)
             && (string.Equals(
                     voice.Locale,
                     languagePrefix,

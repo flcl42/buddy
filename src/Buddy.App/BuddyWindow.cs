@@ -1,3 +1,4 @@
+#if WINDOWS
 using Buddy.App.WinUI;
 using H.NotifyIcon;
 using Microsoft.Maui;
@@ -85,3 +86,32 @@ public sealed class BuddyWindow : Window
         H.NotifyIcon.WindowExtensions.Hide(this);
     }
 }
+#else
+using Buddy.App.WinUI;
+
+namespace Buddy.App;
+
+public sealed class BuddyWindow : Window
+{
+    private bool _allowClose;
+
+    public bool IsCloseAllowed => _allowClose;
+
+    public BuddyWindow(Page page)
+        : base(page)
+    {
+        StartupDiagnostics.Write("BuddyWindow constructor starting");
+        Title = "Chitchat Buddy";
+        Width = 1_260;
+        Height = 830;
+        MinimumWidth = 900;
+        MinimumHeight = 640;
+        StartupDiagnostics.Write("BuddyWindow constructor complete");
+    }
+
+    public void AllowClose()
+    {
+        _allowClose = true;
+    }
+}
+#endif

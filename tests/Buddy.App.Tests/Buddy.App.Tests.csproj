@@ -32,6 +32,8 @@
              Link="ViewModels\DialogScrollFollowState.cs" />
     <Compile Include="..\..\src\Buddy.App\ViewModels\PronunciationWordViewModel.cs"
              Link="ViewModels\PronunciationWordViewModel.cs" />
+    <Compile Include="..\..\src\Buddy.App\ViewModels\RecordingCardViewModel.cs"
+             Link="ViewModels\RecordingCardViewModel.cs" />
     <Compile Include="..\..\src\Buddy.App\ViewModels\SpeakNavigationState.cs"
              Link="ViewModels\SpeakNavigationState.cs" />
     <Compile Include="..\..\src\Buddy.App\ViewModels\WelcomeSetupDownloadGate.cs"

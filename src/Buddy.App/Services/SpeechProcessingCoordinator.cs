@@ -1,6 +1,7 @@
 using System.Data.Common;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using Buddy.App.WinUI;
 using Buddy.Core.Abstractions;
 using Buddy.Core.Domain;
@@ -201,6 +202,71 @@ public sealed class SpeechProcessingCoordinator : IAsyncDisposable
             .ConfigureAwait(false);
     }
 
+    public async Task QueueTranscriptionAsync(
+        Guid recordingId,
+        bool replaceCurrent,
+        CancellationToken cancellationToken = default)
+    {
+        ThrowIfDisposed();
+        if (recordingId == Guid.Empty)
+        {
+            throw new ArgumentException(
+                "A recording identifier is required.",
+                nameof(recordingId));
+        }
+
+        if (!await IsWhisperReadyAsync(cancellationToken).ConfigureAwait(false))
+        {
+            throw new LocalModelNotInstalledException(
+                LocalSpeechModels.WhisperLargeV3Turbo,
+                "Whisper large-v3-turbo");
+        }
+
+        Recording recording = await GetRecordingAsync(recordingId, cancellationToken)
+            .ConfigureAwait(false);
+        if (recording.Status is RecordingStatus.Capturing
+            or RecordingStatus.FinalizingSource
+            or RecordingStatus.DetectingSpeech
+            or RecordingStatus.BuildingCompactAudio
+            or RecordingStatus.Titling
+            or RecordingStatus.Recovering)
+        {
+            throw new InvalidOperationException(
+                "Wait for this recording to finish its current processing step.");
+        }
+
+        _ = await GetSourceArtifactAsync(
+                recording.Id,
+                preferCompact: true,
+                cancellationToken)
+            .ConfigureAwait(false);
+
+        IReadOnlyList<TranscriptRevision> revisions = await _recordings
+            .GetTranscriptRevisionsAsync(recording.Id, cancellationToken)
+            .ConfigureAwait(false);
+        if (!replaceCurrent && revisions.Any(revision => revision.IsCurrent))
+        {
+            return;
+        }
+
+        if (recording.Status != RecordingStatus.Transcribing)
+        {
+            recording = await EnsureStatusAsync(
+                    recording,
+                    RecordingStatus.Transcribing,
+                    cancellationToken)
+                .ConfigureAwait(false);
+        }
+
+        await EnqueueStageAsync(
+                recording.Id,
+                BackgroundJobType.Transcribe,
+                JsonSerializer.Serialize(
+                    new TranscriptionJobRequest(replaceCurrent)),
+                cancellationToken)
+            .ConfigureAwait(false);
+    }
+
     public async ValueTask DisposeAsync()
     {
         if (_disposed)
@@ -359,6 +425,7 @@ public sealed class SpeechProcessingCoordinator : IAsyncDisposable
                 cancellationToken),
             BackgroundJobType.Transcribe => TranscribeAsync(
                 job.RecordingId.Value,
+                ReadTranscriptionRequest(job.PayloadJson).ReplaceCurrent,
                 cancellationToken),
             BackgroundJobType.GenerateTitle => GenerateTitleAsync(
                 job.RecordingId.Value,
@@ -576,6 +643,7 @@ public sealed class SpeechProcessingCoordinator : IAsyncDisposable
 
     private async Task TranscribeAsync(
         Guid recordingId,
+        bool replaceCurrent,
         CancellationToken cancellationToken)
     {
         Recording recording = await GetRecordingAsync(recordingId, cancellationToken)
@@ -583,7 +651,9 @@ public sealed class SpeechProcessingCoordinator : IAsyncDisposable
         IReadOnlyList<TranscriptRevision> revisions = await _recordings
             .GetTranscriptRevisionsAsync(recording.Id, cancellationToken)
             .ConfigureAwait(false);
-        if (revisions.Any(revision => revision.IsCurrent))
+        TranscriptRevision? previousCurrent = revisions.LastOrDefault(
+            revision => revision.IsCurrent);
+        if (!replaceCurrent && previousCurrent is not null)
         {
             if (recording.Status == RecordingStatus.Transcribing)
             {
@@ -684,10 +754,12 @@ public sealed class SpeechProcessingCoordinator : IAsyncDisposable
             DeleteAnalysisFile(analysisPath, recordingDirectory);
         }
 
+        bool promoteRecognition =
+            EditableRecordingTranscriptSelector.ShouldPromoteRecognition(previousCurrent);
         TranscriptRevision revision = new(
             Guid.NewGuid(),
             recording.Id,
-            null,
+            previousCurrent?.Id,
             TranscriptRevisionKind.Recognized,
             result.Text,
             HashText(result.Text),
@@ -695,7 +767,7 @@ public sealed class SpeechProcessingCoordinator : IAsyncDisposable
             "Whisper.net",
             result.Model,
             "buddy.transcript.v1",
-            true);
+            promoteRecognition);
         await _recordings.AddTranscriptRevisionAsync(revision, cancellationToken)
             .ConfigureAwait(false);
         if (recording.Kind == RecordingKind.Trainer)
@@ -858,10 +930,7 @@ public sealed class SpeechProcessingCoordinator : IAsyncDisposable
         IReadOnlyList<AudioArtifact> artifacts = await _recordings
             .GetAudioArtifactsAsync(recordingId, cancellationToken)
             .ConfigureAwait(false);
-        AudioArtifact? selected = artifacts.FirstOrDefault(
-                artifact => artifact.Kind == AudioArtifactKind.Compact)
-            ?? artifacts.FirstOrDefault(
-                artifact => artifact.Kind == AudioArtifactKind.Original);
+        AudioArtifact? selected = CanonicalAudioArtifactSelector.Select(artifacts);
         if (selected is null
             || await _recordings.GetAudioWaveformAsync(
                     selected.Id,
@@ -1029,10 +1098,7 @@ public sealed class SpeechProcessingCoordinator : IAsyncDisposable
         IReadOnlyList<AudioArtifact> artifacts = await _recordings
             .GetAudioArtifactsAsync(recordingId, cancellationToken)
             .ConfigureAwait(false);
-        AudioArtifact? selected = artifacts.FirstOrDefault(
-                artifact => artifact.Kind == AudioArtifactKind.Compact)
-            ?? artifacts.FirstOrDefault(
-                artifact => artifact.Kind == AudioArtifactKind.Original);
+        AudioArtifact? selected = CanonicalAudioArtifactSelector.Select(artifacts);
         if (selected is not null
             && await _recordings.GetAudioWaveformAsync(
                     selected.Id,
@@ -1101,12 +1167,27 @@ public sealed class SpeechProcessingCoordinator : IAsyncDisposable
         BackgroundJobType type,
         CancellationToken cancellationToken)
     {
+        await EnqueueStageAsync(
+                recordingId,
+                type,
+                "{}",
+                cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    private async Task EnqueueStageAsync(
+        Guid recordingId,
+        BackgroundJobType type,
+        string payloadJson,
+        CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(payloadJson);
         DateTimeOffset now = DateTimeOffset.UtcNow;
         BackgroundJob job = new(
             Guid.NewGuid(),
             recordingId,
             type,
-            "{}",
+            payloadJson,
             BackgroundJobState.Pending,
             0,
             now,
@@ -1120,6 +1201,27 @@ public sealed class SpeechProcessingCoordinator : IAsyncDisposable
             SignalWorker();
         }
     }
+
+    private static TranscriptionJobRequest ReadTranscriptionRequest(
+        string payloadJson)
+    {
+        if (string.IsNullOrWhiteSpace(payloadJson))
+        {
+            return new TranscriptionJobRequest(false);
+        }
+
+        try
+        {
+            return JsonSerializer.Deserialize<TranscriptionJobRequest>(payloadJson)
+                ?? new TranscriptionJobRequest(false);
+        }
+        catch (JsonException)
+        {
+            return new TranscriptionJobRequest(false);
+        }
+    }
+
+    private sealed record TranscriptionJobRequest(bool ReplaceCurrent);
 
     private async Task<Recording> EnsureStatusAsync(
         Recording recording,
@@ -1196,12 +1298,8 @@ public sealed class SpeechProcessingCoordinator : IAsyncDisposable
             .GetAudioArtifactsAsync(recordingId, cancellationToken)
             .ConfigureAwait(false);
         AudioArtifact? source = preferCompact
-            ? artifacts.FirstOrDefault(
-                    artifact => artifact.Kind == AudioArtifactKind.Compact)
-                ?? artifacts.FirstOrDefault(
-                    artifact => artifact.Kind == AudioArtifactKind.Original)
-            : artifacts.FirstOrDefault(
-                artifact => artifact.Kind == AudioArtifactKind.Original);
+            ? CanonicalAudioArtifactSelector.Select(artifacts)
+            : CanonicalAudioArtifactSelector.SelectOriginal(artifacts);
         return source
             ?? throw new InvalidDataException("The recording has no source audio artifact.");
     }

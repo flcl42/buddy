@@ -12,10 +12,10 @@ permissions:
   contents: read
 
 jobs:
-  validate:
-    name: Build and test on Windows
+  windows:
+    name: Windows app and complete test suite
     runs-on: windows-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
 
     steps:
       - name: Check out repository
@@ -32,11 +32,136 @@ jobs:
       - name: Restore
         run: dotnet restore Buddy.slnx
 
-      - name: Build
-        run: dotnet build Buddy.slnx --configuration Release --no-restore
+      - name: Build Windows app
+        run: >-
+          dotnet build src/Buddy.App/Buddy.App.csproj
+          --configuration Release
+          --framework net10.0-windows10.0.19041.0
+          --no-restore
 
       - name: Test
-        run: dotnet test Buddy.slnx --configuration Release --no-build --no-restore
+        shell: pwsh
+        run: |
+          Get-ChildItem tests -Recurse -Filter *.csproj | ForEach-Object {
+            dotnet test $_.FullName --configuration Release --no-restore
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
 
       - name: Verify formatting
         run: dotnet format Buddy.slnx --verify-no-changes --no-restore
+
+  linux:
+    name: Linux GTK4 preview and startup smoke test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      NUGET_PACKAGES: ${{ runner.temp }}/nuget-packages
+      BUDDY_DATA_ROOT: ${{ runner.temp }}/buddy-data
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install GTK4, speech, and headless desktop dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends \
+            dbus-x11 \
+            espeak-ng \
+            gobject-introspection \
+            libgirepository1.0-dev \
+            libgtk-4-dev \
+            pkg-config \
+            python3-dbus \
+            python3-gi \
+            xauth \
+            xvfb
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.302
+
+      - name: Restore Linux head
+        run: dotnet restore src/Buddy.App.Linux/Buddy.App.Linux.csproj --runtime linux-x64
+
+      - name: Build Linux head
+        run: >-
+          dotnet build src/Buddy.App.Linux/Buddy.App.Linux.csproj
+          --configuration Release
+          --runtime linux-x64
+          --no-restore
+
+      - name: Run portable audio tests
+        run: dotnet test tests/Buddy.Core.Tests/Buddy.Core.Tests.csproj --configuration Release
+
+      - name: Publish Linux smoke bundle
+        run: >-
+          dotnet publish src/Buddy.App.Linux/Buddy.App.Linux.csproj
+          --configuration Release
+          --runtime linux-x64
+          --self-contained true
+          --no-restore
+          --output "${{ runner.temp }}/buddy-linux"
+
+      - name: Verify Linux runtime closure
+        run: |
+          test -x "${{ runner.temp }}/buddy-linux/Buddy"
+          test -f "${{ runner.temp }}/buddy-linux/espeak/espeak-ng-linux-amd64.dll"
+          test -f "${{ runner.temp }}/buddy-linux/voices/af_heart.npy"
+          test -f "${{ runner.temp }}/buddy-linux/runtimes/linux-x64/libwhisper.so"
+          test "$(find "${{ runner.temp }}/buddy-linux/runtimes" -mindepth 1 -maxdepth 1 -type d | wc -l)" -eq 1
+
+      - name: Verify Linux startup and StatusNotifier tray protocol
+        run: bash scripts/test-linux-tray.sh "${{ runner.temp }}/buddy-linux"
+
+  macos:
+    name: macOS Catalyst beta build
+    runs-on: macos-15
+    timeout-minutes: 75
+    env:
+      NUGET_PACKAGES: ${{ runner.temp }}/nuget-packages
+
+    strategy:
+      fail-fast: false
+      matrix:
+        rid:
+          - maccatalyst-arm64
+          - maccatalyst-x64
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.302
+
+      - name: Install the .NET MAUI Mac Catalyst workload
+        run: dotnet workload install maui-maccatalyst --skip-manifest-update
+
+      - name: Restore Mac Catalyst app
+        run: >-
+          dotnet restore src/Buddy.App/Buddy.App.csproj
+          --runtime ${{ matrix.rid }}
+          -p:RuntimeIdentifiers=${{ matrix.rid }}
+
+      - name: Build Mac Catalyst app
+        run: >-
+          dotnet build src/Buddy.App/Buddy.App.csproj
+          --configuration Release
+          --framework net10.0-maccatalyst
+          --runtime ${{ matrix.rid }}
+          --no-restore
+          -p:RuntimeIdentifiers=${{ matrix.rid }}
+          -p:EnableCodeSigning=false
+
+      - name: Verify macOS system speech export
+        run: |
+          voice="$(say -v '?' | awk '$2 ~ /^en_/ { print $1; exit }')"
+          test -n "$voice"
+          say -v "$voice" --file-format=WAVE --data-format=LEI16@24000 \
+            -o "${{ runner.temp }}/buddy-speech.wav" \
+            "Chitchat Buddy speech check"
+          test -s "${{ runner.temp }}/buddy-speech.wav"

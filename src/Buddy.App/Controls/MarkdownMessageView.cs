@@ -4,7 +4,7 @@ using Buddy.Core.Domain;
 
 namespace Buddy.App.Controls;
 
-public sealed class MarkdownMessageView : View
+public sealed class MarkdownMessageView : Label
 {
     private static readonly MarkdownContentDocument EmptyDocument =
         new([], string.Empty);
@@ -14,7 +14,8 @@ public sealed class MarkdownMessageView : View
             nameof(Document),
             typeof(MarkdownContentDocument),
             typeof(MarkdownMessageView),
-            EmptyDocument);
+            EmptyDocument,
+            propertyChanged: OnDocumentChanged);
 
     public static readonly BindableProperty WordClickedCommandProperty =
         BindableProperty.Create(
@@ -57,6 +58,18 @@ public sealed class MarkdownMessageView : View
         if (WordClickedCommand?.CanExecute(request) == true)
         {
             WordClickedCommand.Execute(request);
+        }
+    }
+
+    private static void OnDocumentChanged(
+        BindableObject bindable,
+        object oldValue,
+        object newValue)
+    {
+        if (bindable is MarkdownMessageView view)
+        {
+            view.Text = (newValue as MarkdownContentDocument)?.PlainText
+                ?? string.Empty;
         }
     }
 }

@@ -8,7 +8,8 @@ public sealed partial class RecordingCardViewModel : ObservableObject
     public RecordingCardViewModel(
         Recording recording,
         AudioArtifact? playbackArtifact = null,
-        AudioWaveform? waveform = null)
+        AudioWaveform? waveform = null,
+        TranscriptRevision? sourceTranscript = null)
     {
         ArgumentNullException.ThrowIfNull(recording);
 
@@ -25,9 +26,15 @@ public sealed partial class RecordingCardViewModel : ObservableObject
             _ => "Recording",
         };
         IsDialog = recording.Kind == RecordingKind.Dialog;
-        DurationText = FormatDuration(recording.WallDuration);
+        TimeSpan canonicalDuration = playbackArtifact?.Duration
+            ?? recording.WallDuration;
+        bool isCompact = playbackArtifact?.Kind == AudioArtifactKind.Compact;
+        DurationText = FormatDuration(canonicalDuration);
         SpeechDurationText = recording.SpeechDuration > TimeSpan.Zero
-            ? $"{FormatDuration(recording.SpeechDuration)} speech"
+            ? isCompact
+                ? $"{FormatDuration(recording.WallDuration)} captured · "
+                    + $"{FormatDuration(recording.SpeechDuration)} speech"
+                : $"{FormatDuration(recording.SpeechDuration)} speech"
             : recording.Status is RecordingStatus.Ready
                 or RecordingStatus.NeedsAttention
                 ? "No speech detected"
@@ -37,6 +44,7 @@ public sealed partial class RecordingCardViewModel : ObservableObject
         IsProcessing = recording.Status is not RecordingStatus.Ready
             and not RecordingStatus.ReadyForPlayback
             and not RecordingStatus.NeedsAttention;
+        IsTranscribing = recording.Status == RecordingStatus.Transcribing;
         CanPlay = recording.Status is RecordingStatus.ReadyForPlayback
             or RecordingStatus.DetectingSpeech
             or RecordingStatus.BuildingCompactAudio
@@ -46,8 +54,14 @@ public sealed partial class RecordingCardViewModel : ObservableObject
             or RecordingStatus.NeedsAttention;
         PlaybackArtifactId = playbackArtifact?.Id;
         PlaybackArtifactRelativePath = playbackArtifact?.RelativePath;
-        PlaybackDuration = playbackArtifact?.Duration ?? recording.WallDuration;
+        PlaybackDuration = canonicalDuration;
         WaveformSamples = waveform?.Normalize() ?? CreatePlaceholderWaveform();
+        TranscriptRevisionId = sourceTranscript?.Id;
+        TranscriptText = sourceTranscript?.Text ?? string.Empty;
+        OriginalTranscriptText = TranscriptText;
+        TranscriptProvenanceText = sourceTranscript is null
+            ? string.Empty
+            : CreateTranscriptProvenance(sourceTranscript);
     }
 
     public Guid Id { get; }
@@ -70,11 +84,42 @@ public sealed partial class RecordingCardViewModel : ObservableObject
 
     public bool IsProcessing { get; }
 
+    public bool IsTranscribing { get; }
+
     public bool CanPlay { get; }
 
     public Guid? PlaybackArtifactId { get; }
 
     public string? PlaybackArtifactRelativePath { get; }
+
+    public Guid? TranscriptRevisionId { get; private set; }
+
+    public string OriginalTranscriptText { get; private set; }
+
+    public string TranscriptProvenanceText { get; private set; }
+
+    [ObservableProperty]
+    public partial bool IsTranscriptExpanded { get; set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasTranscript))]
+    [NotifyPropertyChangedFor(nameof(NeedsTranscript))]
+    [NotifyPropertyChangedFor(nameof(IsTranscriptDirty))]
+    [NotifyPropertyChangedFor(nameof(CanSaveTranscript))]
+    public partial string TranscriptText { get; set; }
+
+    public bool HasTranscript => !string.IsNullOrWhiteSpace(TranscriptText);
+
+    public bool NeedsTranscript => !HasTranscript;
+
+    public bool IsTranscriptDirty => !string.Equals(
+        TranscriptText.Trim(),
+        OriginalTranscriptText,
+        StringComparison.Ordinal);
+
+    public bool CanSaveTranscript => HasTranscript && IsTranscriptDirty;
+
+    public bool CanRequestTranscription => CanPlay && !IsTranscribing;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(PlayButtonText))]
@@ -101,6 +146,35 @@ public sealed partial class RecordingCardViewModel : ObservableObject
 
     public string TimelineText =>
         $"{FormatDuration(PlaybackPosition)} / {FormatDuration(PlaybackDuration)}";
+
+    public RecordingTranscriptUiState CaptureTranscriptUiState() => new(
+        IsTranscriptExpanded,
+        IsTranscriptDirty ? TranscriptText : null,
+        TranscriptRevisionId);
+
+    public void RestoreTranscriptUiState(RecordingTranscriptUiState state)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        IsTranscriptExpanded = state.IsExpanded;
+        if (state.DraftText is not null
+            && state.SourceRevisionId == TranscriptRevisionId)
+        {
+            TranscriptText = state.DraftText;
+        }
+    }
+
+    public void AcceptSavedTranscript(TranscriptRevision revision)
+    {
+        ArgumentNullException.ThrowIfNull(revision);
+        TranscriptRevisionId = revision.Id;
+        OriginalTranscriptText = revision.Text;
+        TranscriptText = revision.Text;
+        TranscriptProvenanceText = CreateTranscriptProvenance(revision);
+        OnPropertyChanged(nameof(TranscriptRevisionId));
+        OnPropertyChanged(nameof(TranscriptProvenanceText));
+        OnPropertyChanged(nameof(IsTranscriptDirty));
+        OnPropertyChanged(nameof(CanSaveTranscript));
+    }
 
     private static float[] CreatePlaceholderWaveform()
     {
@@ -139,7 +213,27 @@ public sealed partial class RecordingCardViewModel : ObservableObject
             _ => status.ToString(),
         };
     }
+
+    private static string CreateTranscriptProvenance(
+        TranscriptRevision revision)
+    {
+        string source = string.Join(
+            " · ",
+            new[] { revision.Provider, revision.Model }
+                .Where(value => !string.IsNullOrWhiteSpace(value)));
+        string timestamp = revision.CreatedAt.ToString(
+            "d MMM · HH:mm",
+            System.Globalization.CultureInfo.CurrentCulture);
+        return string.IsNullOrWhiteSpace(source)
+            ? timestamp
+            : $"{source} · {timestamp}";
+    }
 }
+
+public sealed record RecordingTranscriptUiState(
+    bool IsExpanded,
+    string? DraftText,
+    Guid? SourceRevisionId);
 
 public sealed record WaveformSeekRequest(
     RecordingCardViewModel Recording,

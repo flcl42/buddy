@@ -9,16 +9,16 @@ on:
       version:
         description: Three-part release version, without a leading v
         required: true
-        default: "0.3.0"
+        default: "0.4.0"
 
 permissions:
   contents: write
 
 jobs:
-  package:
-    name: Test and package Windows release
+  windows:
+    name: Package Windows stable release
     runs-on: windows-latest
-    timeout-minutes: 60
+    timeout-minutes: 75
 
     steps:
       - name: Check out repository
@@ -32,15 +32,17 @@ jobs:
       - name: Install the .NET MAUI Windows workload
         run: dotnet workload install maui-windows --skip-manifest-update
 
-      - name: Restore, build, and test
+      - name: Restore, build, test, and format
         shell: pwsh
         run: |
           dotnet restore Buddy.slnx
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          dotnet build Buddy.slnx --configuration Release --no-restore
+          dotnet build src/Buddy.App/Buddy.App.csproj --configuration Release --framework net10.0-windows10.0.19041.0 --no-restore
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          dotnet test Buddy.slnx --configuration Release --no-build --no-restore
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Get-ChildItem tests -Recurse -Filter *.csproj | ForEach-Object {
+            dotnet test $_.FullName --configuration Release --no-restore
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
           dotnet format Buddy.slnx --verify-no-changes --no-restore
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
@@ -83,32 +85,257 @@ jobs:
           & .\scripts\build-installer.ps1 -Configuration Release -Version $version
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-          $lines = @(
+          @(
             "$(Get-FileHash artifacts\release\Buddy-Setup.exe -Algorithm SHA256 | Select-Object -ExpandProperty Hash)  Buddy-Setup.exe"
             "$(Get-FileHash artifacts\release\Buddy.exe -Algorithm SHA256 | Select-Object -ExpandProperty Hash)  Buddy.exe"
-          )
-          $lines | Set-Content artifacts\release\SHA256SUMS.txt -Encoding ascii
+          ) | Set-Content artifacts\release\SHA256SUMS-Windows.txt -Encoding ascii
 
-      - name: Upload workflow artifact
+      - name: Upload Windows assets
         uses: actions/upload-artifact@v4
         with:
           name: Buddy-Windows-x64
           path: |
             artifacts/release/Buddy-Setup.exe
             artifacts/release/Buddy.exe
-            artifacts/release/SHA256SUMS.txt
+            artifacts/release/SHA256SUMS-Windows.txt
           if-no-files-found: error
 
-      - name: Publish GitHub release assets
-        if: github.ref_type == 'tag'
-        shell: pwsh
+  linux:
+    name: Package Linux GTK4 preview
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    env:
+      NUGET_PACKAGES: ${{ runner.temp }}/nuget-packages
+      BUDDY_DATA_ROOT: ${{ runner.temp }}/buddy-data
+      BUDDY_PROXY_CLIENT_KEY: ${{ secrets.BUDDY_PROXY_CLIENT_KEY }}
+      BUDDY_PROXY_CERT_SHA256: ${{ secrets.BUDDY_PROXY_CERT_SHA256 }}
+      REQUESTED_VERSION: ${{ inputs.version }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Linux build and smoke-test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends \
+            dbus-x11 \
+            espeak-ng \
+            gobject-introspection \
+            libgirepository1.0-dev \
+            libgtk-4-dev \
+            pkg-config \
+            python3-dbus \
+            python3-gi \
+            xauth \
+            xvfb
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.302
+
+      - name: Resolve release version
+        shell: bash
+        run: |
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            version="${GITHUB_REF_NAME#v}"
+          else
+            version="$REQUESTED_VERSION"
+          fi
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Release version '$version' must contain three numeric parts."
+            exit 1
+          fi
+          if [ -z "$BUDDY_PROXY_CLIENT_KEY" ] || [ -z "$BUDDY_PROXY_CERT_SHA256" ]; then
+            echo "The capped proxy key and certificate pin release secrets are required."
+            exit 1
+          fi
+          echo "BUDDY_RELEASE_VERSION=$version" >> "$GITHUB_ENV"
+
+      - name: Restore Linux head
+        run: dotnet restore src/Buddy.App.Linux/Buddy.App.Linux.csproj --runtime linux-x64
+
+      - name: Publish tar bundle and Debian package
+        shell: bash
+        run: |
+          mkdir -p artifacts/release "${{ runner.temp }}/buddy-linux"
+          dotnet publish src/Buddy.App.Linux/Buddy.App.Linux.csproj \
+            --configuration Release \
+            --runtime linux-x64 \
+            --self-contained true \
+            --no-restore \
+            --output "${{ runner.temp }}/buddy-linux" \
+            -p:ApplicationDisplayVersion="$BUDDY_RELEASE_VERSION" \
+            -p:Version="$BUDDY_RELEASE_VERSION" \
+            -p:CreateDeb=true \
+            -p:DebOutputDir="$GITHUB_WORKSPACE/artifacts/release" \
+            -p:DebFileName=Buddy-Linux-x64-preview.deb
+          tar --directory "${{ runner.temp }}/buddy-linux" \
+            --create --gzip --file artifacts/release/Buddy-Linux-x64-preview.tar.gz .
+
+      - name: Verify Linux package and startup
+        shell: bash
+        run: |
+          test -x "${{ runner.temp }}/buddy-linux/Buddy"
+          test -f "${{ runner.temp }}/buddy-linux/espeak/espeak-ng-linux-amd64.dll"
+          test -f "${{ runner.temp }}/buddy-linux/voices/af_heart.npy"
+          test -f "${{ runner.temp }}/buddy-linux/runtimes/linux-x64/libwhisper.so"
+          test "$(find "${{ runner.temp }}/buddy-linux/runtimes" -mindepth 1 -maxdepth 1 -type d | wc -l)" -eq 1
+          dpkg-deb --info artifacts/release/Buddy-Linux-x64-preview.deb
+          dpkg-deb --contents artifacts/release/Buddy-Linux-x64-preview.deb | grep '/usr/bin/buddy$'
+
+          bash scripts/test-linux-tray.sh "${{ runner.temp }}/buddy-linux"
+
+      - name: Write Linux checksums
+        working-directory: artifacts/release
+        run: >-
+          sha256sum Buddy-Linux-x64-preview.deb Buddy-Linux-x64-preview.tar.gz
+          > SHA256SUMS-Linux.txt
+
+      - name: Upload Linux assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: Buddy-Linux-x64-preview
+          path: |
+            artifacts/release/Buddy-Linux-x64-preview.deb
+            artifacts/release/Buddy-Linux-x64-preview.tar.gz
+            artifacts/release/SHA256SUMS-Linux.txt
+          if-no-files-found: error
+
+  macos:
+    name: Package macOS Catalyst beta (${{ matrix.arch }})
+    runs-on: macos-15
+    timeout-minutes: 90
+    env:
+      NUGET_PACKAGES: ${{ runner.temp }}/nuget-packages
+      BUDDY_PROXY_CLIENT_KEY: ${{ secrets.BUDDY_PROXY_CLIENT_KEY }}
+      BUDDY_PROXY_CERT_SHA256: ${{ secrets.BUDDY_PROXY_CERT_SHA256 }}
+      REQUESTED_VERSION: ${{ inputs.version }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - arm64
+          - x64
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.302
+
+      - name: Install the .NET MAUI Mac Catalyst workload
+        run: dotnet workload install maui-maccatalyst --skip-manifest-update
+
+      - name: Resolve release version
+        shell: bash
+        run: |
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            version="${GITHUB_REF_NAME#v}"
+          else
+            version="$REQUESTED_VERSION"
+          fi
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Release version '$version' must contain three numeric parts."
+            exit 1
+          fi
+          if [ -z "$BUDDY_PROXY_CLIENT_KEY" ] || [ -z "$BUDDY_PROXY_CERT_SHA256" ]; then
+            echo "The capped proxy key and certificate pin release secrets are required."
+            exit 1
+          fi
+          echo "BUDDY_RELEASE_VERSION=$version" >> "$GITHUB_ENV"
+          echo "BUDDY_RID=maccatalyst-${{ matrix.arch }}" >> "$GITHUB_ENV"
+
+      - name: Restore and publish Mac Catalyst app
+        shell: bash
+        run: |
+          dotnet restore src/Buddy.App/Buddy.App.csproj \
+            --runtime "$BUDDY_RID" \
+            -p:RuntimeIdentifiers="$BUDDY_RID"
+          dotnet publish src/Buddy.App/Buddy.App.csproj \
+            --configuration Release \
+            --framework net10.0-maccatalyst \
+            --runtime "$BUDDY_RID" \
+            --self-contained true \
+            --no-restore \
+            -p:RuntimeIdentifiers="$BUDDY_RID" \
+            -p:ApplicationDisplayVersion="$BUDDY_RELEASE_VERSION" \
+            -p:ApplicationVersion=4 \
+            -p:CreatePackage=false \
+            -p:EnableCodeSigning=false
+
+      - name: Verify and archive Mac Catalyst app
+        shell: bash
+        run: |
+          search_root="src/Buddy.App/bin/Release/net10.0-maccatalyst/$BUDDY_RID"
+          app="$(find "$search_root" -type d -name Buddy.app -print -quit)"
+          test -n "$app"
+          test -f "$(find "$app" -type f -path '*/voices/af_heart.npy' -print -quit)"
+          if [ "${{ matrix.arch }}" = "arm64" ]; then
+            test -f "$(find "$app" -type f -name espeak-ng-macos-arm64.dll -print -quit)"
+          else
+            test -f "$(find "$app" -type f -name espeak-ng-macos-amd64.dll -print -quit)"
+          fi
+          codesign --force --deep --sign - "$app"
+          codesign --verify --deep --strict "$app"
+          mkdir -p artifacts/release
+          ditto -c -k --sequesterRsrc --keepParent "$app" \
+            "artifacts/release/Buddy-macOS-${{ matrix.arch }}-beta.zip"
+          cd artifacts/release
+          shasum -a 256 "Buddy-macOS-${{ matrix.arch }}-beta.zip" \
+            > "SHA256SUMS-macOS-${{ matrix.arch }}.txt"
+
+      - name: Upload macOS asset
+        uses: actions/upload-artifact@v4
+        with:
+          name: Buddy-macOS-${{ matrix.arch }}-beta
+          path: |
+            artifacts/release/Buddy-macOS-${{ matrix.arch }}-beta.zip
+            artifacts/release/SHA256SUMS-macOS-${{ matrix.arch }}.txt
+          if-no-files-found: error
+
+  publish:
+    name: Publish GitHub release assets
+    if: github.ref_type == 'tag'
+    needs:
+      - windows
+      - linux
+      - macos
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Download packaged assets
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+
+      - name: Build combined checksums
+        shell: bash
+        working-directory: release-assets
+        run: |
+          find . -maxdepth 1 -type f \
+            ! -name 'SHA256SUMS*.txt' \
+            -printf '%f\n' \
+            | sort \
+            | xargs sha256sum > SHA256SUMS.txt
+
+      - name: Create or update GitHub release
+        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: |
-          $tag = $env:GITHUB_REF_NAME
-          gh release view $tag *> $null
-          if ($LASTEXITCODE -ne 0) {
-            gh release create $tag --title "Chitchat Buddy $($tag.TrimStart('v'))" --notes "Windows x64 release. Buddy-Setup.exe is recommended; Buddy.exe is the portable single-file build. The binaries are currently unsigned, so Windows may show a publisher warning."
-          }
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          gh release upload $tag artifacts\release\Buddy-Setup.exe artifacts\release\Buddy.exe artifacts\release\SHA256SUMS.txt --clobber
+          tag="$GITHUB_REF_NAME"
+          if ! gh release view "$tag" >/dev/null 2>&1; then
+            gh release create "$tag" \
+              --title "Chitchat Buddy ${tag#v}" \
+              --notes "Windows x64 is the stable release. macOS Catalyst builds are beta and currently use the Dock instead of a menu-bar status item. Linux x64 is a GTK4 preview and needs a StatusNotifier-compatible desktop for the tray icon. All builds keep microphone audio and speech recognition local."
+          fi
+          gh release upload "$tag" release-assets/* --clobber

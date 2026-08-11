@@ -5,9 +5,13 @@ using Windows.Media.SpeechSynthesis;
 
 namespace Buddy.Speech;
 
-public sealed class WindowsSpeechSynthesisService : ISpeechSynthesisService
+public sealed class WindowsSpeechSynthesisService : IPlatformSpeechSynthesisService
 {
-    public const string VoiceIdPrefix = "windows:";
+    public const string VoiceIdPrefix = PlatformSpeechVoiceIds.WindowsPrefix;
+
+    public bool CanSynthesize(string voiceId) =>
+        !string.IsNullOrWhiteSpace(voiceId)
+        && voiceId.StartsWith(VoiceIdPrefix, StringComparison.Ordinal);
 
     public Task<IReadOnlyList<SpeechVoice>> GetVoicesAsync(
         CancellationToken cancellationToken = default)
