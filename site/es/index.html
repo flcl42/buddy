@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Buddy — Asistente de voz con IA privada para Windows</title>
+  <title>Chitchat Buddy — Asistente de voz con IA privada para Windows</title>
   <meta name="description" content="Graba tus intervenciones en reuniones, practica un inglés más claro y mantén conversaciones de voz con contexto en un asistente privado para Windows 11.">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#5b46d8">
@@ -15,9 +15,9 @@
   <link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/">
   <link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Buddy">
+  <meta property="og:site_name" content="Chitchat Buddy">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Buddy — Recuerda tus palabras. Exprésalas mejor.">
+  <meta property="og:title" content="Chitchat Buddy — Recuerda tus palabras. Exprésalas mejor.">
   <meta property="og:description" content="Un asistente de voz local para Windows que recuerda reuniones, mejora la pronunciación y mantiene diálogos con IA.">
   <meta property="og:url" content="__SITE_BASE_URL__/es/">
   <meta property="og:image" content="__SITE_BASE_URL__/og.png">
@@ -25,7 +25,7 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Buddy con una conversación de voz y una forma de onda de audio">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Buddy — Asistente de voz privado para Windows">
+  <meta name="twitter:title" content="Chitchat Buddy — Asistente de voz privado para Windows">
   <meta name="twitter:description" content="Graba, mejora y vuelve a escuchar lo que dices, con procesamiento local y el proveedor de IA que elijas.">
   <meta name="twitter:image" content="__SITE_BASE_URL__/og.png">
   <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
@@ -36,13 +36,14 @@
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "Buddy",
+    "name": "Chitchat Buddy",
+    "alternateName": "Buddy",
     "description": "Asistente de voz privado para Windows, pensado para recordar reuniones, mejorar la pronunciación y conversar con IA manteniendo el contexto.",
     "url": "__SITE_BASE_URL__/es/",
     "downloadUrl": "https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe",
     "applicationCategory": "ProductivityApplication",
     "operatingSystem": "Windows 11 x64",
-    "softwareVersion": "0.1",
+    "softwareVersion": "0.3.0",
     "isAccessibleForFree": true,
     "inLanguage": "es",
     "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
@@ -65,7 +66,7 @@
   <a class="skip-link" href="#main">Saltar al contenido principal</a>
   <header class="site-header">
     <div class="nav-shell">
-      <a class="brand" href="../" aria-label="Inicio de Buddy"><span class="brand-mark" aria-hidden="true">b</span><span>Buddy</span></a>
+      <a class="brand" href="../" aria-label="Inicio de Chitchat Buddy"><span class="brand-mark" aria-hidden="true">b</span><span>Chitchat Buddy</span></a>
       <nav class="main-nav" aria-label="Navegación principal">
         <a href="#features">Funciones</a><a href="#how-it-works">Cómo funciona</a><a href="#privacy">Privacidad</a><a href="#faq">Preguntas</a>
       </nav>
@@ -87,8 +88,8 @@
         <h1>Recuerda tus palabras.<br><span>Exprésalas mejor.</span></h1>
         <p class="hero-lede">Buddy graba tus intervenciones, convierte la voz en un proceso de mejora editable y mantiene el contexto de una conversación hablada con IA, mientras el núcleo de audio permanece en tu PC.</p>
         <div class="hero-actions">
-          <a class="button button-primary" data-download-asset="Buddy-Setup.exe" href="#download">Descargar instalador</a>
-          <a class="button button-secondary" data-download-asset="Buddy.exe" href="#download">Ejecutable portátil</a>
+          <a class="button button-primary" data-download-asset="Buddy-Setup.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe">Descargar instalador</a>
+          <a class="button button-secondary" data-download-asset="Buddy.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy.exe">Ejecutable portátil</a>
         </div>
         <p class="release-status" id="release-status" aria-live="polite">Windows 11 x64 · Última versión de GitHub</p>
         <ul class="hero-trust" aria-label="Ventajas principales">
@@ -102,7 +103,7 @@
         <section class="screenshot-carousel" data-carousel tabindex="0" aria-roledescription="carousel" aria-label="Recorrido del producto Buddy">
           <div class="carousel-viewport">
             <figure class="carousel-slide is-active" data-carousel-slide role="group" aria-roledescription="slide" aria-label="1 de 4">
-              <img src="../screenshots/00-welcome-setup.png" width="1284" height="842" alt="Pantalla de bienvenida de Buddy con campos editables para la interfaz, la conversación, el proveedor de IA y el código de prueba" fetchpriority="high">
+              <div class="screenshot-image screenshot-watermark-mask"><img src="../screenshots/00-welcome-setup.png" width="1284" height="842" alt="Pantalla de bienvenida de Chitchat Buddy con campos editables para la interfaz, la conversación, el proveedor de IA y el código de prueba" fetchpriority="high"></div>
               <figcaption><span class="carousel-kicker">Configuración</span><strong>Configura Buddy a tu manera</strong><span>Elige la interfaz, el idioma de conversación y el proveedor de IA antes de descargar nada.</span></figcaption>
             </figure>
             <figure class="carousel-slide" data-carousel-slide role="group" aria-roledescription="slide" aria-label="2 de 4" hidden>
@@ -134,7 +135,7 @@
     </section>
 
     <section class="proof-strip" aria-label="Capacidades de Buddy"><div class="section-shell proof-grid">
-      <div><strong>Local</strong><span>reconocimiento Whisper</span></div><div><strong>Editable</strong><span>transcripciones y revisiones</span></div><div><strong>Persistente</strong><span>grabaciones y diálogos</span></div><div><strong>Natural</strong><span>voz con Kokoro</span></div>
+      <div><strong>Local</strong><span>reconocimiento Whisper</span></div><div><strong>Editable</strong><span>transcripciones y revisiones</span></div><div><strong>Persistente</strong><span>grabaciones y diálogos</span></div><div><strong>Natural</strong><span>reproducción de voz local</span></div>
     </div></section>
 
     <section class="features-section section-shell" id="features">
@@ -156,7 +157,7 @@
     </div></section>
 
     <section class="privacy-section section-shell" id="privacy"><div class="privacy-panel">
-      <div class="privacy-copy"><p class="eyebrow eyebrow-light">Privacidad desde el diseño</p><h2>Tu voz no es el precio de entrada.</h2><p>El audio del micrófono, el reconocimiento, el análisis de pronunciación, la eliminación de silencios y la síntesis de voz permanecen en tu ordenador. Las tareas lingüísticas usan por defecto el acceso limitado de Buddy a DeepSeek y solo envían el texto solicitado, nunca la grabación. Elige Qwen local para conservar también ese texto en tu PC.</p><a href="#faq" class="text-link">Leer las respuestas sobre privacidad <span aria-hidden="true">→</span></a></div>
+      <div class="privacy-copy"><p class="eyebrow eyebrow-light">Privacidad desde el diseño</p><h2>Tu voz no es el precio de entrada.</h2><p>El audio del micrófono, el reconocimiento, el análisis de pronunciación, la eliminación de silencios y la síntesis de voz permanecen en tu ordenador. Las tareas lingüísticas usan por defecto el acceso limitado de Buddy a DeepSeek y solo envían el texto solicitado, nunca la grabación. La pasarela guarda hashes de claves y cifras de uso, no el texto del diálogo. Con Qwen local, el texto solicitado también permanece en tu PC.</p><a href="#faq" class="text-link">Leer las respuestas sobre privacidad <span aria-hidden="true">→</span></a></div>
       <div class="privacy-facts"><div><span class="fact-mark">01</span><strong>Audio local</strong><p>Tus grabaciones permanecen en tu perfil de Windows.</p></div><div><span class="fact-mark">02</span><strong>Claves protegidas</strong><p>Las credenciales se protegen con DPAPI de Windows.</p></div><div><span class="fact-mark">03</span><strong>Tú eliges</strong><p>Usa IA de texto alojada o descarga Qwen para respuestas locales.</p></div></div>
     </div></section>
 
@@ -175,26 +176,26 @@
       <div class="faq-list">
         <details><summary>¿Buddy graba a todos los participantes de una reunión?</summary><p>No. Buddy graba el micrófono que eliges. Está pensado para recordar tus propias intervenciones, no las de participantes remotos ni el audio del sistema de Windows. Con auriculares obtendrás el resultado más limpio.</p></details>
         <details><summary>¿Sale mi audio del ordenador?</summary><p>No. La captura, Whisper, el análisis de pronunciación y la voz de Kokoro se ejecutan localmente. El proveedor limitado predeterminado envía a DeepSeek solo el texto necesario para la tarea. Qwen local conserva también ese texto en tu PC.</p></details>
-        <details><summary>¿Puedo usar Buddy sin una cuenta en la nube?</summary><p>Sí. La grabación, la reproducción, la transcripción y la voz local no necesitan una. La versión incluye hasta 1.000 respuestas o 1.000.000 de tokens de acceso limitado a DeepSeek. Descarga Qwen local para conservar también en tu PC las respuestas y mejoras.</p></details>
+        <details><summary>¿Puedo usar Buddy sin una cuenta en la nube?</summary><p>Sí. La grabación, la reproducción, la transcripción y la voz local no necesitan una. La versión incluye hasta 1.000 respuestas o 1.000.000 de tokens de acceso limitado a DeepSeek, según el límite que se alcance primero. Descarga Qwen local para conservar también en tu PC las respuestas y mejoras.</p></details>
         <details><summary>¿Qué descarga el instalador?</summary><p>La aplicación es autocontenida. Los paquetes más grandes de voz e IA local se instalan bajo demanda, con progreso y aviso al terminar, para que no esperes por componentes que quizá no utilices.</p></details>
         <details><summary>¿La evaluación de pronunciación puntúa mi acento?</summary><p>No. Buddy usa tiempos y confianza del reconocimiento para señalar pasajes que conviene revisar. El AFI sirve de guía; no juzga tu acento ni tu identidad.</p></details>
       </div>
     </section>
 
     <section class="download-section" id="download"><div class="section-shell download-panel">
-      <div><p class="eyebrow eyebrow-light">Chitchat Buddy 0.2 · Windows 11 x64</p><h2>Tu próxima idea merece una segunda versión mejor.</h2><p>Instala Buddy, elige tu micrófono y empieza con funciones que trabajan localmente desde el primer día.</p></div>
+      <div><p class="eyebrow eyebrow-light">Chitchat Buddy 0.3.0 · Windows 11 x64</p><h2>Tu próxima idea merece una segunda versión mejor.</h2><p>Instala Buddy, elige tu micrófono y empieza con funciones que trabajan localmente desde el primer día.</p></div>
       <div class="download-options">
-        <a class="download-card primary-download" data-download-asset="Buddy-Setup.exe" href="#download"><span class="download-copy"><strong>Descargar instalador</strong><small>Recomendado · instalación guiada en Windows</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
-        <a class="download-card" data-download-asset="Buddy.exe" href="#download"><span class="download-copy"><strong>Ejecutable portátil</strong><small>Aplicación en un solo archivo · sin instalar</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
-        <a class="release-link" data-release-link href="https://github.com/">Notas de versión y sumas de comprobación <span aria-hidden="true">↗</span></a>
-        <p class="download-note" data-release-note>Las descargas apuntan a la última versión de GitHub. Las primeras versiones pueden no estar firmadas; comprueba las sumas publicadas.</p>
+        <a class="download-card primary-download" data-download-asset="Buddy-Setup.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe"><span class="download-copy"><strong>Descargar instalador</strong><small>Recomendado · instalación guiada en Windows</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card" data-download-asset="Buddy.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy.exe"><span class="download-copy"><strong>Ejecutable portátil</strong><small>Aplicación en un solo archivo · sin instalar</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="release-link" data-release-link href="https://github.com/__BUDDY_REPOSITORY__/releases/latest">Notas de versión y sumas de comprobación <span aria-hidden="true">↗</span></a>
+        <p class="download-note" id="release-note" data-release-note>Las descargas apuntan a la última versión de GitHub. Las primeras versiones pueden no estar firmadas; comprueba las sumas publicadas.</p>
       </div>
     </div></section>
   </main>
 
   <footer class="site-footer"><div class="section-shell footer-grid">
-    <div><a class="brand footer-brand" href="../"><span class="brand-mark" aria-hidden="true">b</span><span>Buddy</span></a><p>Un asistente de voz atento para Windows.</p></div>
-    <div class="footer-links"><a href="#features">Funciones</a><a href="#privacy">Privacidad</a><a data-release-link href="https://github.com/">Versiones en GitHub</a></div>
+    <div><a class="brand footer-brand" href="../"><span class="brand-mark" aria-hidden="true">b</span><span>Chitchat Buddy</span></a><p>Un asistente de voz atento para Windows.</p></div>
+    <div class="footer-links"><a href="#features">Funciones</a><a href="#privacy">Privacidad</a><a data-release-link href="https://github.com/__BUDDY_REPOSITORY__/releases/latest">Versiones en GitHub</a></div>
     <p class="footer-note">Creado para Windows 11. Consulta los avisos de terceros incluidos antes de redistribuir los binarios.</p>
   </div></footer>
   <script src="../config.js"></script><script src="../app.js"></script>

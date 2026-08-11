@@ -60,6 +60,7 @@ public sealed partial class DialogViewModel : ObservableObject, IDisposable
     private DateTimeOffset _silenceProgressObservedAt = DateTimeOffset.UtcNow;
     private bool _interpolateSilenceProgress;
     private bool _applyingPauseSelection;
+    private bool _demoWordCardShown;
     private bool _initialized;
     private bool _disposed;
     private DialogPhase _currentPhase = DialogPhase.Idle;
@@ -1108,9 +1109,57 @@ public sealed partial class DialogViewModel : ObservableObject, IDisposable
             snapshot.Messages,
             snapshot.Pronunciations,
             snapshot.Session?.RecordingId);
+        ApplyDemoWordCardIfRequested();
         UpdatePlaybackMessages();
 
         NotifyCommandStates();
+    }
+
+    private void ApplyDemoWordCardIfRequested()
+    {
+        if (_demoWordCardShown)
+        {
+            return;
+        }
+
+        string? word = Environment.GetEnvironmentVariable(
+            "BUDDY_DEMO_WORD_CARD");
+        string? phonetic = Environment.GetEnvironmentVariable(
+            "BUDDY_DEMO_WORD_PHONETIC");
+        string? definition = Environment.GetEnvironmentVariable(
+            "BUDDY_DEMO_WORD_DEFINITION");
+        if (string.IsNullOrWhiteSpace(word)
+            || string.IsNullOrWhiteSpace(phonetic)
+            || string.IsNullOrWhiteSpace(definition))
+        {
+            return;
+        }
+
+        DialogMessageViewModel? message = Messages.LastOrDefault(
+            candidate => candidate.IsAssistant
+                && candidate.PlainText.Contains(
+                    word,
+                    StringComparison.OrdinalIgnoreCase));
+        if (message is null)
+        {
+            return;
+        }
+
+        string? partOfSpeech = Environment.GetEnvironmentVariable(
+            "BUDDY_DEMO_WORD_PART_OF_SPEECH");
+        message.BeginWordLookup(word);
+        message.ApplyWordPhonetic(word, phonetic);
+        message.ApplyWordDefinition(
+            word,
+            new WordDefinitionResult(
+                word,
+                partOfSpeech,
+                definition,
+                "demo",
+                "website",
+                TimeSpan.Zero));
+        _activeWordLookupMessage = message;
+        _demoWordCardShown = true;
     }
 
     private async Task SaveAllowedPauseAsync(

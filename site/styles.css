@@ -367,6 +367,24 @@ h1 span {
   animation: carousel-reveal 260ms ease-out both;
 }
 
+.screenshot-image {
+  position: relative;
+  overflow: hidden;
+  background: #f4f6fa;
+  line-height: 0;
+}
+
+.screenshot-watermark-mask::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 15%;
+  height: 7.2%;
+  background: #f4f6fa;
+  content: "";
+  pointer-events: none;
+}
+
 .carousel-slide img {
   width: 100%;
   height: auto;

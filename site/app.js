@@ -11,6 +11,7 @@
       release: (tag, date) => `Windows 11 x64 · ${tag}${date ? ` · ${date}` : ""}`,
       pending: "Windows 11 x64 · First public release coming soon",
       pendingNote: "The first download is being prepared. Follow the GitHub releases page for availability.",
+      incompleteNote: "The latest release is published, but an expected Windows download is not attached yet. Open the release notes for details.",
       unavailable: "Windows 11 x64 · Open GitHub for release availability"
     },
     es: {
@@ -18,6 +19,7 @@
       release: (tag, date) => `Windows 11 x64 · ${tag}${date ? ` · ${date}` : ""}`,
       pending: "Windows 11 x64 · La primera versión pública llegará pronto",
       pendingNote: "La primera descarga está en preparación. Consulta la página de versiones de GitHub para saber cuándo estará disponible.",
+      incompleteNote: "La última versión está publicada, pero aún falta una descarga esperada para Windows. Consulta las notas de la versión.",
       unavailable: "Windows 11 x64 · Consulta la disponibilidad en GitHub"
     },
     de: {
@@ -25,6 +27,7 @@
       release: (tag, date) => `Windows 11 x64 · ${tag}${date ? ` · ${date}` : ""}`,
       pending: "Windows 11 x64 · Erste öffentliche Version folgt bald",
       pendingNote: "Der erste Download wird vorbereitet. Den aktuellen Stand findest du auf der GitHub-Releases-Seite.",
+      incompleteNote: "Die neueste Version ist veröffentlicht, aber eine erwartete Windows-Datei fehlt noch. Einzelheiten stehen in den Versionshinweisen.",
       unavailable: "Windows 11 x64 · Verfügbarkeit auf GitHub prüfen"
     },
     be: {
@@ -32,6 +35,7 @@
       release: (tag, date) => `Windows 11 x64 · ${tag}${date ? ` · ${date}` : ""}`,
       pending: "Windows 11 x64 · Першы публічны выпуск неўзабаве",
       pendingNote: "Першая спампоўка рыхтуецца. Сачыце за даступнасцю на старонцы выпускаў GitHub.",
+      incompleteNote: "Апошні выпуск ужо апублікаваны, але адна з чаканых спамповак для Windows яшчэ не далучана. Падрабязнасці ёсць у заўвагах да выпуску.",
       unavailable: "Windows 11 x64 · Праверце даступнасць на GitHub"
     }
   }[locale];
@@ -228,6 +232,9 @@
   })
     .then((response) => {
       if (response.status === 404) {
+        document.querySelectorAll("[data-release-link]").forEach((link) => {
+          link.href = `https://github.com/${repository}/releases`;
+        });
         document.querySelectorAll("[data-download-asset]").forEach((link) => {
           link.href = `https://github.com/${repository}/releases`;
         });
@@ -256,12 +263,24 @@
       }
 
       const assets = new Map((release.assets || []).map((asset) => [asset.name, asset.browser_download_url]));
+      const releaseDetails = release.html_url || releasePage;
+      let hasMissingAsset = false;
+      document.querySelectorAll("[data-release-link]").forEach((link) => {
+        link.href = releaseDetails;
+      });
       document.querySelectorAll("[data-download-asset]").forEach((link) => {
         const exactAssetUrl = assets.get(link.dataset.downloadAsset);
         if (exactAssetUrl) {
           link.href = exactAssetUrl;
+        } else {
+          link.href = releaseDetails;
+          hasMissingAsset = true;
         }
       });
+
+      if (hasMissingAsset && releaseNote) {
+        releaseNote.textContent = copy.incompleteNote;
+      }
     })
     .catch(() => {
       // Stable latest-release links remain usable if metadata cannot be loaded.

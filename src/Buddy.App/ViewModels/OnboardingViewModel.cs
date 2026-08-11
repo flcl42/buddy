@@ -26,6 +26,7 @@ public sealed partial class OnboardingViewModel : ObservableObject
     private readonly BuddyProxyClientConfiguration _proxyConfiguration;
     private readonly LanguagePreferences _languages;
     private readonly UiLocalizationService _localization;
+    private readonly WelcomeSetupDownloadGate _downloadGate = new();
     private bool _updatingSelections;
     private bool _initialized;
 
@@ -178,8 +179,7 @@ public sealed partial class OnboardingViewModel : ObservableObject
             IsVisible = !string.Equals(completed, "true", StringComparison.Ordinal);
             if (IsVisible)
             {
-                await RefreshDependencyStatusAsync(cancellationToken)
-                    .ConfigureAwait(true);
+                InitializeDependencyPreview();
             }
 
             _initialized = true;
@@ -218,6 +218,11 @@ public sealed partial class OnboardingViewModel : ObservableObject
     {
         _ = value;
         OnPropertyChanged(nameof(SetupButtonText));
+        if (!_downloadGate.HasUserRequestedSetup)
+        {
+            QwenProgress = 0;
+            QwenStatus = _localization.Get("SetupOnDemand");
+        }
     }
 
     partial void OnTrialCodeChanged(string value)
@@ -261,6 +266,7 @@ public sealed partial class OnboardingViewModel : ObservableObject
             return;
         }
 
+        _downloadGate.AuthorizeUserRequestedSetup();
         IsInstalling = true;
         RunSetupCommand.NotifyCanExecuteChanged();
         try
@@ -314,6 +320,7 @@ public sealed partial class OnboardingViewModel : ObservableObject
 
             if (setupProviderIndex == 2)
             {
+                _downloadGate.DemandUserRequestedSetup();
                 QwenStatus = _localization.Get("SetupWaiting");
                 Progress<QwenInstallProgress> qwenProgress = new(
                     progress =>
@@ -400,8 +407,15 @@ public sealed partial class OnboardingViewModel : ObservableObject
             OnPropertyChanged(nameof(SetupButtonText));
             if (IsVisible && IsSetupStep)
             {
-                await RefreshDependencyStatusAsync(CancellationToken.None)
-                    .ConfigureAwait(true);
+                if (_downloadGate.HasUserRequestedSetup)
+                {
+                    await RefreshDependencyStatusAsync(CancellationToken.None)
+                        .ConfigureAwait(true);
+                }
+                else
+                {
+                    InitializeDependencyPreview();
+                }
             }
         }
         finally
@@ -415,6 +429,13 @@ public sealed partial class OnboardingViewModel : ObservableObject
         await _languages
             .SetDialogLanguageAsync(_languages.AvailableDialogLanguages[index].Id)
             .ConfigureAwait(true);
+        if (!_downloadGate.HasUserRequestedSetup)
+        {
+            VoiceProgress = 0;
+            VoiceStatus = _localization.Get("SetupOnDemand");
+            return;
+        }
+
         IReadOnlyList<LocalModelInfo> models = await _models
             .GetModelsAsync()
             .ConfigureAwait(true);
@@ -574,11 +595,25 @@ public sealed partial class OnboardingViewModel : ObservableObject
         Action<double> update,
         CancellationToken cancellationToken)
     {
+        _downloadGate.DemandUserRequestedSetup();
         Progress<double> progress = new(
             value => update(Math.Clamp(value, 0, 1)));
         await _models
             .EnsureInstalledAsync(modelId, progress, cancellationToken)
             .ConfigureAwait(true);
+    }
+
+    private void InitializeDependencyPreview()
+    {
+        string onDemand = _localization.Get("SetupOnDemand");
+        WhisperProgress = 0;
+        WhisperStatus = onDemand;
+        VadProgress = 0;
+        VadStatus = onDemand;
+        VoiceProgress = 0;
+        VoiceStatus = onDemand;
+        QwenProgress = 0;
+        QwenStatus = onDemand;
     }
 
     private async Task RefreshDependencyStatusAsync(

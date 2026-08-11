@@ -1,4 +1,4 @@
-# Chitchat Buddy 0.2 release readiness
+# Chitchat Buddy 0.3 release readiness
 
 Updated: 2026-08-11
 
@@ -8,7 +8,7 @@ broader product specification.
 ## Verified in this build
 
 - Debug and Release MAUI builds complete with zero warnings.
-- 150 automated tests pass across App presentation, Core,
+- 174 automated tests pass across App presentation, Core,
   Persistence, Language, Proxy, and Integration.
 - A real clean-state first run passed the blocking localized setup flow. The
   interface changed to Belarusian without restarting, every dependency status
@@ -16,8 +16,24 @@ broader product specification.
   `AAAAAA-BBBBBB` shape, and the UI stayed responsive while 1,624,555,275-byte
   Whisper, 885,098-byte Silero, and 325,508,342-byte Kokoro artifacts downloaded
   to `H:\Buddy\models` and received verification stamps. The localized party
-  completion screen opened the default AI Dialog workspace with a selected
+  completion screen opened the default Speak chooser with a selected
   three-second pause.
+- The welcome screen performs no model download or model-status network work
+  before the explicit Download and set up action. Its editable pickers and key
+  fields use one rounded native Windows frame with clear normal, hover, focus,
+  and disabled states.
+- The default window is 1,260 by 830 and is centered once inside the active
+  monitor work area. Hyper-V UI Automation measured the complete setup action
+  inside the window with zero visible vertical scrolling; later tab changes,
+  maximizing, and manual resizing retain the user's geometry.
+- Opening Speak presents separate, equally sized AI Dialog and Monologue cards.
+  Settings and feedback are modal surfaces that close when their backdrop is
+  clicked without affecting the active workspace.
+- The feedback surface accepts bounded text and one optional signature-checked
+  PNG, JPEG, or WebP image. Hyper-V UI Automation opened the modal, attached an
+  image, kept the process responsive, and found no plaintext credential file.
+  The proxy authenticates the request before forwarding it and returns stable
+  invalid, unavailable, and delivery-failure codes.
 - A final clean release run held the visible included-trial selection stable
   while localized Picker items refreshed, completed setup in 583 ms, and left
   an existing 2,954,887,168-byte resumable Qwen partial download untouched.
@@ -302,7 +318,7 @@ broader product specification.
 
 ## Packaging boundary
 
-The installed executable is `C:\Programs\Buddy.exe`, version 0.2.0, and matches
+The installed executable is `C:\Programs\Buddy.exe`, version 0.3.0, and matches
 the staged portable release. Exact portable and installer hashes are published
 in `SHA256SUMS.txt` alongside each release. This personal build is intentionally
 unpackaged and unsigned; a public release still requires a trusted code-signing
@@ -312,7 +328,7 @@ GPL-3.0-or-later eSpeak NG runtime. See
 
 ## Release scope
 
-Chitchat Buddy 0.2 covers the requested recording plus the unified Speak workspace's
+Chitchat Buddy 0.3 covers the requested recording plus the unified Speak workspace's
 Monologue and persistent AI Dialog loops. These broader specification items
 remain later-stage work and are not presented as implemented:
 

@@ -5,6 +5,8 @@ ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 EXPECTED_ROOT="/root/buddy-proxy"
 PID_FILE="$ROOT/run/buddy-proxy.pid"
 LOG_FILE="$ROOT/logs/buddy-proxy.log"
+TELEGRAM_TOKEN_FILE="$ROOT/private/telegram-bot-token"
+TELEGRAM_CHAT_FILE="$ROOT/private/telegram-chat-id"
 
 if [[ "$ROOT" != "$EXPECTED_ROOT" ]]; then
   echo "Refusing to run outside $EXPECTED_ROOT" >&2
@@ -34,9 +36,36 @@ if [[ ! -r "$ROOT/appsettings.Production.json" || ! -r "$ROOT/private/tls.pfx" ]
   exit 1
 fi
 
+TELEGRAM_ENV=()
+if [[ -r "$TELEGRAM_TOKEN_FILE" && -r "$TELEGRAM_CHAT_FILE" ]]; then
+  TELEGRAM_TOKEN="$(<"$TELEGRAM_TOKEN_FILE")"
+  TELEGRAM_CHAT_ID="$(<"$TELEGRAM_CHAT_FILE")"
+  if [[ -z "$TELEGRAM_TOKEN" || -z "$TELEGRAM_CHAT_ID" ]]; then
+    echo "Telegram token and chat files must not be empty." >&2
+    exit 1
+  fi
+
+  TELEGRAM_ENV=(
+    "Telegram__Enabled=true"
+    "Telegram__BotToken=$TELEGRAM_TOKEN"
+    "Telegram__ChatId=$TELEGRAM_CHAT_ID"
+  )
+elif [[ -e "$TELEGRAM_CHAT_FILE" ]]; then
+  echo "Telegram chat is configured without a readable bot token." >&2
+  exit 1
+elif [[ -e "$TELEGRAM_TOKEN_FILE" ]]; then
+  if [[ ! -r "$TELEGRAM_TOKEN_FILE" ]]; then
+    echo "Telegram bot token is not readable." >&2
+    exit 1
+  fi
+
+  echo "Telegram feedback is waiting for a chat ID; delivery remains disabled." >&2
+fi
+
 (
   cd "$ROOT"
   nohup env ASPNETCORE_ENVIRONMENT=Production \
+    "${TELEGRAM_ENV[@]}" \
     "$ROOT/buddy-proxy" --contentRoot "$ROOT" \
     >> "$LOG_FILE" 2>&1 &
   echo "$!" > "$PID_FILE"

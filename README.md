@@ -3,10 +3,10 @@
 Buddy is a Windows 11 speech companion built with .NET MAUI. It has three linked
 workflows:
 
-1. Open directly into **Speak · AI Dialog**, talk freely, watch the local
+1. Open into **Speak**, choose **AI Dialog**, talk freely, watch the local
    transcript update, get contextual answers with automatic local voice
    playback, and save the complete session as a normal recording.
-2. Switch the same **Speak** workspace to **Monologue** to record a practice
+2. Choose **Monologue** in the same **Speak** workspace to record a practice
    take, fix recognition
    mistakes in the editable transcript, improve its grammar and wording, and
    hear the revised version spoken aloud.
@@ -61,9 +61,10 @@ The recorder is local-first and remains useful without a cloud provider.
   word click opens an inline guide: IPA is generated locally, and the contextual
   meaning is requested from the selected provider only then and cached for that
   turn.
-- Compact one-line navigation: `Speak`, `All recordings`, `AI Dialog`, and
-  `Monologue` share the main header so the active workflow gets the full
-  remaining window height without changing window geometry.
+- Compact one-line navigation keeps `Speak` and `All recordings` in the main
+  header. Opening `Speak` presents two large, descriptive AI Dialog and
+  Monologue choices, while the active workflow gets the full remaining window
+  height without changing window geometry.
 - Local Kokoro synthesis with four curated English voices plus Spanish and
   French voices, Windows speech fallback for installed German and Belarusian
   voices (Russian is the safe Belarusian fallback), three speaking speeds,
@@ -92,6 +93,10 @@ The recorder is local-first and remains useful without a cloud provider.
   key.
 - Bring-your-own credentials protected with Windows DPAPI; keys, transcript
   content, and audio content are excluded from diagnostics.
+- An in-app feedback form accepts a message and one optional PNG, JPEG, or WebP
+  screenshot. It states exactly what is sent, never attaches audio or
+  transcripts automatically, and routes authenticated submissions through the
+  capped Buddy proxy without exposing the developer's Telegram credentials.
 
 See the [product specification](docs/product-specification.md), the
 [technical architecture](docs/technical-architecture.md), and the
@@ -134,8 +139,9 @@ dotnet run --project src/Buddy.App/Buddy.App.csproj
 The first launch is blocked by a one-time setup screen. Interface language can
 be switched immediately among English, Беларуская, and Русский; dialog speech
 can be English, German, Spanish, French, or Belarusian. Choose the included
-12-letter trial code, direct DeepSeek, or local Qwen. Whisper, Silero, and the
-selected local voice are verified before the workspace opens; Qwen is shown and
+12-letter trial code, direct DeepSeek, or local Qwen. Nothing is downloaded
+until **Download and set up** is pressed. Whisper, Silero, and the selected
+local voice are then verified before the workspace opens; Qwen is shown and
 downloaded only after those speech dependencies are ready. Large files prefer
 `H:` when it is available.
 
@@ -153,8 +159,8 @@ as text when its local model has not been downloaded.
 
 ## Use AI Dialog
 
-1. Open Buddy. **Speak · AI Dialog** is the first and default workspace; select
-   **Start dialog**.
+1. Open Buddy, choose **Start dialog** on the default **Speak** screen, and
+   begin talking.
 2. Speak normally. The current utterance refreshes in **Live transcription**.
 3. Pause for an automatic turn, or select **Send now** to commit it immediately.
    Choose **Allowed pause** to control how long Buddy waits; it defaults to
@@ -209,7 +215,7 @@ the installed executable. To create both distributable assets, install Inno
 Setup 6 and run:
 
 ```powershell
-.\scripts\build-installer.ps1 -Version 0.2.0
+.\scripts\build-installer.ps1 -Version 0.3.0
 ```
 
 This produces `artifacts\release\Buddy-Setup.exe` and the portable

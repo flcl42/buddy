@@ -1,6 +1,7 @@
 namespace Buddy.Proxy;
 
 using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.RateLimiting;
 
 public static class Program
@@ -14,15 +15,27 @@ public static class Program
         ProxyOptions proxy = builder.Configuration
             .GetSection(ProxyOptions.SectionName)
             .Get<ProxyOptions>() ?? new ProxyOptions();
+        TelegramOptions telegram = builder.Configuration
+            .GetSection(TelegramOptions.SectionName)
+            .Get<TelegramOptions>() ?? new TelegramOptions();
         deepSeek.Validate();
         proxy.Validate(builder.Environment.ContentRootPath);
+        telegram.Validate();
 
         builder.Services.AddSingleton(deepSeek);
         builder.Services.AddSingleton(proxy);
+        builder.Services.AddSingleton(telegram);
         builder.Services.AddSingleton<ProxyKeyHasher>();
         builder.Services.AddSingleton<ProxyDatabase>();
         builder.Services.AddSingleton<ProxyAuthentication>();
         builder.Services.AddSingleton<ClientRequestLock>();
+        builder.Services.AddSingleton<TelegramFeedbackGateway>();
+        builder.Services.Configure<FormOptions>(
+            options =>
+            {
+                options.MultipartBodyLengthLimit = FeedbackLimits.MaximumRequestBytes;
+                options.ValueLengthLimit = 16 * 1024;
+            });
         builder.Services.AddHttpClient<DeepSeekGateway>(
             client =>
             {
@@ -46,6 +59,18 @@ public static class Program
                             QueueLimit = 0,
                             AutoReplenishment = true,
                         }));
+                options.AddPolicy(
+                    "feedback-api",
+                    context => RateLimitPartition.GetFixedWindowLimiter(
+                        context.Connection.RemoteIpAddress?.ToString()
+                            ?? "unknown",
+                        _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 5,
+                            Window = TimeSpan.FromHours(1),
+                            QueueLimit = 0,
+                            AutoReplenishment = true,
+                        }));
                 options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
                 options.OnRejected = async (context, cancellationToken) =>
                 {
@@ -56,7 +81,7 @@ public static class Program
                         {
                             error = new
                             {
-                                message = "Too many proxy requests. Try again in one minute.",
+                                message = "Too many proxy requests. Try again later.",
                                 type = "buddy_proxy_error",
                                 param = (string?)null,
                                 code = ProxyErrorCodes.RateLimited,

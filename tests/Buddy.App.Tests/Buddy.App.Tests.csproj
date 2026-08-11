@@ -14,9 +14,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Buddy.Core\Buddy.Core.csproj" />
+    <ProjectReference Include="..\..\src\Buddy.Language\Buddy.Language.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\src\Buddy.App\Services\BuddyFeedbackClient.cs"
+             Link="Services\BuddyFeedbackClient.cs" />
+    <Compile Include="..\..\src\Buddy.App\Services\BuddyProxyClientConfiguration.cs"
+             Link="Services\BuddyProxyClientConfiguration.cs" />
     <Compile Include="..\..\src\Buddy.App\Services\DialogAnswerDocumentStore.cs"
              Link="Services\DialogAnswerDocumentStore.cs" />
     <Compile Include="..\..\src\Buddy.App\ViewModels\DialogMessageCollectionReconciler.cs"
@@ -29,6 +34,10 @@
              Link="ViewModels\PronunciationWordViewModel.cs" />
     <Compile Include="..\..\src\Buddy.App\ViewModels\SpeakNavigationState.cs"
              Link="ViewModels\SpeakNavigationState.cs" />
+    <Compile Include="..\..\src\Buddy.App\ViewModels\WelcomeSetupDownloadGate.cs"
+             Link="ViewModels\WelcomeSetupDownloadGate.cs" />
+    <Compile Include="..\..\src\Buddy.App\WindowPlacement.cs"
+             Link="WindowPlacement.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -8,6 +8,9 @@ on:
     paths:
       - "site/**"
       - ".github/workflows/pages.yml"
+  release:
+    types:
+      - published
   workflow_dispatch:
 
 permissions:
@@ -39,6 +42,10 @@ jobs:
           SITE_BASE_URL: ${{ steps.pages.outputs.base_url }}
         run: |
           cp -a site _site
+          rm -f \
+            _site/screenshots/.gitignore \
+            _site/screenshots/capture-result.json \
+            _site/screenshots/debug-capture-failure.png
           printf 'window.BUDDY_REPOSITORY = "%s";\n' "$GITHUB_REPOSITORY" > _site/config.js
           python - <<'PY'
           import os

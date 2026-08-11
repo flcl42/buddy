@@ -9,7 +9,7 @@ on:
       version:
         description: Three-part release version, without a leading v
         required: true
-        default: "0.2.0"
+        default: "0.3.0"
 
 permissions:
   contents: write

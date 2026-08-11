@@ -24,6 +24,9 @@ public static class ProxyEndpoints
         api.MapGet("/quota", GetQuotaAsync);
         api.MapGet("/models", GetModelsAsync);
         api.MapPost("/chat/completions", ForwardChatAsync);
+        app.MapPost("/v1/feedback", SubmitFeedbackAsync)
+            .DisableAntiforgery()
+            .RequireRateLimiting("feedback-api");
         app.MapPost("/chat/completions", ForwardChatAsync)
             .RequireRateLimiting("proxy-api");
     }
@@ -279,6 +282,153 @@ public static class ProxyEndpoints
             contentType: "application/json; charset=utf-8");
     }
 
+    private static async Task<IResult> SubmitFeedbackAsync(
+        HttpContext context,
+        ProxyAuthentication authentication,
+        TelegramFeedbackGateway gateway)
+    {
+        AuthenticationResult auth = await authentication
+            .AuthenticateAsync(context.Request, context.RequestAborted)
+            .ConfigureAwait(false);
+        if (auth.Failure != AuthenticationFailure.None)
+        {
+            return AuthenticationError(auth.Failure);
+        }
+
+        if (!context.Request.HasFormContentType
+            || context.Request.ContentType is null
+            || !context.Request.ContentType.StartsWith(
+                "multipart/form-data",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return Error(
+                StatusCodes.Status415UnsupportedMediaType,
+                ProxyErrorCodes.FeedbackInvalid,
+                "Feedback must use multipart/form-data.");
+        }
+
+        if (context.Request.ContentLength > FeedbackLimits.MaximumRequestBytes)
+        {
+            return Error(
+                StatusCodes.Status413PayloadTooLarge,
+                ProxyErrorCodes.FeedbackInvalid,
+                "The feedback request is larger than this proxy permits.");
+        }
+
+        IFormCollection form;
+        try
+        {
+            form = await context.Request
+                .ReadFormAsync(context.RequestAborted)
+                .ConfigureAwait(false);
+        }
+        catch (InvalidDataException)
+        {
+            return Error(
+                StatusCodes.Status413PayloadTooLarge,
+                ProxyErrorCodes.FeedbackInvalid,
+                "The feedback request is larger than this proxy permits.");
+        }
+        catch (BadHttpRequestException)
+        {
+            return Error(
+                StatusCodes.Status400BadRequest,
+                ProxyErrorCodes.FeedbackInvalid,
+                "The feedback form is malformed.");
+        }
+
+        string message = form["message"].ToString().Trim();
+        if (message.Length is 0 or > FeedbackLimits.MaximumMessageCharacters)
+        {
+            return Error(
+                StatusCodes.Status422UnprocessableEntity,
+                ProxyErrorCodes.FeedbackInvalid,
+                $"Feedback must contain between 1 and {FeedbackLimits.MaximumMessageCharacters} characters.");
+        }
+
+        if (form.Files.Count > 1)
+        {
+            return Error(
+                StatusCodes.Status422UnprocessableEntity,
+                ProxyErrorCodes.FeedbackInvalid,
+                "Attach at most one screenshot.");
+        }
+
+        IFormFile? file = form.Files.GetFile("screenshot");
+        if (form.Files.Count == 1 && file is null)
+        {
+            return Error(
+                StatusCodes.Status422UnprocessableEntity,
+                ProxyErrorCodes.FeedbackInvalid,
+                "The optional image must use the screenshot field.");
+        }
+
+        FeedbackScreenshot? screenshot = null;
+        if (file is not null)
+        {
+            if (file.Length is <= 0 or > FeedbackLimits.MaximumScreenshotBytes)
+            {
+                return Error(
+                    StatusCodes.Status413PayloadTooLarge,
+                    ProxyErrorCodes.FeedbackInvalid,
+                    $"The screenshot must be no larger than {FeedbackLimits.MaximumScreenshotBytes / 1024 / 1024} MB.");
+            }
+
+            byte[] bytes = await ReadBoundedAsync(
+                    file,
+                    FeedbackLimits.MaximumScreenshotBytes,
+                    context.RequestAborted)
+                .ConfigureAwait(false);
+            string? contentType = FeedbackLimits.DetectImageContentType(bytes);
+            if (contentType is null)
+            {
+                return Error(
+                    StatusCodes.Status422UnprocessableEntity,
+                    ProxyErrorCodes.FeedbackInvalid,
+                    "The screenshot must be a PNG, JPEG, or WebP image.");
+            }
+
+            screenshot = new FeedbackScreenshot(bytes, contentType);
+        }
+
+        string feedbackId = $"FB-{DateTime.UtcNow:yyyyMMdd}-{Guid.NewGuid():N}"[..20];
+        FeedbackSubmission submission = new(
+            feedbackId,
+            message,
+            FeedbackLimits.NormalizeMetadata(form["app_version"], "unknown"),
+            FeedbackLimits.NormalizeMetadata(form["interface_language"], "unknown"),
+            FeedbackLimits.NormalizeMetadata(form["dialog_language"], "unknown"),
+            DateTimeOffset.UtcNow,
+            screenshot);
+
+        try
+        {
+            FeedbackDeliveryResult result = await gateway
+                .DeliverAsync(submission, auth.Client!, context.RequestAborted)
+                .ConfigureAwait(false);
+            return Results.Ok(
+                new
+                {
+                    feedback_id = result.FeedbackId,
+                    screenshot_delivered = result.ScreenshotDelivered,
+                });
+        }
+        catch (FeedbackDeliveryUnavailableException)
+        {
+            return Error(
+                StatusCodes.Status503ServiceUnavailable,
+                ProxyErrorCodes.FeedbackUnavailable,
+                "Feedback delivery is temporarily unavailable.");
+        }
+        catch (FeedbackDeliveryException)
+        {
+            return Error(
+                StatusCodes.Status502BadGateway,
+                ProxyErrorCodes.FeedbackDeliveryFailed,
+                "Feedback could not be delivered. Please try again.");
+        }
+    }
+
     private static IResult AuthenticationError(AuthenticationFailure failure)
     {
         return failure == AuthenticationFailure.Disabled
@@ -317,4 +467,21 @@ public static class ProxyEndpoints
         response.Headers["X-Buddy-Quota-Tokens-Remaining"] =
             client.TokensRemaining.ToString(System.Globalization.CultureInfo.InvariantCulture);
     }
+
+    private static async Task<byte[]> ReadBoundedAsync(
+        IFormFile file,
+        int maximumBytes,
+        CancellationToken cancellationToken)
+    {
+        await using Stream input = file.OpenReadStream();
+        using MemoryStream output = new((int)Math.Min(file.Length, maximumBytes));
+        await input.CopyToAsync(output, cancellationToken).ConfigureAwait(false);
+        if (output.Length > maximumBytes)
+        {
+            throw new InvalidDataException("The uploaded screenshot is too large.");
+        }
+
+        return output.ToArray();
+    }
+
 }

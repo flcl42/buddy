@@ -43,7 +43,9 @@ public sealed partial class LocalSetupCoordinator : ObservableObject, IAsyncDisp
 
     public Task EnsureSpeechRecognitionAsync(
         CancellationToken cancellationToken = default) =>
-        RunAsync(
+        IsDemoSetupSuppressed
+            ? Task.CompletedTask
+            : RunAsync(
             "Preparing private speech recognition",
             async (report, token) =>
             {
@@ -82,7 +84,9 @@ public sealed partial class LocalSetupCoordinator : ObservableObject, IAsyncDisp
 
     public Task EnsureSpeechSynthesisAsync(
         CancellationToken cancellationToken = default) =>
-        RunAsync(
+        IsDemoSetupSuppressed
+            ? Task.CompletedTask
+            : RunAsync(
             "Preparing the local Buddy voice",
             async (report, token) =>
             {
@@ -98,6 +102,12 @@ public sealed partial class LocalSetupCoordinator : ObservableObject, IAsyncDisp
             },
             "The local Buddy voice is ready",
             cancellationToken);
+
+    private static bool IsDemoSetupSuppressed =>
+        string.Equals(
+            Environment.GetEnvironmentVariable("BUDDY_DEMO_SUPPRESS_LOCAL_SETUP"),
+            "1",
+            StringComparison.Ordinal);
 
     public Task EnsureQwenAsync(CancellationToken cancellationToken = default) =>
         RunAsync(

@@ -23,6 +23,7 @@ public static class MauiProgram
         builder
             .UseMauiApp<App>()
             .UseNotifyIcon();
+        FramedInputChrome.Register();
         builder.ConfigureMauiHandlers(
             handlers => handlers.AddHandler<
                 MarkdownMessageView,
@@ -86,6 +87,8 @@ public static class MauiProgram
                 Timeout = Timeout.InfiniteTimeSpan,
             });
         builder.Services.AddSingleton<BuddyProxyClientConfiguration>();
+        builder.Services.AddSingleton<BuddyFeedbackClient>();
+        builder.Services.AddSingleton<FeedbackAttachmentPicker>();
         builder.Services.AddSingleton<VerifiedLocalModelManager>(
             services => new VerifiedLocalModelManager(
                 services.GetRequiredService<BuddyDataPaths>().Models,
@@ -156,6 +159,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<DialogCoordinator>();
         builder.Services.AddSingleton<DialogSpeechCacheService>();
         builder.Services.AddSingleton<SettingsViewModel>();
+        builder.Services.AddSingleton<FeedbackViewModel>();
         builder.Services.AddSingleton<DialogViewModel>();
         builder.Services.AddSingleton<OnboardingViewModel>();
         builder.Services.AddSingleton<MainViewModel>();

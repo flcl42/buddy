@@ -1,0 +1,3 @@
+# Local screenshot-capture diagnostics are not website assets.
+/capture-result.json
+/debug-*.png

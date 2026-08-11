@@ -62,6 +62,7 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         BuddyDataPaths paths,
         BuddyRuntimeState runtime,
         SettingsViewModel settings,
+        FeedbackViewModel feedback,
         DialogViewModel dialog,
         OnboardingViewModel onboarding)
     {
@@ -83,6 +84,7 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         _paths = paths ?? throw new ArgumentNullException(nameof(paths));
         Runtime = runtime ?? throw new ArgumentNullException(nameof(runtime));
         Settings = settings ?? throw new ArgumentNullException(nameof(settings));
+        Feedback = feedback ?? throw new ArgumentNullException(nameof(feedback));
         Dialog = dialog ?? throw new ArgumentNullException(nameof(dialog));
         Onboarding = onboarding ?? throw new ArgumentNullException(nameof(onboarding));
         RefreshLocalizedChoiceLists();
@@ -98,6 +100,8 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     public BuddyRuntimeState Runtime { get; }
 
     public SettingsViewModel Settings { get; }
+
+    public FeedbackViewModel Feedback { get; }
 
     public DialogViewModel Dialog { get; }
 
@@ -124,14 +128,16 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsRecordingsSelected))]
     [NotifyPropertyChangedFor(nameof(IsSpeakSelected))]
+    [NotifyPropertyChangedFor(nameof(IsSpeakModeChooserVisible))]
     [NotifyPropertyChangedFor(nameof(IsMonologueMode))]
     [NotifyPropertyChangedFor(nameof(IsDialogMode))]
     public partial int SelectedTabIndex { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsSpeakModeChooserVisible))]
     [NotifyPropertyChangedFor(nameof(IsMonologueMode))]
     [NotifyPropertyChangedFor(nameof(IsDialogMode))]
-    public partial SpeakMode SelectedSpeakMode { get; set; } = SpeakMode.Dialog;
+    public partial SpeakMode? SelectedSpeakMode { get; set; }
 
     [ObservableProperty]
     public partial bool IsSettingsOpen { get; set; }
@@ -218,6 +224,11 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
 
     public bool IsSpeakSelected =>
         SpeakNavigationState.IsSpeak(SelectedTabIndex);
+
+    public bool IsSpeakModeChooserVisible =>
+        SpeakNavigationState.IsChooser(
+            SelectedTabIndex,
+            SelectedSpeakMode);
 
     public bool IsMonologueMode =>
         SpeakNavigationState.IsMonologue(
@@ -420,13 +431,10 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     }
 
     [RelayCommand]
-    public async Task SelectSpeakAsync()
+    public void SelectSpeak()
     {
         SelectedTabIndex = SpeakNavigationState.SpeakTabIndex;
-        if (SelectedSpeakMode == SpeakMode.Monologue)
-        {
-            await LoadLatestTrainerAsync().ConfigureAwait(true);
-        }
+        SelectedSpeakMode = null;
     }
 
     [RelayCommand]
@@ -443,6 +451,40 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         SelectedSpeakMode = SpeakMode.Dialog;
         SelectedTabIndex = SpeakNavigationState.SpeakTabIndex;
     }
+
+    [RelayCommand]
+    public async Task StartDialogFromChooserAsync()
+    {
+        SelectDialog();
+        if (IsDemoPreviewOnly)
+        {
+            return;
+        }
+        if (Dialog.StartDialogCommand.CanExecute(null))
+        {
+            await Dialog.StartDialogCommand.ExecuteAsync(null).ConfigureAwait(true);
+        }
+    }
+
+    [RelayCommand]
+    public async Task StartMonologueFromChooserAsync()
+    {
+        await SelectMonologueAsync().ConfigureAwait(true);
+        if (IsDemoPreviewOnly)
+        {
+            return;
+        }
+        if (!_recordingCoordinator.IsRecording)
+        {
+            await RecordTrainerTakeAsync().ConfigureAwait(true);
+        }
+    }
+
+    private static bool IsDemoPreviewOnly =>
+        string.Equals(
+            Environment.GetEnvironmentVariable("BUDDY_DEMO_PREVIEW_ONLY"),
+            "1",
+            StringComparison.Ordinal);
 
     [RelayCommand]
     public async Task OpenMonologueAsync()
@@ -473,6 +515,11 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     [RelayCommand]
     public void ToggleSettings()
     {
+        if (!IsSettingsOpen)
+        {
+            Feedback.Close();
+        }
+
         IsSettingsOpen = !IsSettingsOpen;
     }
 
@@ -480,6 +527,20 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     public void CloseSettings()
     {
         IsSettingsOpen = false;
+    }
+
+    [RelayCommand]
+    public void OpenFeedback()
+    {
+        IsSettingsOpen = false;
+        Feedback.Open();
+    }
+
+    [RelayCommand]
+    public void OpenFeedbackWindow()
+    {
+        OpenFeedback();
+        _window.Show();
     }
 
     [RelayCommand]

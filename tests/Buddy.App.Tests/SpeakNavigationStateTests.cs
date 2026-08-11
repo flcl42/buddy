@@ -5,14 +5,20 @@ namespace Buddy.App.Tests;
 public sealed class SpeakNavigationStateTests
 {
     [Fact]
-    public void SpeakDialogIsTheDefaultNavigationState()
+    public void SpeakChooserIsTheDefaultNavigationState()
     {
         Assert.Equal(0, SpeakNavigationState.SpeakTabIndex);
         Assert.Equal(1, SpeakNavigationState.RecordingsTabIndex);
         Assert.Equal(0, (int)SpeakMode.Dialog);
-        Assert.True(SpeakNavigationState.IsDialog(
+        Assert.True(SpeakNavigationState.IsChooser(
             selectedTabIndex: 0,
-            SpeakMode.Dialog));
+            selectedMode: null));
+        Assert.False(SpeakNavigationState.IsDialog(
+            selectedTabIndex: 0,
+            selectedMode: null));
+        Assert.False(SpeakNavigationState.IsMonologue(
+            selectedTabIndex: 0,
+            selectedMode: null));
     }
 
     [Theory]
@@ -24,12 +30,23 @@ public sealed class SpeakNavigationStateTests
             SpeakNavigationState.RecordingsTabIndex));
         Assert.False(SpeakNavigationState.IsSpeak(
             SpeakNavigationState.RecordingsTabIndex));
+        Assert.False(SpeakNavigationState.IsChooser(
+            SpeakNavigationState.RecordingsTabIndex,
+            mode));
         Assert.False(SpeakNavigationState.IsMonologue(
             SpeakNavigationState.RecordingsTabIndex,
             mode));
         Assert.False(SpeakNavigationState.IsDialog(
             SpeakNavigationState.RecordingsTabIndex,
             mode));
+    }
+
+    [Fact]
+    public void RecordingsTabAlsoHidesTheChooser()
+    {
+        Assert.False(SpeakNavigationState.IsChooser(
+            SpeakNavigationState.RecordingsTabIndex,
+            selectedMode: null));
     }
 
     [Fact]

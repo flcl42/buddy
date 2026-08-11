@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Buddy.Proxy.Tests" />
     <PackageReference Include="Microsoft.Data.Sqlite.Core" />
     <PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3"

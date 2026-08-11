@@ -18,13 +18,18 @@ public static class SpeakNavigationState
     public static bool IsSpeak(int selectedTabIndex) =>
         selectedTabIndex == SpeakTabIndex;
 
+    public static bool IsChooser(
+        int selectedTabIndex,
+        SpeakMode? selectedMode) =>
+        IsSpeak(selectedTabIndex) && selectedMode is null;
+
     public static bool IsMonologue(
         int selectedTabIndex,
-        SpeakMode selectedMode) =>
+        SpeakMode? selectedMode) =>
         IsSpeak(selectedTabIndex) && selectedMode == SpeakMode.Monologue;
 
     public static bool IsDialog(
         int selectedTabIndex,
-        SpeakMode selectedMode) =>
+        SpeakMode? selectedMode) =>
         IsSpeak(selectedTabIndex) && selectedMode == SpeakMode.Dialog;
 }

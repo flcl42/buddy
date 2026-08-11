@@ -306,9 +306,12 @@ Before Settings or any workspace can be used, a one-time blocking setup screen
 chooses the interface language (English, Беларуская, Русский), dialog language
 (English, German, Spanish, French, Belarusian), and provider (included trial
 code, direct DeepSeek, local Qwen). It verifies Whisper, Silero, and the selected
-voice in sequence. Qwen progress appears only after the speech dependencies are
-ready. A localized completion screen then instructs the user to choose AI
-Dialog, press Start, and talk. The initial allowed pause is three seconds.
+voice in sequence, but no network download starts until the user presses the
+explicit Download and set up button. Qwen progress appears only after the speech
+dependencies are ready. A localized completion screen then instructs the user
+to choose AI Dialog, press Start, and talk. The initial allowed pause is three
+seconds. Opening Speak presents equally prominent AI Dialog and Monologue cards
+with a short explanation before either workflow begins.
 
 The first release needs:
 
@@ -331,6 +334,12 @@ The first release needs:
 - API credential entry, validation, and removal;
 - startup and close-to-tray behavior;
 - diagnostics export that excludes transcripts, audio, and keys by default.
+
+The application also provides a dismissible feedback form with a required text
+message and one optional PNG, JPEG, or WebP screenshot. It must disclose that
+the chosen content is sent through the Buddy proxy, never attach audio or
+transcripts automatically, enforce bounded request sizes, and keep delivery
+credentials on the proxy rather than in the client.
 
 ## 3. Audio behavior
 

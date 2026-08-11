@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Buddy — Privater KI-Sprachbegleiter für Windows</title>
+  <title>Chitchat Buddy — Privater KI-Sprachbegleiter für Windows</title>
   <meta name="description" content="Zeichne deine eigenen Wortbeiträge in Besprechungen auf, übe klareres Englisch und führe kontextbezogene Sprachdialoge mit einem datenschutzfreundlichen Windows-11-Begleiter.">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#5b46d8">
@@ -15,9 +15,9 @@
   <link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/">
   <link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Buddy">
+  <meta property="og:site_name" content="Chitchat Buddy">
   <meta property="og:locale" content="de_DE">
-  <meta property="og:title" content="Buddy — Erinnere dich an deine Worte. Sag sie besser.">
+  <meta property="og:title" content="Chitchat Buddy — Erinnere dich an deine Worte. Sag sie besser.">
   <meta property="og:description" content="Ein lokal arbeitender Windows-Sprachbegleiter für Besprechungsnotizen, Aussprachetraining und kontextbezogene KI-Dialoge.">
   <meta property="og:url" content="__SITE_BASE_URL__/de/">
   <meta property="og:image" content="__SITE_BASE_URL__/og.png">
@@ -25,7 +25,7 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Buddy mit einem Sprachdialog und einer Audio-Wellenform">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Buddy — Privater Sprachbegleiter für Windows">
+  <meta name="twitter:title" content="Chitchat Buddy — Privater Sprachbegleiter für Windows">
   <meta name="twitter:description" content="Nimm Gesagtes auf, verbessere es und höre es erneut – mit lokaler Sprachverarbeitung und frei wählbarer KI.">
   <meta name="twitter:image" content="__SITE_BASE_URL__/og.png">
   <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
@@ -36,13 +36,14 @@
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "Buddy",
+    "name": "Chitchat Buddy",
+    "alternateName": "Buddy",
     "description": "Ein datenschutzfreundlicher Windows-Sprachbegleiter für Besprechungsnotizen, Aussprachetraining und kontextbezogene KI-Dialoge.",
     "url": "__SITE_BASE_URL__/de/",
     "downloadUrl": "https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe",
     "applicationCategory": "ProductivityApplication",
     "operatingSystem": "Windows 11 x64",
-    "softwareVersion": "0.1",
+    "softwareVersion": "0.3.0",
     "isAccessibleForFree": true,
     "inLanguage": "de",
     "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
@@ -65,7 +66,7 @@
   <a class="skip-link" href="#main">Zum Hauptinhalt springen</a>
   <header class="site-header">
     <div class="nav-shell">
-      <a class="brand" href="../" aria-label="Buddy Startseite"><span class="brand-mark" aria-hidden="true">b</span><span>Buddy</span></a>
+      <a class="brand" href="../" aria-label="Chitchat Buddy Startseite"><span class="brand-mark" aria-hidden="true">b</span><span>Chitchat Buddy</span></a>
       <nav class="main-nav" aria-label="Hauptnavigation"><a href="#features">Funktionen</a><a href="#how-it-works">So funktioniert es</a><a href="#privacy">Datenschutz</a><a href="#faq">Fragen</a></nav>
       <div class="nav-actions">
         <label class="language-label" for="language-select">Sprache</label>
@@ -82,7 +83,7 @@
         <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Lokal arbeitender Sprachbegleiter für Windows 11</p>
         <h1>Erinnere dich an deine Worte.<br><span>Sag sie besser.</span></h1>
         <p class="hero-lede">Buddy zeichnet deine Beiträge auf, macht aus Sprache einen editierbaren Trainingsablauf und hält den Kontext eines gesprochenen KI-Dialogs – während die zentrale Sprachverarbeitung auf deinem PC bleibt.</p>
-        <div class="hero-actions"><a class="button button-primary" data-download-asset="Buddy-Setup.exe" href="#download">Installer herunterladen</a><a class="button button-secondary" data-download-asset="Buddy.exe" href="#download">Portable EXE</a></div>
+        <div class="hero-actions"><a class="button button-primary" data-download-asset="Buddy-Setup.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe">Installer herunterladen</a><a class="button button-secondary" data-download-asset="Buddy.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy.exe">Portable EXE</a></div>
         <p class="release-status" id="release-status" aria-live="polite">Windows 11 x64 · Neueste GitHub-Version</p>
         <ul class="hero-trust" aria-label="Wichtigste Vorteile"><li><span aria-hidden="true">✓</span> Kein Konto für Kernfunktionen</li><li><span aria-hidden="true">✓</span> Lokale Audioverarbeitung</li><li><span aria-hidden="true">✓</span> Absturzsichere Aufnahmen</li></ul>
       </div>
@@ -91,7 +92,7 @@
         <section class="screenshot-carousel" data-carousel tabindex="0" aria-roledescription="carousel" aria-label="Buddy-Produktübersicht">
           <div class="carousel-viewport">
             <figure class="carousel-slide is-active" data-carousel-slide role="group" aria-roledescription="slide" aria-label="1 von 4">
-              <img src="../screenshots/00-welcome-setup.png" width="1284" height="842" alt="Buddy-Willkommensseite mit bearbeitbaren Feldern für Oberfläche, Gesprächssprache, KI-Anbieter und Testcode" fetchpriority="high">
+              <div class="screenshot-image screenshot-watermark-mask"><img src="../screenshots/00-welcome-setup.png" width="1284" height="842" alt="Chitchat-Buddy-Willkommensseite mit bearbeitbaren Feldern für Oberfläche, Gesprächssprache, KI-Anbieter und Testcode" fetchpriority="high"></div>
               <figcaption><span class="carousel-kicker">Einrichtung</span><strong>Buddy nach deinen Wünschen einrichten</strong><span>Wähle Oberfläche, Gesprächssprache und KI-Anbieter, bevor etwas heruntergeladen wird.</span></figcaption>
             </figure>
             <figure class="carousel-slide" data-carousel-slide role="group" aria-roledescription="slide" aria-label="2 von 4" hidden>
@@ -122,7 +123,7 @@
       </div>
     </section>
 
-    <section class="proof-strip" aria-label="Buddy-Funktionen"><div class="section-shell proof-grid"><div><strong>Lokal</strong><span>Whisper-Erkennung</span></div><div><strong>Editierbar</strong><span>Transkripte und Fassungen</span></div><div><strong>Dauerhaft</strong><span>Aufnahmen und Dialoge</span></div><div><strong>Natürlich</strong><span>Kokoro-Sprachausgabe</span></div></div></section>
+    <section class="proof-strip" aria-label="Buddy-Funktionen"><div class="section-shell proof-grid"><div><strong>Lokal</strong><span>Whisper-Erkennung</span></div><div><strong>Editierbar</strong><span>Transkripte und Fassungen</span></div><div><strong>Dauerhaft</strong><span>Aufnahmen und Dialoge</span></div><div><strong>Natürlich</strong><span>lokale Sprachausgabe</span></div></div></section>
 
     <section class="features-section section-shell" id="features">
       <div class="section-heading"><p class="eyebrow">Drei Arten der Unterstützung</p><h2>Vom ersten Wort bis zu der Fassung, die du sagen wolltest.</h2><p>Ein ruhiger Arbeitsbereich verbindet spontanes Gespräch, bewusstes Üben und ein durchsuchbares Gedächtnis deiner Sprache.</p></div>
@@ -143,7 +144,7 @@
     </div></section>
 
     <section class="privacy-section section-shell" id="privacy"><div class="privacy-panel">
-      <div class="privacy-copy"><p class="eyebrow eyebrow-light">Datenschutz durch Architektur</p><h2>Deine Stimme ist nicht der Eintrittspreis.</h2><p>Mikrofonaufnahmen, Erkennung, Ausspracheanalyse, Entfernung von Stille und Sprachausgabe bleiben auf deinem Computer. Sprachaufgaben nutzen standardmäßig Buddys begrenzten DeepSeek-Zugang und senden nur den angeforderten Text – niemals die Mikrofonaufnahme. Mit lokalem Qwen bleibt auch dieser Text auf deinem PC.</p><a href="#faq" class="text-link">Antworten zum Datenschutz lesen <span aria-hidden="true">→</span></a></div>
+      <div class="privacy-copy"><p class="eyebrow eyebrow-light">Datenschutz durch Architektur</p><h2>Deine Stimme ist nicht der Eintrittspreis.</h2><p>Mikrofonaufnahmen, Erkennung, Ausspracheanalyse, Entfernung von Stille und Sprachausgabe bleiben auf deinem Computer. Sprachaufgaben nutzen standardmäßig Buddys begrenzten DeepSeek-Zugang und senden nur den angeforderten Text – niemals die Mikrofonaufnahme. Das Gateway speichert Schlüssel-Hashes und numerische Nutzungswerte, nicht den Dialogtext. Mit lokalem Qwen bleibt auch der angeforderte Text auf deinem PC.</p><a href="#faq" class="text-link">Antworten zum Datenschutz lesen <span aria-hidden="true">→</span></a></div>
       <div class="privacy-facts"><div><span class="fact-mark">01</span><strong>Lokales Audio</strong><p>Deine Aufnahmen bleiben in deinem Windows-Profil.</p></div><div><span class="fact-mark">02</span><strong>Geschützte Schlüssel</strong><p>Anbieter-Zugangsdaten werden mit Windows DPAPI geschützt.</p></div><div><span class="fact-mark">03</span><strong>Deine Wahl</strong><p>Nutze gehostete Text-KI oder lade Qwen für lokale Antworten.</p></div></div>
     </div></section>
 
@@ -162,26 +163,26 @@
       <div class="faq-list">
         <details><summary>Zeichnet Buddy alle Personen in einer Besprechung auf?</summary><p>Nein. Buddy zeichnet das ausgewählte Mikrofon auf. Es soll deine eigenen Beiträge bewahren, nicht entfernte Teilnehmende oder Windows-Systemaudio. Mit Kopfhörern erzielst du das sauberste Ergebnis.</p></details>
         <details><summary>Verlässt mein Audio den Computer?</summary><p>Nein. Aufnahme, Whisper-Erkennung, Ausspracheanalyse und Kokoro-Sprachausgabe laufen lokal. Der begrenzte Standardanbieter sendet nur den für die Aufgabe nötigen Text an DeepSeek. Lokales Qwen behält auch diesen Text auf deinem PC.</p></details>
-        <details><summary>Kann ich Buddy ohne Cloud-Konto verwenden?</summary><p>Ja. Aufnahme, Wiedergabe, Transkription und lokale Sprachausgabe benötigen keines. Die Version enthält bis zu 1.000 Antworten oder 1.000.000 Token begrenzten DeepSeek-Zugang. Lade lokales Qwen, damit auch Antworten und Textverbesserungen auf deinem PC bleiben.</p></details>
+        <details><summary>Kann ich Buddy ohne Cloud-Konto verwenden?</summary><p>Ja. Aufnahme, Wiedergabe, Transkription und lokale Sprachausgabe benötigen keines. Die Version enthält bis zu 1.000 Antworten oder 1.000.000 Token begrenzten DeepSeek-Zugang, je nachdem, welches Limit zuerst erreicht wird. Lade lokales Qwen, damit auch Antworten und Textverbesserungen auf deinem PC bleiben.</p></details>
         <details><summary>Was lädt der Installer herunter?</summary><p>Die App selbst ist vollständig enthalten. Größere Sprach- und lokale KI-Modelle werden bei Bedarf mit Fortschrittsanzeige und Abschlussmeldung installiert. So wartest du nicht auf Komponenten, die du vielleicht nie verwendest.</p></details>
         <details><summary>Ist die Aussprachehilfe eine Akzentbewertung?</summary><p>Nein. Buddy nutzt Wortzeiten und Erkennungssicherheit, um prüfenswerte Stellen zu markieren. IPA ist eine Hilfe und kein Urteil über deinen Akzent oder deine Identität.</p></details>
       </div>
     </section>
 
     <section class="download-section" id="download"><div class="section-shell download-panel">
-      <div><p class="eyebrow eyebrow-light">Chitchat Buddy 0.2 · Windows 11 x64</p><h2>Dein nächster Gedanke verdient einen besseren zweiten Versuch.</h2><p>Installiere Buddy, wähle dein Mikrofon und beginne mit Funktionen, die vom ersten Tag an lokal arbeiten.</p></div>
+      <div><p class="eyebrow eyebrow-light">Chitchat Buddy 0.3.0 · Windows 11 x64</p><h2>Dein nächster Gedanke verdient einen besseren zweiten Versuch.</h2><p>Installiere Buddy, wähle dein Mikrofon und beginne mit Funktionen, die vom ersten Tag an lokal arbeiten.</p></div>
       <div class="download-options">
-        <a class="download-card primary-download" data-download-asset="Buddy-Setup.exe" href="#download"><span class="download-copy"><strong>Installer herunterladen</strong><small>Empfohlen · geführte Windows-Einrichtung</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
-        <a class="download-card" data-download-asset="Buddy.exe" href="#download"><span class="download-copy"><strong>Portable EXE</strong><small>Einzeldatei-App · keine Installation</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
-        <a class="release-link" data-release-link href="https://github.com/">Versionshinweise und Prüfsummen <span aria-hidden="true">↗</span></a>
-        <p class="download-note" data-release-note>Die Downloads verweisen auf die neueste GitHub-Version. Frühe Versionen können unsigniert sein; prüfe die veröffentlichten Prüfsummen.</p>
+        <a class="download-card primary-download" data-download-asset="Buddy-Setup.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe"><span class="download-copy"><strong>Installer herunterladen</strong><small>Empfohlen · geführte Windows-Einrichtung</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card" data-download-asset="Buddy.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy.exe"><span class="download-copy"><strong>Portable EXE</strong><small>Einzeldatei-App · keine Installation</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="release-link" data-release-link href="https://github.com/__BUDDY_REPOSITORY__/releases/latest">Versionshinweise und Prüfsummen <span aria-hidden="true">↗</span></a>
+        <p class="download-note" id="release-note" data-release-note>Die Downloads verweisen auf die neueste GitHub-Version. Frühe Versionen können unsigniert sein; prüfe die veröffentlichten Prüfsummen.</p>
       </div>
     </div></section>
   </main>
 
   <footer class="site-footer"><div class="section-shell footer-grid">
-    <div><a class="brand footer-brand" href="../"><span class="brand-mark" aria-hidden="true">b</span><span>Buddy</span></a><p>Ein aufmerksamer Sprachbegleiter für Windows.</p></div>
-    <div class="footer-links"><a href="#features">Funktionen</a><a href="#privacy">Datenschutz</a><a data-release-link href="https://github.com/">GitHub-Releases</a></div>
+    <div><a class="brand footer-brand" href="../"><span class="brand-mark" aria-hidden="true">b</span><span>Chitchat Buddy</span></a><p>Ein aufmerksamer Sprachbegleiter für Windows.</p></div>
+    <div class="footer-links"><a href="#features">Funktionen</a><a href="#privacy">Datenschutz</a><a data-release-link href="https://github.com/__BUDDY_REPOSITORY__/releases/latest">GitHub-Releases</a></div>
     <p class="footer-note">Entwickelt für Windows 11. Lies vor der Weitergabe der Binärdateien die enthaltenen Hinweise zu Drittanbieterkomponenten.</p>
   </div></footer>
   <script src="../config.js"></script><script src="../app.js"></script>

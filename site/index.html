@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Buddy — Private AI speech companion for Windows</title>
+  <title>Chitchat Buddy — Private AI speech companion for Windows</title>
   <meta name="description" content="Record your own meeting speech, practise clearer English, and hold contextual voice conversations with a privacy-first Windows 11 desktop companion.">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#5b46d8">
@@ -15,8 +15,8 @@
   <link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/">
   <link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Buddy">
-  <meta property="og:title" content="Buddy — Remember your words. Say them better.">
+  <meta property="og:site_name" content="Chitchat Buddy">
+  <meta property="og:title" content="Chitchat Buddy — Remember your words. Say them better.">
   <meta property="og:description" content="A local-first Windows speech companion for meeting recall, pronunciation coaching, and contextual AI dialog.">
   <meta property="og:url" content="__SITE_BASE_URL__/">
   <meta property="og:image" content="__SITE_BASE_URL__/og.png">
@@ -24,7 +24,7 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Buddy speech companion with a conversation and audio waveform">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Buddy — Private AI speech companion for Windows">
+  <meta name="twitter:title" content="Chitchat Buddy — Private AI speech companion for Windows">
   <meta name="twitter:description" content="Record, improve, and revisit what you say — with local speech processing and your choice of AI provider.">
   <meta name="twitter:image" content="__SITE_BASE_URL__/og.png">
   <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png">
@@ -35,14 +35,15 @@
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "Buddy",
+    "name": "Chitchat Buddy",
+    "alternateName": "Buddy",
     "description": "A privacy-first Windows speech companion for meeting recall, pronunciation coaching, and contextual AI dialog.",
     "url": "__SITE_BASE_URL__/",
     "downloadUrl": "https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe",
     "applicationCategory": "ProductivityApplication",
     "applicationSubCategory": "Speech companion",
     "operatingSystem": "Windows 11 x64",
-    "softwareVersion": "0.1",
+    "softwareVersion": "0.3.0",
     "isAccessibleForFree": true,
     "offers": {
       "@type": "Offer",
@@ -88,9 +89,9 @@
   <a class="skip-link" href="#main">Skip to main content</a>
   <header class="site-header">
     <div class="nav-shell">
-      <a class="brand" href="./" aria-label="Buddy home">
+      <a class="brand" href="./" aria-label="Chitchat Buddy home">
         <span class="brand-mark" aria-hidden="true">b</span>
-        <span>Buddy</span>
+        <span>Chitchat Buddy</span>
       </a>
       <nav class="main-nav" aria-label="Primary navigation">
         <a href="#features">Features</a>
@@ -123,8 +124,8 @@
         <h1>Remember your words.<br><span>Say them better.</span></h1>
         <p class="hero-lede">Buddy records your own remarks, turns speech into an editable coaching loop, and keeps a spoken AI conversation in context — while the core speech stack stays on your PC.</p>
         <div class="hero-actions">
-          <a class="button button-primary" data-download-asset="Buddy-Setup.exe" href="#download">Download installer</a>
-          <a class="button button-secondary" data-download-asset="Buddy.exe" href="#download">Portable executable</a>
+          <a class="button button-primary" data-download-asset="Buddy-Setup.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe">Download installer</a>
+          <a class="button button-secondary" data-download-asset="Buddy.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy.exe">Portable executable</a>
         </div>
         <p class="release-status" id="release-status" aria-live="polite">Windows 11 x64 · Latest GitHub release</p>
         <ul class="hero-trust" aria-label="Key benefits">
@@ -139,7 +140,7 @@
         <section class="screenshot-carousel" data-carousel tabindex="0" aria-roledescription="carousel" aria-label="Buddy product tour">
           <div class="carousel-viewport">
             <figure class="carousel-slide is-active" data-carousel-slide role="group" aria-roledescription="slide" aria-label="1 of 4">
-              <img src="./screenshots/00-welcome-setup.png" width="1284" height="842" alt="Buddy welcome screen with editable interface language, conversation language, AI provider, and trial code fields" fetchpriority="high">
+              <div class="screenshot-image screenshot-watermark-mask"><img src="./screenshots/00-welcome-setup.png" width="1284" height="842" alt="Chitchat Buddy welcome screen with editable interface language, conversation language, AI provider, and trial code fields" fetchpriority="high"></div>
               <figcaption><span class="carousel-kicker">Setup</span><strong>Set up on your terms</strong><span>Choose interface, conversation language, and AI provider before anything downloads.</span></figcaption>
             </figure>
             <figure class="carousel-slide" data-carousel-slide role="group" aria-roledescription="slide" aria-label="2 of 4" hidden>
@@ -175,7 +176,7 @@
         <div><strong>Local</strong><span>Whisper recognition</span></div>
         <div><strong>Editable</strong><span>transcripts and revisions</span></div>
         <div><strong>Persistent</strong><span>recordings and dialogs</span></div>
-        <div><strong>Natural</strong><span>Kokoro voice playback</span></div>
+        <div><strong>Natural</strong><span>local voice playback</span></div>
       </div>
     </section>
 
@@ -251,7 +252,7 @@
         <div class="privacy-copy">
           <p class="eyebrow eyebrow-light">Privacy by architecture</p>
           <h2>Your voice is not the price of admission.</h2>
-          <p>Microphone audio, recognition, pronunciation analysis, silence removal, and voice synthesis stay on your computer. Language tasks use capped Buddy access to DeepSeek by default and send only the requested text — never your microphone recording. Choose local Qwen to keep that text on your PC too.</p>
+          <p>Microphone audio, recognition, pronunciation analysis, silence removal, and voice synthesis stay on your computer. Language tasks use capped Buddy access to DeepSeek by default and send only the requested text — never your microphone recording. The gateway stores key hashes and numerical usage, not dialog text. Choose local Qwen to keep the requested text on your PC too.</p>
           <a href="#faq" class="text-link">Read the privacy answers <span aria-hidden="true">→</span></a>
         </div>
         <div class="privacy-facts">
@@ -293,7 +294,7 @@
         </details>
         <details>
           <summary>Can I use Buddy without a cloud account?</summary>
-          <p>Yes. Recording, playback, transcription, and local voice need no account. Releases include up to 1,000 replies or 1,000,000 tokens of capped Buddy DeepSeek access. Download optional local Qwen to keep AI answers and text improvement on your PC.</p>
+          <p>Yes. Recording, playback, transcription, and local voice need no account. Releases include up to 1,000 replies or 1,000,000 tokens of capped Buddy DeepSeek access, whichever limit is reached first. Download optional local Qwen to keep AI answers and text improvement on your PC.</p>
         </details>
         <details>
           <summary>What does the installer download?</summary>
@@ -309,21 +310,21 @@
     <section class="download-section" id="download">
       <div class="section-shell download-panel">
         <div>
-          <p class="eyebrow eyebrow-light">Chitchat Buddy 0.2 · Windows 11 x64</p>
+          <p class="eyebrow eyebrow-light">Chitchat Buddy 0.3.0 · Windows 11 x64</p>
           <h2>Your next thought deserves a better second take.</h2>
           <p>Install Buddy, choose your microphone, and start with the features that work locally from day one.</p>
         </div>
         <div class="download-options">
-          <a class="download-card primary-download" data-download-asset="Buddy-Setup.exe" href="#download">
+          <a class="download-card primary-download" data-download-asset="Buddy-Setup.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe">
             <span class="download-copy"><strong>Download installer</strong><small>Recommended · guided Windows setup</small></span>
             <span class="download-arrow" aria-hidden="true">↓</span>
           </a>
-          <a class="download-card" data-download-asset="Buddy.exe" href="#download">
+          <a class="download-card" data-download-asset="Buddy.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy.exe">
             <span class="download-copy"><strong>Portable executable</strong><small>Single-file app · no installer</small></span>
             <span class="download-arrow" aria-hidden="true">↓</span>
           </a>
-          <a class="release-link" data-release-link href="https://github.com/">Release notes and file checksums <span aria-hidden="true">↗</span></a>
-          <p class="download-note" data-release-note>Downloads follow the latest published GitHub release. Early builds may be unsigned; verify the published checksums.</p>
+          <a class="release-link" data-release-link href="https://github.com/__BUDDY_REPOSITORY__/releases/latest">Release notes and file checksums <span aria-hidden="true">↗</span></a>
+          <p class="download-note" id="release-note" data-release-note>Downloads follow the latest published GitHub release. Early builds may be unsigned; verify the published checksums.</p>
         </div>
       </div>
     </section>
@@ -332,13 +333,13 @@
   <footer class="site-footer">
     <div class="section-shell footer-grid">
       <div>
-        <a class="brand footer-brand" href="./"><span class="brand-mark" aria-hidden="true">b</span><span>Buddy</span></a>
+        <a class="brand footer-brand" href="./"><span class="brand-mark" aria-hidden="true">b</span><span>Chitchat Buddy</span></a>
         <p>A thoughtful speech companion for Windows.</p>
       </div>
       <div class="footer-links">
         <a href="#features">Features</a>
         <a href="#privacy">Privacy</a>
-        <a data-release-link href="https://github.com/">GitHub releases</a>
+        <a data-release-link href="https://github.com/__BUDDY_REPOSITORY__/releases/latest">GitHub releases</a>
       </div>
       <p class="footer-note">Built for Windows 11. Review bundled third-party notices before redistributing binaries.</p>
     </div>

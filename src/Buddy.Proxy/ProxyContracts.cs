@@ -75,4 +75,7 @@ public static class ProxyErrorCodes
     public const string UpstreamBalance = "proxy_upstream_balance_exhausted";
     public const string UpstreamUnavailable = "proxy_upstream_unavailable";
     public const string UpstreamProtocol = "proxy_upstream_protocol_error";
+    public const string FeedbackInvalid = "proxy_feedback_invalid";
+    public const string FeedbackUnavailable = "proxy_feedback_unavailable";
+    public const string FeedbackDeliveryFailed = "proxy_feedback_delivery_failed";
 }

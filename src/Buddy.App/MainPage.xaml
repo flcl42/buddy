@@ -53,6 +53,52 @@
                 <Setter Property="TextColor" Value="#767B91" />
                 <Setter Property="FontSize" Value="13" />
             </Style>
+
+            <Style x:Key="AppPicker" TargetType="controls:FramedPicker">
+                <Setter Property="BackgroundColor" Value="#F8F9FC" />
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="HeightRequest" Value="44" />
+                <Setter Property="HorizontalOptions" Value="Fill" />
+                <Setter Property="TextColor" Value="#222538" />
+                <Setter Property="TitleColor" Value="#7C8194" />
+            </Style>
+
+            <Style x:Key="AppEntry" TargetType="controls:FramedEntry">
+                <Setter Property="BackgroundColor" Value="#F8F9FC" />
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="HeightRequest" Value="44" />
+                <Setter Property="HorizontalOptions" Value="Fill" />
+                <Setter Property="PlaceholderColor" Value="#858A9D" />
+                <Setter Property="TextColor" Value="#222538" />
+            </Style>
+
+            <Style x:Key="AppEditor" TargetType="controls:FramedEditor">
+                <Setter Property="BackgroundColor" Value="#F8F9FC" />
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="HorizontalOptions" Value="Fill" />
+                <Setter Property="PlaceholderColor" Value="#858A9D" />
+                <Setter Property="TextColor" Value="#222538" />
+            </Style>
+
+            <Style
+                x:Key="OnboardingPicker"
+                BasedOn="{StaticResource AppPicker}"
+                TargetType="controls:FramedPicker">
+                <Setter Property="BackgroundColor" Value="#FFFFFF" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="HeightRequest" Value="46" />
+                <Setter Property="TextColor" Value="#222538" />
+            </Style>
+
+            <Style
+                x:Key="OnboardingEntry"
+                BasedOn="{StaticResource AppEntry}"
+                TargetType="controls:FramedEntry">
+                <Setter Property="BackgroundColor" Value="#FFFFFF" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="HeightRequest" Value="46" />
+                <Setter Property="TextColor" Value="#222538" />
+            </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -81,6 +127,9 @@
                     <MenuFlyoutItem
                         Command="{Binding ToggleSettingsCommand}"
                         Text="{DynamicResource Settings}" />
+                    <MenuFlyoutItem
+                        Command="{Binding OpenFeedbackWindowCommand}"
+                        Text="{DynamicResource Feedback}" />
                     <MenuFlyoutSeparator />
                     <MenuFlyoutItem
                         Command="{Binding ExitApplicationCommand}"
@@ -96,7 +145,7 @@
                 BackgroundColor="White"
                 Stroke="#E8EAF0"
                 StrokeThickness="1">
-                <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" ColumnSpacing="12">
                     <HorizontalStackLayout
                         Grid.Column="0"
                         Spacing="11"
@@ -195,67 +244,6 @@
                             </Button>
                         </HorizontalStackLayout>
 
-                        <Border
-                            Padding="3"
-                            BackgroundColor="#F3F4F8"
-                            IsVisible="{Binding IsSpeakSelected}"
-                            Stroke="#E2E4EB"
-                            StrokeShape="RoundRectangle 10">
-                            <HorizontalStackLayout Spacing="2">
-                                <Button
-                                    AutomationId="DialogModeButton"
-                                    Command="{Binding SelectDialogCommand}"
-                                    Style="{StaticResource QuietButton}"
-                                    Text="{DynamicResource DialogTab}">
-                                    <Button.Triggers>
-                                        <DataTrigger
-                                            Binding="{Binding IsDialogMode}"
-                                            TargetType="Button"
-                                            Value="False">
-                                            <Setter Property="BackgroundColor" Value="Transparent" />
-                                            <Setter Property="BorderColor" Value="Transparent" />
-                                            <Setter Property="BorderWidth" Value="0" />
-                                            <Setter Property="TextColor" Value="#60657A" />
-                                        </DataTrigger>
-                                        <DataTrigger
-                                            Binding="{Binding IsDialogMode}"
-                                            TargetType="Button"
-                                            Value="True">
-                                            <Setter Property="BackgroundColor" Value="#E4E3FF" />
-                                            <Setter Property="BorderColor" Value="#797AE8" />
-                                            <Setter Property="BorderWidth" Value="1" />
-                                            <Setter Property="TextColor" Value="#3738A8" />
-                                        </DataTrigger>
-                                    </Button.Triggers>
-                                </Button>
-                                <Button
-                                    AutomationId="MonologueModeButton"
-                                    Command="{Binding SelectMonologueCommand}"
-                                    Style="{StaticResource QuietButton}"
-                                    Text="{DynamicResource MonologueTab}">
-                                    <Button.Triggers>
-                                        <DataTrigger
-                                            Binding="{Binding IsMonologueMode}"
-                                            TargetType="Button"
-                                            Value="False">
-                                            <Setter Property="BackgroundColor" Value="Transparent" />
-                                            <Setter Property="BorderColor" Value="Transparent" />
-                                            <Setter Property="BorderWidth" Value="0" />
-                                            <Setter Property="TextColor" Value="#60657A" />
-                                        </DataTrigger>
-                                        <DataTrigger
-                                            Binding="{Binding IsMonologueMode}"
-                                            TargetType="Button"
-                                            Value="True">
-                                            <Setter Property="BackgroundColor" Value="#E4E3FF" />
-                                            <Setter Property="BorderColor" Value="#797AE8" />
-                                            <Setter Property="BorderWidth" Value="1" />
-                                            <Setter Property="TextColor" Value="#3738A8" />
-                                        </DataTrigger>
-                                    </Button.Triggers>
-                                </Button>
-                            </HorizontalStackLayout>
-                        </Border>
                     </HorizontalStackLayout>
 
                     <Button
@@ -266,6 +254,13 @@
 
                     <Button
                         Grid.Column="3"
+                        AutomationId="OpenFeedbackButton"
+                        Command="{Binding OpenFeedbackCommand}"
+                        Style="{StaticResource SecondaryButton}"
+                        Text="{DynamicResource Feedback}" />
+
+                    <Button
+                        Grid.Column="4"
                         SemanticProperties.Description="{DynamicResource OpenSettingsDescription}"
                         Command="{Binding ToggleSettingsCommand}"
                         FontSize="19"
@@ -315,7 +310,7 @@
                                 Text="⌕"
                                 TextColor="#7D8296"
                                 VerticalTextAlignment="Center" />
-                            <Entry
+                            <controls:BorderlessEntry
                                 Grid.Column="1"
                                 Margin="0"
                                 BackgroundColor="Transparent"
@@ -583,6 +578,164 @@
                 </Grid>
             </Grid>
 
+            <Grid
+                Grid.Row="1"
+                AutomationId="SpeakModeChooser"
+                IsVisible="{Binding IsSpeakModeChooserVisible}"
+                Padding="40,34,40,40"
+                RowDefinitions="Auto,24,*">
+                <VerticalStackLayout
+                    Grid.Row="0"
+                    HorizontalOptions="Center"
+                    MaximumWidthRequest="760"
+                    Spacing="6">
+                    <Label
+                        HorizontalTextAlignment="Center"
+                        Style="{StaticResource SectionTitle}"
+                        Text="{DynamicResource SpeakChooserTitle}" />
+                    <Label
+                        HorizontalTextAlignment="Center"
+                        LineBreakMode="WordWrap"
+                        Style="{StaticResource MutedText}"
+                        Text="{DynamicResource SpeakChooserIntro}" />
+                </VerticalStackLayout>
+
+                <Grid
+                    Grid.Row="2"
+                    ColumnDefinitions="*,22,*"
+                    HorizontalOptions="Fill"
+                    MaximumWidthRequest="1080"
+                    VerticalOptions="Fill">
+                    <Border
+                        Grid.Column="0"
+                        AutomationId="DialogChoicePanel"
+                        BackgroundColor="#F8F7FF"
+                        Stroke="#C9C8F8"
+                        StrokeShape="RoundRectangle 20"
+                        StrokeThickness="1.5">
+                        <Border.Shadow>
+                            <Shadow Brush="#160B1020" Offset="0,5" Opacity="0.3" Radius="18" />
+                        </Border.Shadow>
+                        <Grid
+                            Padding="30"
+                            RowDefinitions="Auto,Auto,*,Auto,Auto"
+                            RowSpacing="16">
+                            <Border
+                                Grid.Row="0"
+                                WidthRequest="58"
+                                HeightRequest="58"
+                                BackgroundColor="#E5E4FF"
+                                HorizontalOptions="Start"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 18">
+                                <Label
+                                    HorizontalTextAlignment="Center"
+                                    VerticalTextAlignment="Center"
+                                    FontFamily="Segoe UI Semibold"
+                                    FontSize="25"
+                                    Text="↔"
+                                    TextColor="#4B4CC3" />
+                            </Border>
+                            <Label
+                                Grid.Row="1"
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="24"
+                                Text="{DynamicResource DialogTab}"
+                                TextColor="#202238" />
+                            <Label
+                                Grid.Row="2"
+                                FontSize="14"
+                                LineBreakMode="WordWrap"
+                                Text="{DynamicResource DialogIntro}"
+                                TextColor="#61667A"
+                                VerticalOptions="Start" />
+                            <Border
+                                Grid.Row="3"
+                                Padding="14,11"
+                                BackgroundColor="#EEEFFF"
+                                Stroke="#D8D8FA"
+                                StrokeShape="RoundRectangle 11">
+                                <Label
+                                    FontSize="12"
+                                    LineBreakMode="WordWrap"
+                                    Text="{DynamicResource DialogChoiceFeatures}"
+                                    TextColor="#4B4D87" />
+                            </Border>
+                            <Button
+                                Grid.Row="4"
+                                AutomationId="StartDialogChoiceButton"
+                                Command="{Binding StartDialogFromChooserCommand}"
+                                Style="{StaticResource PrimaryButton}"
+                                Text="{DynamicResource StartDialog}" />
+                        </Grid>
+                    </Border>
+
+                    <Border
+                        Grid.Column="2"
+                        AutomationId="MonologueChoicePanel"
+                        BackgroundColor="White"
+                        Stroke="#DDE1EA"
+                        StrokeShape="RoundRectangle 20"
+                        StrokeThickness="1.5">
+                        <Border.Shadow>
+                            <Shadow Brush="#160B1020" Offset="0,5" Opacity="0.3" Radius="18" />
+                        </Border.Shadow>
+                        <Grid
+                            Padding="30"
+                            RowDefinitions="Auto,Auto,*,Auto,Auto"
+                            RowSpacing="16">
+                            <Border
+                                Grid.Row="0"
+                                WidthRequest="58"
+                                HeightRequest="58"
+                                BackgroundColor="#ECF7F2"
+                                HorizontalOptions="Start"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 18">
+                                <Label
+                                    HorizontalTextAlignment="Center"
+                                    VerticalTextAlignment="Center"
+                                    FontFamily="Segoe UI Semibold"
+                                    FontSize="24"
+                                    Text="◉"
+                                    TextColor="#2D8A61" />
+                            </Border>
+                            <Label
+                                Grid.Row="1"
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="24"
+                                Text="{DynamicResource MonologueTab}"
+                                TextColor="#202238" />
+                            <Label
+                                Grid.Row="2"
+                                FontSize="14"
+                                LineBreakMode="WordWrap"
+                                Text="{DynamicResource MonologueIntro}"
+                                TextColor="#61667A"
+                                VerticalOptions="Start" />
+                            <Border
+                                Grid.Row="3"
+                                Padding="14,11"
+                                BackgroundColor="#F0F8F4"
+                                Stroke="#D7EBE1"
+                                StrokeShape="RoundRectangle 11">
+                                <Label
+                                    FontSize="12"
+                                    LineBreakMode="WordWrap"
+                                    Text="{DynamicResource MonologueChoiceFeatures}"
+                                    TextColor="#396D57" />
+                            </Border>
+                            <Button
+                                Grid.Row="4"
+                                AutomationId="StartMonologueChoiceButton"
+                                Command="{Binding StartMonologueFromChooserCommand}"
+                                Style="{StaticResource PrimaryButton}"
+                                Text="{DynamicResource StartMonologue}" />
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+
             <ScrollView
                 Grid.Row="1"
                 IsVisible="{Binding IsMonologueMode}">
@@ -676,15 +829,16 @@
                                         Text="{DynamicResource Editable}"
                                         TextColor="#5B5CE2" />
                                 </Grid>
-                                <Editor
+                                <controls:FramedEditor
                                     AutoSize="TextChanges"
-                                    BackgroundColor="#F8F9FB"
                                     HeightRequest="190"
                                     Placeholder="{DynamicResource RecognizedTextPlaceholder}"
+                                    Style="{StaticResource AppEditor}"
                                     Text="{Binding TrainerTranscript}" />
-                                <Picker
+                                <controls:FramedPicker
                                     ItemsSource="{Binding ImprovementModeNames}"
                                     SelectedIndex="{Binding ImprovementModeIndex}"
+                                    Style="{StaticResource AppPicker}"
                                     Title="{DynamicResource ImprovementStyle}" />
                                 <Label
                                     FontSize="11"
@@ -877,11 +1031,11 @@
                                     TextColor="#5B5CE2" />
                             </Grid>
 
-                            <Editor
+                            <controls:FramedEditor
                                 AutoSize="TextChanges"
-                                BackgroundColor="#F8F9FB"
                                 HeightRequest="270"
-                                    Placeholder="{DynamicResource BetterVersionPlaceholder}"
+                                Placeholder="{DynamicResource BetterVersionPlaceholder}"
+                                Style="{StaticResource AppEditor}"
                                 Text="{Binding TrainerImprovedText}" />
 
                             <Border
@@ -951,14 +1105,16 @@
                             </Border>
 
                             <Grid ColumnDefinitions="*,150,Auto" ColumnSpacing="10">
-                                <Picker
+                                <controls:FramedPicker
                                     ItemsSource="{Binding TrainerVoiceNames}"
                                     SelectedIndex="{Binding SelectedTrainerVoiceIndex}"
+                                    Style="{StaticResource AppPicker}"
                                     Title="{DynamicResource Voice}" />
-                                <Picker
+                                <controls:FramedPicker
                                     Grid.Column="1"
                                     ItemsSource="{Binding TrainerSpeedNames}"
                                     SelectedIndex="{Binding TrainerSpeedIndex}"
+                                    Style="{StaticResource AppPicker}"
                                     Title="{DynamicResource Pace}" />
                                 <Button
                                     Grid.Column="2"
@@ -1365,12 +1521,12 @@
                                         Text="{DynamicResource LocalWhisper}"
                                         TextColor="#327C5A" />
                                 </Grid>
-                                <Editor
+                                <controls:FramedEditor
                                     AutoSize="TextChanges"
-                                    BackgroundColor="#F8F9FB"
                                     HeightRequest="110"
                                     IsReadOnly="True"
                                     Placeholder="{DynamicResource LiveTranscriptPlaceholder}"
+                                    Style="{StaticResource AppEditor}"
                                     Text="{Binding Dialog.LiveTranscript, Mode=OneWay}" />
                                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
                                     <Label
@@ -1378,12 +1534,13 @@
                                         Text="{DynamicResource AllowedPause}"
                                         TextColor="#656B7F"
                                         VerticalTextAlignment="Center" />
-                                    <Picker
+                                    <controls:FramedPicker
                                         Grid.Column="1"
                                         AutomationId="DialogAllowedPausePicker"
                                         HorizontalOptions="Fill"
                                         ItemsSource="{Binding Dialog.AllowedPauseOptions}"
                                         SelectedIndex="{Binding Dialog.SelectedPauseIndex, Mode=TwoWay}"
+                                        Style="{StaticResource AppPicker}"
                                         Title="{DynamicResource ChoosePause}" />
                                 </Grid>
                                 <Label
@@ -1482,13 +1639,22 @@
         </Grid>
 
         <Grid
-            BackgroundColor="#660B1020"
+            AutomationId="SettingsOverlay"
             IsVisible="{Binding IsSettingsOpen}">
+            <BoxView
+                AutomationId="SettingsBackdrop"
+                BackgroundColor="#660B1020">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CloseSettingsCommand}" />
+                </BoxView.GestureRecognizers>
+            </BoxView>
             <Border
+                AutomationId="SettingsPanel"
                 WidthRequest="460"
                 Padding="24"
                 BackgroundColor="White"
                 HorizontalOptions="End"
+                InputTransparent="False"
                 StrokeThickness="0">
                 <ScrollView>
                     <VerticalStackLayout Spacing="18">
@@ -1519,17 +1685,19 @@
                                 FontSize="14"
                                 Text="{DynamicResource InterfaceLanguage}"
                                 TextColor="#292B39" />
-                            <Picker
+                            <controls:FramedPicker
                                 ItemsSource="{Binding Settings.InterfaceLanguageNames}"
-                                SelectedIndex="{Binding Settings.SelectedInterfaceLanguageIndex}" />
+                                SelectedIndex="{Binding Settings.SelectedInterfaceLanguageIndex}"
+                                Style="{StaticResource AppPicker}" />
                             <Label
                                 FontFamily="Segoe UI Semibold"
                                 FontSize="14"
                                 Text="{DynamicResource DialogLanguage}"
                                 TextColor="#292B39" />
-                            <Picker
+                            <controls:FramedPicker
                                 ItemsSource="{Binding Settings.DialogLanguageNames}"
-                                SelectedIndex="{Binding Settings.SelectedDialogLanguageIndex}" />
+                                SelectedIndex="{Binding Settings.SelectedDialogLanguageIndex}"
+                                Style="{StaticResource AppPicker}" />
                         </VerticalStackLayout>
 
                         <BoxView HeightRequest="1" BackgroundColor="#E7E9EF" />
@@ -1540,9 +1708,10 @@
                                 FontSize="14"
                                 Text="{DynamicResource Microphone}"
                                 TextColor="#292B39" />
-                            <Picker
+                            <controls:FramedPicker
                                 ItemsSource="{Binding Settings.MicrophoneNames}"
                                 SelectedIndex="{Binding Settings.SelectedMicrophoneIndex}"
+                                Style="{StaticResource AppPicker}"
                                 Title="{DynamicResource RecordingMicrophone}" />
                             <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
                                 <ProgressBar
@@ -1591,10 +1760,11 @@
                                 FontSize="14"
                                 Text="{DynamicResource Speaker}"
                                 TextColor="#292B39" />
-                            <Picker
+                            <controls:FramedPicker
                                 AutomationId="OutputDevicePicker"
                                 ItemsSource="{Binding Settings.OutputNames}"
                                 SelectedIndex="{Binding Settings.SelectedOutputIndex}"
+                                Style="{StaticResource AppPicker}"
                                 Title="{DynamicResource AiAnswerSpeaker}" />
                             <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
                                 <Label
@@ -1663,10 +1833,11 @@
                                 Text="{DynamicResource AiLanguageProvider}"
                                 TextColor="#292B39" />
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
-                                <Picker
+                                <controls:FramedPicker
                                     AutomationId="LanguageProviderPicker"
                                     ItemsSource="{Binding Settings.LanguageProviderNames}"
-                                    SelectedIndex="{Binding Settings.SelectedLanguageProviderIndex}" />
+                                    SelectedIndex="{Binding Settings.SelectedLanguageProviderIndex}"
+                                    Style="{StaticResource AppPicker}" />
                                 <Button
                                     Grid.Column="1"
                                     AutomationId="UseLanguageProviderButton"
@@ -1760,9 +1931,10 @@
                                 TextColor="#815B16" />
 
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
-                                <Entry
+                                <controls:FramedEntry
                                     IsPassword="True"
                                     Placeholder="{DynamicResource ProxyKeyPlaceholder}"
+                                    Style="{StaticResource AppEntry}"
                                     Text="{Binding Settings.ProxyApiKey}" />
                                 <Button
                                     Grid.Column="1"
@@ -1777,9 +1949,10 @@
                             </Grid>
 
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
-                                <Entry
+                                <controls:FramedEntry
                                     IsPassword="True"
                                     Placeholder="{DynamicResource DeepSeekKey}"
+                                    Style="{StaticResource AppEntry}"
                                     Text="{Binding Settings.DeepSeekApiKey}" />
                                 <Button
                                     Grid.Column="1"
@@ -1794,9 +1967,10 @@
                             </Grid>
 
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
-                                <Entry
+                                <controls:FramedEntry
                                     IsPassword="True"
                                     Placeholder="{DynamicResource KimiKeyPlaceholder}"
+                                    Style="{StaticResource AppEntry}"
                                     Text="{Binding Settings.KimiApiKey}" />
                                 <Button
                                     Grid.Column="1"
@@ -1811,9 +1985,10 @@
                             </Grid>
 
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
-                                <Entry
+                                <controls:FramedEntry
                                     IsPassword="True"
                                     Placeholder="{DynamicResource OpenAiKeyPlaceholder}"
+                                    Style="{StaticResource AppEntry}"
                                     Text="{Binding Settings.OpenAiApiKey}" />
                                 <Button
                                     Grid.Column="1"
@@ -1954,6 +2129,166 @@
             </Border>
         </Grid>
 
+        <Grid
+            AutomationId="FeedbackOverlay"
+            IsVisible="{Binding Feedback.IsOpen}"
+            ZIndex="600">
+            <BoxView
+                AutomationId="FeedbackBackdrop"
+                BackgroundColor="#660B1020">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding Feedback.CloseCommand}" />
+                </BoxView.GestureRecognizers>
+            </BoxView>
+            <Border
+                AutomationId="FeedbackPanel"
+                Margin="24"
+                Padding="26"
+                BackgroundColor="White"
+                HorizontalOptions="Center"
+                InputTransparent="False"
+                MaximumWidthRequest="640"
+                Stroke="#D8DBE6"
+                StrokeShape="RoundRectangle 20"
+                VerticalOptions="Center"
+                WidthRequest="620">
+                <Border.Shadow>
+                    <Shadow Brush="#33000000" Offset="0,10" Opacity="0.35" Radius="26" />
+                </Border.Shadow>
+                <VerticalStackLayout Spacing="17">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Spacing="3">
+                            <Label
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="23"
+                                Text="{DynamicResource FeedbackTitle}"
+                                TextColor="#1D1F2C" />
+                            <Label
+                                Style="{StaticResource MutedText}"
+                                Text="{DynamicResource FeedbackIntro}" />
+                        </VerticalStackLayout>
+                        <Button
+                            Grid.Column="1"
+                            Command="{Binding Feedback.CloseCommand}"
+                            FontSize="16"
+                            Style="{StaticResource QuietButton}"
+                            Text="✕" />
+                    </Grid>
+
+                    <VerticalStackLayout Spacing="7">
+                        <Label
+                            FontFamily="Segoe UI Semibold"
+                            FontSize="13"
+                            Text="{DynamicResource FeedbackMessage}" />
+                        <Border
+                            Padding="10,6"
+                            BackgroundColor="#F7F8FC"
+                            Stroke="#9DA4B8"
+                            StrokeShape="RoundRectangle 11"
+                            StrokeThickness="1.25">
+                            <controls:BorderlessEditor
+                                AutomationId="FeedbackMessageEditor"
+                                AutoSize="TextChanges"
+                                BackgroundColor="Transparent"
+                                HeightRequest="145"
+                                IsEnabled="{Binding Feedback.CanEdit}"
+                                MaxLength="3000"
+                                Placeholder="{DynamicResource FeedbackPlaceholder}"
+                                Text="{Binding Feedback.Message}" />
+                        </Border>
+                        <Label
+                            FontSize="10"
+                            HorizontalTextAlignment="End"
+                            Text="{Binding Feedback.CharacterCountText}"
+                            TextColor="#777C8E" />
+                    </VerticalStackLayout>
+
+                    <Border
+                        Padding="14,12"
+                        BackgroundColor="#F7F8FC"
+                        Stroke="#E0E3EC"
+                        StrokeShape="RoundRectangle 12">
+                        <Grid
+                            ColumnDefinitions="*,Auto"
+                            RowDefinitions="Auto,Auto"
+                            ColumnSpacing="10"
+                            RowSpacing="7">
+                            <VerticalStackLayout Spacing="2">
+                                <Label
+                                    FontFamily="Segoe UI Semibold"
+                                    FontSize="13"
+                                    Text="{DynamicResource FeedbackOptionalScreenshot}" />
+                                <Label
+                                    FontSize="11"
+                                    Text="{DynamicResource FeedbackChooseImage}"
+                                    TextColor="#73788B" />
+                            </VerticalStackLayout>
+                            <Button
+                                Grid.Column="1"
+                                AutomationId="FeedbackAttachScreenshotButton"
+                                Command="{Binding Feedback.AttachScreenshotCommand}"
+                                Style="{StaticResource SecondaryButton}"
+                                Text="{DynamicResource FeedbackAttachScreenshot}" />
+                            <Label
+                                Grid.Row="1"
+                                FontSize="11"
+                                IsVisible="{Binding Feedback.HasScreenshot}"
+                                LineBreakMode="TailTruncation"
+                                Text="{Binding Feedback.ScreenshotSummary}"
+                                TextColor="#3C6956" />
+                            <Button
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Command="{Binding Feedback.RemoveScreenshotCommand}"
+                                IsVisible="{Binding Feedback.HasScreenshot}"
+                                Padding="10,0"
+                                Style="{StaticResource QuietButton}"
+                                Text="{DynamicResource FeedbackRemoveScreenshot}" />
+                        </Grid>
+                    </Border>
+
+                    <Border
+                        Padding="12,10"
+                        BackgroundColor="#FFF8E8"
+                        Stroke="#F0D9A4"
+                        StrokeShape="RoundRectangle 10">
+                        <Label
+                            FontSize="11"
+                            LineBreakMode="WordWrap"
+                            Text="{DynamicResource FeedbackPrivacy}"
+                            TextColor="#775719" />
+                    </Border>
+
+                    <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
+                        <HorizontalStackLayout Spacing="9" VerticalOptions="Center">
+                            <ActivityIndicator
+                                IsRunning="{Binding Feedback.IsBusy}"
+                                IsVisible="{Binding Feedback.IsBusy}"
+                                Color="#5B5CE2" />
+                            <Label
+                                FontSize="11"
+                                LineBreakMode="WordWrap"
+                                Text="{Binding Feedback.StatusMessage}"
+                                TextColor="#5055A5"
+                                VerticalTextAlignment="Center" />
+                        </HorizontalStackLayout>
+                        <Button
+                            Grid.Column="1"
+                            Command="{Binding Feedback.CloseCommand}"
+                            Style="{StaticResource SecondaryButton}"
+                            Text="{DynamicResource Cancel}" />
+                        <Button
+                            Grid.Column="2"
+                            AutomationId="FeedbackSendButton"
+                            Command="{Binding Feedback.SendCommand}"
+                            IsEnabled="{Binding Feedback.CanSend}"
+                            Style="{StaticResource PrimaryButton}"
+                            Text="{DynamicResource FeedbackSend}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+
         <Border
             Margin="24"
             Padding="14,12"
@@ -2039,22 +2374,24 @@
                                     FontFamily="Segoe UI Semibold"
                                     FontSize="13"
                                     Text="{DynamicResource InterfaceLanguage}" />
-                                <Picker
+                                <controls:FramedPicker
                                     AutomationId="OnboardingInterfaceLanguagePicker"
                                     IsEnabled="{Binding Onboarding.CanEdit}"
                                     ItemsSource="{Binding Onboarding.InterfaceLanguageNames}"
-                                    SelectedIndex="{Binding Onboarding.SelectedInterfaceLanguageIndex}" />
+                                    SelectedIndex="{Binding Onboarding.SelectedInterfaceLanguageIndex}"
+                                    Style="{StaticResource OnboardingPicker}" />
                             </VerticalStackLayout>
                             <VerticalStackLayout Grid.Column="1" Spacing="6">
                                 <Label
                                     FontFamily="Segoe UI Semibold"
                                     FontSize="13"
                                     Text="{DynamicResource DialogLanguage}" />
-                                <Picker
+                                <controls:FramedPicker
                                     AutomationId="OnboardingDialogLanguagePicker"
                                     IsEnabled="{Binding Onboarding.CanEdit}"
                                     ItemsSource="{Binding Onboarding.DialogLanguageNames}"
-                                    SelectedIndex="{Binding Onboarding.SelectedDialogLanguageIndex}" />
+                                    SelectedIndex="{Binding Onboarding.SelectedDialogLanguageIndex}"
+                                    Style="{StaticResource OnboardingPicker}" />
                             </VerticalStackLayout>
                         </Grid>
 
@@ -2063,11 +2400,12 @@
                                 FontFamily="Segoe UI Semibold"
                                 FontSize="13"
                                 Text="{DynamicResource ChatbotPlatform}" />
-                            <Picker
+                            <controls:FramedPicker
                                 AutomationId="OnboardingProviderPicker"
                                 IsEnabled="{Binding Onboarding.CanEdit}"
                                 ItemsSource="{Binding Onboarding.ProviderNames}"
-                                SelectedIndex="{Binding Onboarding.SelectedProviderIndex}" />
+                                SelectedIndex="{Binding Onboarding.SelectedProviderIndex}"
+                                Style="{StaticResource OnboardingPicker}" />
                         </VerticalStackLayout>
 
                         <VerticalStackLayout
@@ -2077,12 +2415,14 @@
                                 FontFamily="Segoe UI Semibold"
                                 FontSize="13"
                                 Text="{DynamicResource TrialCode}" />
-                            <Entry
+                            <controls:FramedEntry
                                 AutomationId="OnboardingTrialCodeEntry"
                                 CharacterSpacing="1.5"
+                                FontFamily="Segoe UI Semibold"
                                 IsEnabled="{Binding Onboarding.CanEdit}"
                                 MaxLength="13"
                                 Placeholder="{DynamicResource TrialCodePlaceholder}"
+                                Style="{StaticResource OnboardingEntry}"
                                 Text="{Binding Onboarding.TrialCode}" />
                             <Label
                                 FontSize="11"
@@ -2098,12 +2438,36 @@
                                 FontFamily="Segoe UI Semibold"
                                 FontSize="13"
                                 Text="{DynamicResource DeepSeekKey}" />
-                            <Entry
+                            <controls:FramedEntry
                                 AutomationId="OnboardingDeepSeekKeyEntry"
                                 IsEnabled="{Binding Onboarding.CanEdit}"
                                 IsPassword="True"
+                                Style="{StaticResource OnboardingEntry}"
                                 Text="{Binding Onboarding.DeepSeekApiKey}" />
                         </VerticalStackLayout>
+
+                        <Border
+                            AutomationId="OnboardingDownloadConsent"
+                            Padding="13,10"
+                            BackgroundColor="#F0F2FF"
+                            Stroke="#D9DAFA"
+                            StrokeShape="RoundRectangle 10">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="9">
+                                <Label
+                                    FontFamily="Segoe UI Semibold"
+                                    FontSize="16"
+                                    Text="↓"
+                                    TextColor="#5051C7"
+                                    VerticalTextAlignment="Center" />
+                                <Label
+                                    Grid.Column="1"
+                                    FontSize="12"
+                                    LineBreakMode="WordWrap"
+                                    Text="{DynamicResource SetupDownloadConsent}"
+                                    TextColor="#4E5270"
+                                    VerticalTextAlignment="Center" />
+                            </Grid>
+                        </Border>
 
                         <Border
                             Padding="16"
