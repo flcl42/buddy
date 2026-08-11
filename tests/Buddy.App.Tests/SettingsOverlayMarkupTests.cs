@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
 namespace Buddy.App.Tests;
@@ -39,14 +38,8 @@ public sealed class SettingsOverlayMarkupTests
                     == "{Binding CloseSettingsCommand}");
     }
 
-    private static string GetMainPageXamlPath(
-        [CallerFilePath] string testFilePath = "") =>
-        Path.GetFullPath(
-            Path.Combine(
-                Path.GetDirectoryName(testFilePath)!,
-                "..",
-                "..",
-                "src",
-                "Buddy.App",
-                "MainPage.xaml"));
+    private static string GetMainPageXamlPath() => TestRepository.Path(
+        "src",
+        "Buddy.App",
+        "MainPage.xaml");
 }

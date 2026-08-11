@@ -59,20 +59,8 @@ public sealed class FeedbackOverlayMarkupTests
             command => command == "{Binding OpenFeedbackWindowCommand}");
     }
 
-    private static string FindMainPage()
-    {
-        string current = AppContext.BaseDirectory;
-        while (!string.IsNullOrWhiteSpace(current))
-        {
-            string candidate = Path.Combine(current, "src", "Buddy.App", "MainPage.xaml");
-            if (File.Exists(candidate))
-            {
-                return candidate;
-            }
-
-            current = Directory.GetParent(current)?.FullName ?? string.Empty;
-        }
-
-        throw new FileNotFoundException("Could not locate Buddy MainPage.xaml.");
-    }
+    private static string FindMainPage() => TestRepository.Path(
+        "src",
+        "Buddy.App",
+        "MainPage.xaml");
 }

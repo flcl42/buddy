@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 namespace Buddy.App.Tests;
 
 public sealed class BuddyWindowDefaultsTests
@@ -15,14 +13,8 @@ public sealed class BuddyWindowDefaultsTests
         Assert.Contains("MinimumHeight = 640;", source, StringComparison.Ordinal);
     }
 
-    private static string GetBuddyWindowPath(
-        [CallerFilePath] string testFilePath = "") =>
-        Path.GetFullPath(
-            Path.Combine(
-                Path.GetDirectoryName(testFilePath)!,
-                "..",
-                "..",
-                "src",
-                "Buddy.App",
-                "BuddyWindow.cs"));
+    private static string GetBuddyWindowPath() => TestRepository.Path(
+        "src",
+        "Buddy.App",
+        "BuddyWindow.cs");
 }
