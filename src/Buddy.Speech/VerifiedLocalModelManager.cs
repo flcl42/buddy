@@ -2,11 +2,12 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Buddy.Core.Abstractions;
 
 namespace Buddy.Speech;
 
-public sealed class VerifiedLocalModelManager : ILocalModelManager
+public sealed partial class VerifiedLocalModelManager : ILocalModelManager
 {
     private const long DownloadHeadroomBytes = 128L * 1024 * 1024;
     private const int CopyBufferSize = 1024 * 1024;
@@ -293,8 +294,9 @@ public sealed class VerifiedLocalModelManager : ILocalModelManager
 
         try
         {
-            VerificationStamp? stamp = JsonSerializer.Deserialize<VerificationStamp>(
-                File.ReadAllText(stampPath));
+            VerificationStamp? stamp = JsonSerializer.Deserialize(
+                File.ReadAllText(stampPath),
+                VerificationStampJsonContext.Default.VerificationStamp);
             return stamp is not null
                 && string.Equals(stamp.Id, manifest.Id, StringComparison.Ordinal)
                 && stamp.ByteLength == manifest.DownloadBytes
@@ -332,7 +334,9 @@ public sealed class VerifiedLocalModelManager : ILocalModelManager
         {
             await File.WriteAllTextAsync(
                     temporaryPath,
-                    JsonSerializer.Serialize(stamp),
+                    JsonSerializer.Serialize(
+                        stamp,
+                        VerificationStampJsonContext.Default.VerificationStamp),
                     cancellationToken)
                 .ConfigureAwait(false);
             File.Move(temporaryPath, stampPath, overwrite: true);
@@ -449,4 +453,7 @@ public sealed class VerifiedLocalModelManager : ILocalModelManager
         long ByteLength,
         string Sha256,
         long LastWriteTimeUtcTicks);
+
+    [JsonSerializable(typeof(VerificationStamp))]
+    private sealed partial class VerificationStampJsonContext : JsonSerializerContext;
 }
