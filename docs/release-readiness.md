@@ -7,10 +7,10 @@ broader product specification.
 
 ## Verified in this build
 
-- Windows and Linux Debug/Release builds complete with zero warnings. A full
-  Windows-hosted solution build also compiles both Mac Catalyst RIDs; the only
-  two messages are the expected Apple SDK warnings that linking is disabled
-  without a connected Mac.
+- Windows and Linux Debug/Release builds complete with zero warnings. The
+  hosted Apple Silicon runner also builds the native Mac Catalyst bundle and
+  verifies its ARM64 executable, Metal resource, system-speech export, bundled
+  notices, and absence of incompatible ONNX Runtime binaries.
 - 186 automated tests pass across App presentation, Core,
   Persistence, Language, Proxy, and Integration.
 - A real clean-state first run passed the blocking localized setup flow. The
@@ -159,10 +159,10 @@ broader product specification.
   Core Audio through the portable capture/playback layer, and provides system
   speech through `/usr/bin/say`. Word confidence and lazy word phonetics remain
   available, while the full local IPA line stays Windows/Linux-only because
-  eSpeak/Kokoro's macOS binaries are not Mac Catalyst binaries. Native
-  packaging, direct microphone/speaker QA, and Gatekeeper/notarization checks
-  run only on the macOS CI host and remain beta gates rather than Windows-host
-  claims.
+  eSpeak/Kokoro's macOS binaries are not Mac Catalyst binaries. Native ARM64
+  packaging and a generated system-speech WAV pass on the macOS CI host;
+  physical microphone/speaker QA and Gatekeeper/notarization remain beta gates
+  rather than Windows-host claims.
 - Whisper large-v3-turbo and Silero artifacts download resumably and pass
   SHA-256 verification before use.
 - DeepSeek returns schema-validated improvement results and generated titles.
