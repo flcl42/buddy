@@ -86,17 +86,39 @@
         <p class="release-status" id="release-status" aria-live="polite">Windows 11 x64 · Neueste GitHub-Version</p>
         <ul class="hero-trust" aria-label="Wichtigste Vorteile"><li><span aria-hidden="true">✓</span> Kein Konto für Kernfunktionen</li><li><span aria-hidden="true">✓</span> Lokale Audioverarbeitung</li><li><span aria-hidden="true">✓</span> Absturzsichere Aufnahmen</li></ul>
       </div>
-      <div class="product-preview" role="img" aria-label="Vorschau von Buddy mit gesprochenem KI-Dialog, Live-Transkription und Audio-Steuerung">
+      <div class="product-preview">
         <div class="preview-glow" aria-hidden="true"></div>
-        <div class="app-window" aria-hidden="true">
-          <div class="window-titlebar"><div class="window-brand"><span class="mini-brand">b</span> Buddy</div><div class="window-controls"><span></span><span></span><span></span></div></div>
-          <div class="app-tabs"><span class="active">Sprechen</span><span>Aufnahmen</span><span class="tab-spacer"></span><span class="mode active-soft">KI-Dialog</span><span class="mode">Monolog</span></div>
-          <div class="app-body"><div class="conversation">
-            <div class="message user-message"><span class="message-label">Du</span><p>Hilf mir, diese Erklärung klarer zu formulieren.</p><div class="phonetic">/hɪlf miːɐ̯ ˈdiːzə ɛɐ̯ˈklɛːʁʊŋ ˈklaːʁɐ/</div></div>
-            <div class="message buddy-message"><span class="message-label">Buddy</span><p><strong>Beginne mit dem Ergebnis.</strong> Füge dann die Einzelheit hinzu, die dein Gegenüber braucht.</p><div class="message-actions"><span>▶</span><span>Klar · knapp · natürlich</span></div></div>
-            <div class="live-card"><div class="live-heading"><span><i></i> Hört zu</span><span>1,1 s Pause</span></div><p>Ich möchte außerdem erklären, warum es wichtig ist …</p><div class="silence-progress"><span></span></div></div>
-          </div><div class="side-card"><span class="side-kicker">Sitzung</span><strong>Das Gespräch bleibt im Kontext</strong><div class="waveform"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="side-note">Audio bleibt lokal</span></div></div>
-        </div>
+        <section class="screenshot-carousel" data-carousel tabindex="0" aria-roledescription="carousel" aria-label="Buddy-Produktübersicht">
+          <div class="carousel-viewport">
+            <figure class="carousel-slide is-active" data-carousel-slide role="group" aria-roledescription="slide" aria-label="1 von 4">
+              <img src="../screenshots/00-welcome-setup.png" width="1284" height="842" alt="Buddy-Willkommensseite mit bearbeitbaren Feldern für Oberfläche, Gesprächssprache, KI-Anbieter und Testcode" fetchpriority="high">
+              <figcaption><span class="carousel-kicker">Einrichtung</span><strong>Buddy nach deinen Wünschen einrichten</strong><span>Wähle Oberfläche, Gesprächssprache und KI-Anbieter, bevor etwas heruntergeladen wird.</span></figcaption>
+            </figure>
+            <figure class="carousel-slide" data-carousel-slide role="group" aria-roledescription="slide" aria-label="2 von 4" hidden>
+              <img src="../screenshots/01-choose-mode.png" width="1284" height="842" alt="Buddy-Bildschirm mit großen Auswahlflächen für KI-Dialog und Monolog" loading="lazy">
+              <figcaption><span class="carousel-kicker">Auswahl</span><strong>Wähle deinen Übungsmodus</strong><span>Starte ein fortlaufendes KI-Gespräch oder trainiere einen gezielten Monolog.</span></figcaption>
+            </figure>
+            <figure class="carousel-slide" data-carousel-slide role="group" aria-roledescription="slide" aria-label="3 von 4" hidden>
+              <img src="../screenshots/02-dialog-word-guide.png" width="1284" height="842" alt="Kurzer englischer Dialog mit Aussprachefeedback und ausgewähltem Wort nuance samt Lautschrift und Bedeutung" loading="lazy">
+              <figcaption><span class="carousel-kicker">Dialog</span><strong>Sprechen, verstehen, weiterreden</strong><span>Englischer Live-Dialog, Aussprachehilfe und Wortbedeutung bei Bedarf an einem Ort.</span></figcaption>
+            </figure>
+            <figure class="carousel-slide" data-carousel-slide role="group" aria-roledescription="slide" aria-label="4 von 4" hidden>
+              <img src="../screenshots/03-monologue-improvement.png" width="1284" height="842" alt="Buddy-Monologtrainer mit bearbeitbarem Originaltext und einer klareren verbesserten Version" loading="lazy">
+              <figcaption><span class="carousel-kicker">Monolog</span><strong>Klarer formulieren</strong><span>Bearbeite das Transkript, prüfe die Aussprache und vergleiche deine Aussage mit einer besseren Version.</span></figcaption>
+            </figure>
+          </div>
+          <div class="carousel-controls">
+            <button class="carousel-arrow" type="button" data-carousel-prev aria-label="Vorheriger Screenshot"><span aria-hidden="true">←</span></button>
+            <div class="carousel-dots" role="group" aria-label="Screenshot auswählen">
+              <button class="carousel-dot is-active" type="button" data-carousel-index="0" aria-label="Einrichtungsseite anzeigen" aria-current="true"></button>
+              <button class="carousel-dot" type="button" data-carousel-index="1" aria-label="Dialog- oder Monologauswahl anzeigen"></button>
+              <button class="carousel-dot" type="button" data-carousel-index="2" aria-label="Englischen Dialog und Worthilfe anzeigen"></button>
+              <button class="carousel-dot" type="button" data-carousel-index="3" aria-label="Verbesserten Monolog anzeigen"></button>
+            </div>
+            <span class="carousel-count" aria-live="polite"><span data-carousel-current>1</span><span aria-hidden="true"> / </span>4</span>
+            <button class="carousel-arrow" type="button" data-carousel-next aria-label="Nächster Screenshot"><span aria-hidden="true">→</span></button>
+          </div>
+        </section>
       </div>
     </section>
 

@@ -40,6 +40,23 @@
     return nextLocale === "en" ? `${root}/` : `${root}/${nextLocale}/`;
   }
 
+  function normalizedLocale(localeTag) {
+    return String(localeTag || "").trim().toLowerCase().split(/[-_]/, 1)[0];
+  }
+
+  function browserLocale() {
+    const preferredLanguages = Array.from(navigator.languages || []);
+    const candidates = [...preferredLanguages, navigator.language];
+    for (const candidate of candidates) {
+      const normalized = normalizedLocale(candidate);
+      if (supportedLocales.has(normalized)) {
+        return normalized;
+      }
+    }
+
+    return "en";
+  }
+
   const languageSelect = document.querySelector("#language-select");
   if (languageSelect) {
     languageSelect.value = locale;
@@ -67,15 +84,101 @@
       // Keep English when storage is unavailable.
     }
 
-    if (
-      savedLocale !== "en" &&
-      supportedLocales.has(savedLocale) &&
-      !new URLSearchParams(window.location.search).has("lang")
-    ) {
-      window.location.replace(localeUrl(savedLocale));
-      return;
+    if (!supportedLocales.has(savedLocale)) {
+      savedLocale = "";
+    }
+
+    if (!new URLSearchParams(window.location.search).has("lang")) {
+      const firstVisitLocale = supportedLocales.has(savedLocale) ? savedLocale : browserLocale();
+
+      if (!savedLocale) {
+        try {
+          localStorage.setItem("buddy-language", firstVisitLocale);
+        } catch {
+          // Detection remains useful for this visit when storage is unavailable.
+        }
+      }
+
+      if (firstVisitLocale !== "en") {
+        window.location.replace(localeUrl(firstVisitLocale));
+        return;
+      }
     }
   }
+
+  document.querySelectorAll("[data-carousel]").forEach((carousel) => {
+    const slides = Array.from(carousel.querySelectorAll("[data-carousel-slide]"));
+    const dots = Array.from(carousel.querySelectorAll("[data-carousel-index]"));
+    const previous = carousel.querySelector("[data-carousel-prev]");
+    const next = carousel.querySelector("[data-carousel-next]");
+    const current = carousel.querySelector("[data-carousel-current]");
+    let activeIndex = Math.max(0, slides.findIndex((slide) => slide.classList.contains("is-active")));
+    let touchStartX = null;
+
+    if (!slides.length) {
+      return;
+    }
+
+    function showSlide(requestedIndex) {
+      activeIndex = (requestedIndex + slides.length) % slides.length;
+      slides.forEach((slide, index) => {
+        const isActive = index === activeIndex;
+        slide.hidden = !isActive;
+        slide.classList.toggle("is-active", isActive);
+      });
+      dots.forEach((dot, index) => {
+        const isActive = index === activeIndex;
+        dot.classList.toggle("is-active", isActive);
+        if (isActive) {
+          dot.setAttribute("aria-current", "true");
+        } else {
+          dot.removeAttribute("aria-current");
+        }
+      });
+      if (current) {
+        current.textContent = String(activeIndex + 1);
+      }
+    }
+
+    previous?.addEventListener("click", () => showSlide(activeIndex - 1));
+    next?.addEventListener("click", () => showSlide(activeIndex + 1));
+    dots.forEach((dot) => {
+      dot.addEventListener("click", () => showSlide(Number(dot.dataset.carouselIndex)));
+    });
+
+    carousel.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        showSlide(activeIndex - 1);
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        showSlide(activeIndex + 1);
+      } else if (event.key === "Home") {
+        event.preventDefault();
+        showSlide(0);
+      } else if (event.key === "End") {
+        event.preventDefault();
+        showSlide(slides.length - 1);
+      }
+    });
+
+    carousel.addEventListener("touchstart", (event) => {
+      touchStartX = event.changedTouches[0]?.clientX ?? null;
+    }, { passive: true });
+    carousel.addEventListener("touchend", (event) => {
+      if (touchStartX === null) {
+        return;
+      }
+
+      const deltaX = (event.changedTouches[0]?.clientX ?? touchStartX) - touchStartX;
+      touchStartX = null;
+      if (Math.abs(deltaX) >= 48) {
+        showSlide(activeIndex + (deltaX < 0 ? 1 : -1));
+      }
+    }, { passive: true });
+
+    showSlide(activeIndex);
+  });
 
   function inferRepository() {
     const hostname = window.location.hostname.toLowerCase();

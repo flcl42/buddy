@@ -97,20 +97,39 @@
           <li><span aria-hidden="true">✓</span> Grabaciones resistentes a fallos</li>
         </ul>
       </div>
-      <div class="product-preview" role="img" aria-label="Vista previa de Buddy con un diálogo hablado, transcripción en directo y controles de audio">
+      <div class="product-preview">
         <div class="preview-glow" aria-hidden="true"></div>
-        <div class="app-window" aria-hidden="true">
-          <div class="window-titlebar"><div class="window-brand"><span class="mini-brand">b</span> Buddy</div><div class="window-controls"><span></span><span></span><span></span></div></div>
-          <div class="app-tabs"><span class="active">Hablar</span><span>Grabaciones</span><span class="tab-spacer"></span><span class="mode active-soft">Diálogo IA</span><span class="mode">Monólogo</span></div>
-          <div class="app-body">
-            <div class="conversation">
-              <div class="message user-message"><span class="message-label">Tú</span><p>Ayúdame a explicar esto con más claridad.</p><div class="phonetic">/aˈʝuðame a ekspliˈkaɾ ˈesto kon mas klaɾiˈðað/</div></div>
-              <div class="message buddy-message"><span class="message-label">Buddy</span><p><strong>Empieza por el resultado.</strong> Después, añade el detalle que necesita quien te escucha.</p><div class="message-actions"><span>▶</span><span>Claro · conciso · natural</span></div></div>
-              <div class="live-card"><div class="live-heading"><span><i></i> Escuchando</span><span>Pausa de 1,1 s</span></div><p>También quiero explicar por qué es importante…</p><div class="silence-progress"><span></span></div></div>
-            </div>
-            <div class="side-card"><span class="side-kicker">Sesión</span><strong>La conversación conserva el contexto</strong><div class="waveform"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="side-note">El audio permanece local</span></div>
+        <section class="screenshot-carousel" data-carousel tabindex="0" aria-roledescription="carousel" aria-label="Recorrido del producto Buddy">
+          <div class="carousel-viewport">
+            <figure class="carousel-slide is-active" data-carousel-slide role="group" aria-roledescription="slide" aria-label="1 de 4">
+              <img src="../screenshots/00-welcome-setup.png" width="1284" height="842" alt="Pantalla de bienvenida de Buddy con campos editables para la interfaz, la conversación, el proveedor de IA y el código de prueba" fetchpriority="high">
+              <figcaption><span class="carousel-kicker">Configuración</span><strong>Configura Buddy a tu manera</strong><span>Elige la interfaz, el idioma de conversación y el proveedor de IA antes de descargar nada.</span></figcaption>
+            </figure>
+            <figure class="carousel-slide" data-carousel-slide role="group" aria-roledescription="slide" aria-label="2 de 4" hidden>
+              <img src="../screenshots/01-choose-mode.png" width="1284" height="842" alt="Pantalla de Buddy con grandes opciones para diálogo con IA y monólogo" loading="lazy">
+              <figcaption><span class="carousel-kicker">Elegir</span><strong>Elige cómo practicar</strong><span>Inicia una conversación continua con IA o trabaja en un monólogo concreto.</span></figcaption>
+            </figure>
+            <figure class="carousel-slide" data-carousel-slide role="group" aria-roledescription="slide" aria-label="3 de 4" hidden>
+              <img src="../screenshots/02-dialog-word-guide.png" width="1284" height="842" alt="Conversación breve en inglés con comentarios de pronunciación y la palabra nuance seleccionada para mostrar su transcripción fonética y significado" loading="lazy">
+              <figcaption><span class="carousel-kicker">Diálogo</span><strong>Habla, comprende y continúa</strong><span>Diálogo en inglés, pronunciación y significado de palabras bajo demanda, todo en un solo lugar.</span></figcaption>
+            </figure>
+            <figure class="carousel-slide" data-carousel-slide role="group" aria-roledescription="slide" aria-label="4 de 4" hidden>
+              <img src="../screenshots/03-monologue-improvement.png" width="1284" height="842" alt="Entrenador de monólogos de Buddy comparando el texto original editable con una versión mejorada y más clara" loading="lazy">
+              <figcaption><span class="carousel-kicker">Monólogo</span><strong>Exprésalo con más claridad</strong><span>Edita la transcripción, revisa la pronunciación y compárala con una versión mejorada.</span></figcaption>
+            </figure>
           </div>
-        </div>
+          <div class="carousel-controls">
+            <button class="carousel-arrow" type="button" data-carousel-prev aria-label="Captura anterior"><span aria-hidden="true">←</span></button>
+            <div class="carousel-dots" role="group" aria-label="Elegir una captura">
+              <button class="carousel-dot is-active" type="button" data-carousel-index="0" aria-label="Mostrar la configuración" aria-current="true"></button>
+              <button class="carousel-dot" type="button" data-carousel-index="1" aria-label="Mostrar la elección entre diálogo y monólogo"></button>
+              <button class="carousel-dot" type="button" data-carousel-index="2" aria-label="Mostrar el diálogo en inglés y la guía de palabras"></button>
+              <button class="carousel-dot" type="button" data-carousel-index="3" aria-label="Mostrar el monólogo mejorado"></button>
+            </div>
+            <span class="carousel-count" aria-live="polite"><span data-carousel-current>1</span><span aria-hidden="true"> / </span>4</span>
+            <button class="carousel-arrow" type="button" data-carousel-next aria-label="Captura siguiente"><span aria-hidden="true">→</span></button>
+          </div>
+        </section>
       </div>
     </section>
 

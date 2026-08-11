@@ -86,17 +86,39 @@
         <p class="release-status" id="release-status" aria-live="polite">Windows 11 x64 · Апошні выпуск на GitHub</p>
         <ul class="hero-trust" aria-label="Асноўныя перавагі"><li><span aria-hidden="true">✓</span> Асноўныя функцыі без рэгістрацыі</li><li><span aria-hidden="true">✓</span> Лакальная апрацоўка гуку</li><li><span aria-hidden="true">✓</span> Аднаўляльныя запісы</li></ul>
       </div>
-      <div class="product-preview" role="img" aria-label="Папярэдні выгляд Buddy з галасавым дыялогам, жывой транскрыпцыяй і кіраваннем аўдыя">
+      <div class="product-preview">
         <div class="preview-glow" aria-hidden="true"></div>
-        <div class="app-window" aria-hidden="true">
-          <div class="window-titlebar"><div class="window-brand"><span class="mini-brand">b</span> Buddy</div><div class="window-controls"><span></span><span></span><span></span></div></div>
-          <div class="app-tabs"><span class="active">Размова</span><span>Усе запісы</span><span class="tab-spacer"></span><span class="mode active-soft">Дыялог з ШІ</span><span class="mode">Маналог</span></div>
-          <div class="app-body"><div class="conversation">
-            <div class="message user-message"><span class="message-label">Вы</span><p>Дапамажы мне выказаць гэта больш зразумела.</p><div class="phonetic">/dapaˈmaʐɨ mnʲe ˈvɨkazaʦʲ ˈɣeta bolʲʂ zrazuˈmʲela/</div></div>
-            <div class="message buddy-message"><span class="message-label">Buddy</span><p><strong>Пачніце з выніку.</strong> Потым дадайце дэталі, якія патрэбныя суразмоўцу.</p><div class="message-actions"><span>▶</span><span>Зразумела · коратка · натуральна</span></div></div>
-            <div class="live-card"><div class="live-heading"><span><i></i> Слухае</span><span>Паўза 1,1 с</span></div><p>Я таксама хачу растлумачыць, чаму гэта важна…</p><div class="silence-progress"><span></span></div></div>
-          </div><div class="side-card"><span class="side-kicker">Сеанс</span><strong>Кантэкст размовы захоўваецца</strong><div class="waveform"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="side-note">Аўдыя застаецца лакальна</span></div></div>
-        </div>
+        <section class="screenshot-carousel" data-carousel tabindex="0" aria-roledescription="carousel" aria-label="Агляд магчымасцяў Buddy">
+          <div class="carousel-viewport">
+            <figure class="carousel-slide is-active" data-carousel-slide role="group" aria-roledescription="slide" aria-label="1 з 4">
+              <img src="../screenshots/00-welcome-setup.png" width="1284" height="842" alt="Экран вітання Buddy з рэдагуемымі палямі мовы інтэрфейсу, мовы размовы, пастаўшчыка ШІ і пробнага кода" fetchpriority="high">
+              <figcaption><span class="carousel-kicker">Наладка</span><strong>Наладзьце Buddy пад сябе</strong><span>Абярыце мову інтэрфейсу, мову размовы і пастаўшчыка ШІ да пачатку спампоўвання.</span></figcaption>
+            </figure>
+            <figure class="carousel-slide" data-carousel-slide role="group" aria-roledescription="slide" aria-label="2 з 4" hidden>
+              <img src="../screenshots/01-choose-mode.png" width="1284" height="842" alt="Экран Buddy з вялікімі панэлямі выбару дыялогу з ШІ і маналогу" loading="lazy">
+              <figcaption><span class="carousel-kicker">Выбар</span><strong>Абярыце фармат практыкі</strong><span>Пачніце працяглы дыялог з ШІ або папрацуйце над асобным маналогам.</span></figcaption>
+            </figure>
+            <figure class="carousel-slide" data-carousel-slide role="group" aria-roledescription="slide" aria-label="3 з 4" hidden>
+              <img src="../screenshots/02-dialog-word-guide.png" width="1284" height="842" alt="Кароткі дыялог па-англійску з ацэнкай вымаўлення і выбраным словам nuance, для якога паказаны транскрыпцыя і значэнне" loading="lazy">
+              <figcaption><span class="carousel-kicker">Дыялог</span><strong>Гаварыце, разумейце, працягвайце</strong><span>Жывы дыялог па-англійску, вымаўленне і значэнне слова па запыце — у адным месцы.</span></figcaption>
+            </figure>
+            <figure class="carousel-slide" data-carousel-slide role="group" aria-roledescription="slide" aria-label="4 з 4" hidden>
+              <img src="../screenshots/03-monologue-improvement.png" width="1284" height="842" alt="Трэнер маналогу Buddy з рэдагуемым зыходным тэкстам і больш яснай палепшанай версіяй" loading="lazy">
+              <figcaption><span class="carousel-kicker">Маналог</span><strong>Скажыце ясней</strong><span>Адрэдагуйце расшыфроўку, праверце вымаўленне і параўнайце сваю фразу з палепшанай версіяй.</span></figcaption>
+            </figure>
+          </div>
+          <div class="carousel-controls">
+            <button class="carousel-arrow" type="button" data-carousel-prev aria-label="Папярэдні здымак"><span aria-hidden="true">←</span></button>
+            <div class="carousel-dots" role="group" aria-label="Абраць здымак">
+              <button class="carousel-dot is-active" type="button" data-carousel-index="0" aria-label="Паказаць экран наладкі" aria-current="true"></button>
+              <button class="carousel-dot" type="button" data-carousel-index="1" aria-label="Паказаць выбар дыялогу або маналогу"></button>
+              <button class="carousel-dot" type="button" data-carousel-index="2" aria-label="Паказаць англійскі дыялог і даведку пра слова"></button>
+              <button class="carousel-dot" type="button" data-carousel-index="3" aria-label="Паказаць палепшаны маналог"></button>
+            </div>
+            <span class="carousel-count" aria-live="polite"><span data-carousel-current>1</span><span aria-hidden="true"> / </span>4</span>
+            <button class="carousel-arrow" type="button" data-carousel-next aria-label="Наступны здымак"><span aria-hidden="true">→</span></button>
+          </div>
+        </section>
       </div>
     </section>
 

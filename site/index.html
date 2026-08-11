@@ -134,46 +134,39 @@
         </ul>
       </div>
 
-      <div class="product-preview" role="img" aria-label="Preview of Buddy showing a spoken AI conversation, live transcription, and audio controls">
+      <div class="product-preview">
         <div class="preview-glow" aria-hidden="true"></div>
-        <div class="app-window" aria-hidden="true">
-          <div class="window-titlebar">
-            <div class="window-brand"><span class="mini-brand">b</span> Buddy</div>
-            <div class="window-controls"><span></span><span></span><span></span></div>
+        <section class="screenshot-carousel" data-carousel tabindex="0" aria-roledescription="carousel" aria-label="Buddy product tour">
+          <div class="carousel-viewport">
+            <figure class="carousel-slide is-active" data-carousel-slide role="group" aria-roledescription="slide" aria-label="1 of 4">
+              <img src="./screenshots/00-welcome-setup.png" width="1284" height="842" alt="Buddy welcome screen with editable interface language, conversation language, AI provider, and trial code fields" fetchpriority="high">
+              <figcaption><span class="carousel-kicker">Setup</span><strong>Set up on your terms</strong><span>Choose interface, conversation language, and AI provider before anything downloads.</span></figcaption>
+            </figure>
+            <figure class="carousel-slide" data-carousel-slide role="group" aria-roledescription="slide" aria-label="2 of 4" hidden>
+              <img src="./screenshots/01-choose-mode.png" width="1284" height="842" alt="Buddy screen with large AI Dialog and Monologue choices" loading="lazy">
+              <figcaption><span class="carousel-kicker">Choose</span><strong>Choose your flow</strong><span>Start an ongoing AI conversation or practise one focused monologue.</span></figcaption>
+            </figure>
+            <figure class="carousel-slide" data-carousel-slide role="group" aria-roledescription="slide" aria-label="3 of 4" hidden>
+              <img src="./screenshots/02-dialog-word-guide.png" width="1284" height="842" alt="Short English Buddy conversation with pronunciation feedback and the word nuance selected to show its phonetic transcription and meaning" loading="lazy">
+              <figcaption><span class="carousel-kicker">Dialog</span><strong>Speak, understand, continue</strong><span>Live English dialog, pronunciation, and word meaning on demand in one place.</span></figcaption>
+            </figure>
+            <figure class="carousel-slide" data-carousel-slide role="group" aria-roledescription="slide" aria-label="4 of 4" hidden>
+              <img src="./screenshots/03-monologue-improvement.png" width="1284" height="842" alt="Buddy monologue trainer comparing the editable original speech with a clearer improved version" loading="lazy">
+              <figcaption><span class="carousel-kicker">Monologue</span><strong>Say it more clearly</strong><span>Edit the transcript, inspect pronunciation, and compare a stronger version.</span></figcaption>
+            </figure>
           </div>
-          <div class="app-tabs">
-            <span class="active">Speak</span><span>All recordings</span>
-            <span class="tab-spacer"></span>
-            <span class="mode active-soft">AI Dialog</span><span class="mode">Monologue</span>
-          </div>
-          <div class="app-body">
-            <div class="conversation">
-              <div class="message user-message">
-                <span class="message-label">You</span>
-                <p>Help me make this explanation clearer.</p>
-                <div class="phonetic">/help miː meɪk ðɪs ˌekspləˈneɪʃən ˈklɪərə/</div>
-              </div>
-              <div class="message buddy-message">
-                <span class="message-label">Buddy</span>
-                <p><strong>Lead with the outcome.</strong> Then add the detail your listener needs.</p>
-                <div class="message-actions"><span>▶</span><span>Clear · concise · natural</span></div>
-              </div>
-              <div class="live-card">
-                <div class="live-heading"><span><i></i> Listening</span><span>1.1 s pause</span></div>
-                <p>I also want to explain why it matters…</p>
-                <div class="silence-progress"><span></span></div>
-              </div>
+          <div class="carousel-controls">
+            <button class="carousel-arrow" type="button" data-carousel-prev aria-label="Previous screenshot"><span aria-hidden="true">←</span></button>
+            <div class="carousel-dots" role="group" aria-label="Choose a screenshot">
+              <button class="carousel-dot is-active" type="button" data-carousel-index="0" aria-label="Show setup screen" aria-current="true"></button>
+              <button class="carousel-dot" type="button" data-carousel-index="1" aria-label="Show dialog or monologue choice"></button>
+              <button class="carousel-dot" type="button" data-carousel-index="2" aria-label="Show English dialog and word guide"></button>
+              <button class="carousel-dot" type="button" data-carousel-index="3" aria-label="Show improved monologue"></button>
             </div>
-            <div class="side-card">
-              <span class="side-kicker">Session</span>
-              <strong>Conversation stays in context</strong>
-              <div class="waveform" aria-hidden="true">
-                <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-              </div>
-              <span class="side-note">Audio remains local</span>
-            </div>
+            <span class="carousel-count" aria-live="polite"><span data-carousel-current>1</span><span aria-hidden="true"> / </span>4</span>
+            <button class="carousel-arrow" type="button" data-carousel-next aria-label="Next screenshot"><span aria-hidden="true">→</span></button>
           </div>
-        </div>
+        </section>
       </div>
     </section>
 
