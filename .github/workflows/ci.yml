@@ -145,8 +145,6 @@ jobs:
         run: >-
           dotnet restore src/Buddy.App/Buddy.App.csproj
           --runtime ${{ matrix.rid }}
-          -p:TargetFrameworks=net10.0-maccatalyst
-          -p:RuntimeIdentifiers=${{ matrix.rid }}
 
       - name: Build Mac Catalyst app
         run: >-
@@ -155,8 +153,6 @@ jobs:
           --framework net10.0-maccatalyst
           --runtime ${{ matrix.rid }}
           --no-restore
-          -p:TargetFrameworks=net10.0-maccatalyst
-          -p:RuntimeIdentifiers=${{ matrix.rid }}
           -p:EnableCodeSigning=false
 
       - name: Verify macOS system speech export

@@ -255,17 +255,13 @@ jobs:
         shell: bash
         run: |
           dotnet restore src/Buddy.App/Buddy.App.csproj \
-            --runtime "$BUDDY_RID" \
-            -p:TargetFrameworks=net10.0-maccatalyst \
-            -p:RuntimeIdentifiers="$BUDDY_RID"
+            --runtime "$BUDDY_RID"
           dotnet publish src/Buddy.App/Buddy.App.csproj \
             --configuration Release \
             --framework net10.0-maccatalyst \
             --runtime "$BUDDY_RID" \
             --self-contained true \
             --no-restore \
-            -p:TargetFrameworks=net10.0-maccatalyst \
-            -p:RuntimeIdentifiers="$BUDDY_RID" \
             -p:ApplicationDisplayVersion="$BUDDY_RELEASE_VERSION" \
             -p:ApplicationVersion=4 \
             -p:CreatePackage=false \
