@@ -1,5 +1,9 @@
 # Buddy third-party notices
 
+Buddy's original source code is licensed under the MIT License in `LICENSE`.
+The following notices and separate license terms apply to bundled third-party
+components.
+
 This file documents the principal third-party components in the Buddy desktop
 builds. It is not legal advice and does not replace the license texts supplied
 by their authors.

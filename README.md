@@ -260,7 +260,7 @@ the installed executable. To create both distributable assets, install Inno
 Setup 6 and run:
 
 ```powershell
-.\scripts\build-installer.ps1 -Version 0.4.0
+.\scripts\build-installer.ps1 -Version 0.4.1
 ```
 
 This produces `artifacts\release\Buddy-Setup.exe` and the portable
@@ -332,6 +332,12 @@ The deployment is deliberately confined to `/root/buddy-proxy`; operational
 commands and the no-system-changes boundary are documented in
 [deploy/buddy-proxy/README.md](deploy/buddy-proxy/README.md). The localized
 project website lives in [site](site).
+
+## License
+
+Buddy's original source code is available under the
+[MIT License](LICENSE). Bundled third-party components remain under their
+respective licenses.
 
 ## Distribution note
 

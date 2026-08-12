@@ -350,7 +350,7 @@ broader product specification.
 
 ## Packaging boundary
 
-Version 0.4.0 retains the stable Windows assets `Buddy.exe` and
+Version 0.4.1 retains the stable Windows assets `Buddy.exe` and
 `Buddy-Setup.exe` and adds the beta `Buddy-macOS-arm64-beta.zip` archive plus preview
 `Buddy-Linux-x64-preview.deb` and `Buddy-Linux-x64-preview.tar.gz` bundles.
 Exact hashes are combined in `SHA256SUMS.txt` alongside each tagged release.
