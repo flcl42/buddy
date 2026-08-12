@@ -82,12 +82,12 @@ function createCarousel() {
   return { carousel, slides, dots, previous, next, current };
 }
 
-function runApp({ locale = "en", languages = ["en-US"], savedLocale = "", search = "", withCarousel = false } = {}) {
+function runApp({ locale = "en", languages = ["en-US"], savedLocale = "", search = "", route = "", withCarousel = false } = {}) {
   const storage = new Map(savedLocale ? [["buddy-language", savedLocale]] : []);
   const redirects = [];
   const carouselState = withCarousel ? createCarousel() : null;
   const document = {
-    body: { dataset: { locale, root: locale === "en" ? "." : ".." } },
+    body: { dataset: { locale, root: route ? (locale === "en" ? ".." : "../..") : (locale === "en" ? "." : ".."), route } },
     querySelector: () => null,
     querySelectorAll: (selector) => selector === "[data-carousel]" && carouselState ? [carouselState.carousel] : []
   };
@@ -95,7 +95,7 @@ function runApp({ locale = "en", languages = ["en-US"], savedLocale = "", search
     BUDDY_REPOSITORY: "",
     location: {
       hostname: "localhost",
-      pathname: locale === "en" ? "/" : `/${locale}/`,
+      pathname: locale === "en" ? `/${route}` : `/${locale}/${route}`,
       search,
       assign: (url) => redirects.push({ kind: "assign", url }),
       replace: (url) => redirects.push({ kind: "replace", url })
@@ -125,6 +125,12 @@ function pngDimensions(filePath) {
 }
 
 const pages = ["index.html", "es/index.html", "de/index.html", "be/index.html"];
+const guidePages = [
+  "deepseek-api-key/index.html",
+  "es/deepseek-api-key/index.html",
+  "de/deepseek-api-key/index.html",
+  "be/deepseek-api-key/index.html"
+];
 const releaseAssets = [
   "Buddy-Setup.exe",
   "Buddy.exe",
@@ -172,6 +178,7 @@ for (const relativePage of pages) {
     assert.ok(html.includes(`src="${mediaRoot}/buddy-walkthrough.${locale}.vtt"`), `${relativePage} is missing ${locale} captions`);
   }
   assert.equal((html.match(/<track[^>]+\bdefault\b/g) || []).length, 1, `${relativePage} must select exactly one default caption track`);
+  assert.match(html, /href="\.\/deepseek-api-key\/"/, `${relativePage} must link to its localized DeepSeek guide`);
 
   const linkedAssets = [...new Set(
     [...html.matchAll(/data-download-asset="([^"]+)"/g)].map((match) => match[1]))
@@ -185,6 +192,37 @@ for (const relativePage of pages) {
     assert.ok(fs.existsSync(imagePath), `${relativePage} references missing image ${source}`);
     assert.deepEqual(pngDimensions(imagePath), { width: 1284, height: 842 }, `${source} has unexpected dimensions`);
   }
+}
+
+for (const relativePage of guidePages) {
+  const pagePath = path.join(siteDirectory, relativePage);
+  const html = fs.readFileSync(pagePath, "utf8");
+  assert.match(html, /data-route="deepseek-api-key\/"/, `${relativePage} must retain guide routing across languages`);
+  assert.equal((html.match(/class="guide-section(?:\s[^\"]*)?"/g) || []).length, 5, `${relativePage} needs all five setup sections`);
+  assert.match(html, /https:\/\/platform\.deepseek\.com\/api_keys/, `${relativePage} needs the official key page`);
+  assert.match(html, /https:\/\/platform\.deepseek\.com\/top_up/, `${relativePage} needs the official billing page`);
+  assert.match(html, /https:\/\/cdn\.deepseek\.com\/policies\/en-US\/deepseek-privacy-policy\.html/, `${relativePage} needs the current privacy policy`);
+  assert.match(html, /https:\/\/cdn\.deepseek\.com\/policies\/en-US\/deepseek-open-platform-terms-of-service\.html/, `${relativePage} needs the Open Platform terms`);
+  assert.match(html, /<meta name="robots" content="index, follow, max-image-preview:large">/, `${relativePage} must be indexable`);
+  assert.match(html, /"@type": "HowTo"/, `${relativePage} needs HowTo structured data`);
+  assert.doesNotMatch(html, /zero data retention[^<]*(enabled|guaranteed)/i, `${relativePage} must not promise zero data retention`);
+  assert.equal((html.match(/rel="alternate" hreflang=/g) || []).length, 5, `${relativePage} needs complete language alternates`);
+
+  const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
+  assert.equal(new Set(ids).size, ids.length, `${relativePage} has duplicate element IDs`);
+
+  const externalTabs = [...html.matchAll(/<a\b[^>]*\btarget="_blank"[^>]*>/g)].map((match) => match[0]);
+  assert.ok(externalTabs.length >= 7, `${relativePage} is missing official external actions`);
+  externalTabs.forEach((tag) => {
+    assert.match(tag, /\brel="[^"]*noopener[^"]*noreferrer[^"]*"/, `${relativePage} has an unsafe external tab`);
+  });
+
+  const localResources = [...html.matchAll(/\b(?:href|src)="((?:\.\.\/|\.\/)[^"]*)"/g)]
+    .map((match) => match[1].split(/[?#]/, 1)[0])
+    .filter(Boolean);
+  localResources.forEach((resource) => {
+    assert.ok(fs.existsSync(path.resolve(path.dirname(pagePath), resource)), `${relativePage} references missing local resource ${resource}`);
+  });
 }
 
 {
@@ -216,6 +254,16 @@ for (const relativePage of pages) {
 }
 
 {
+  const result = runApp({ languages: ["es-ES"], route: "deepseek-api-key/" });
+  assert.deepEqual(result.redirects, [{ kind: "replace", url: "../es/deepseek-api-key/" }]);
+}
+
+{
+  const result = runApp({ locale: "de", languages: ["de-DE"], savedLocale: "de", route: "deepseek-api-key/" });
+  assert.deepEqual(result.redirects, []);
+}
+
+{
   const { carouselState } = runApp({ locale: "de", withCarousel: true });
   const { carousel, slides, dots, previous, next, current } = carouselState;
   next.dispatch("click");
@@ -235,4 +283,4 @@ for (const relativePage of pages) {
   assert.equal(current.textContent, "1");
 }
 
-console.log("Buddy website validation passed: four localized pages and carousels, five release assets, recording copy, language routing, controls, screenshots, and an accessible captioned walkthrough video.");
+console.log("Buddy website validation passed: localized product and DeepSeek key-guide pages, routing, release assets, controls, screenshots, and an accessible captioned walkthrough video.");
