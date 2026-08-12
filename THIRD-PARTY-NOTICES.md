@@ -22,10 +22,10 @@ The installed application includes the full Apache-2.0 text beside the selected
 Kokoro voices at `voices/LICENSE`, and the full GPL version 3 text beside the
 eSpeak runtime at `espeak/LICENSE`.
 
-The Qwen GGUF and llama.cpp runtime are separately installed under
-`H:\BuddyAI` when that drive is available, or under Buddy's per-user data root;
-they are not embedded in the single-file Buddy executable. `BUDDY_AI_ROOT` can
-override that location. Their source pages and license identifiers are recorded
+The Qwen GGUF and llama.cpp runtime are separately installed under Buddy's
+per-user application-data root; they are not embedded in the single-file Buddy
+executable. `BUDDY_AI_ROOT` can explicitly redirect that location. Their source
+pages and license identifiers are recorded
 above for provenance.
 
 Important: eSpeak NG is GPL-3.0-or-later software. Anyone redistributing a Buddy

@@ -4,10 +4,14 @@
 [CmdletBinding()]
 param(
     [string] $VmName = "Buddy-Test",
-    [string] $VmRoot = "H:\Vms\Buddy-Test",
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [string] $VmRoot,
     [string] $InstallerPath = "",
     [string] $PortablePath = "",
-    [string] $ModelSource = "H:\Buddy\models",
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [string] $ModelSource,
     [string] $GuestComputerName = "BUDDY-TEST",
     [string] $GuestUser = "BuddyTest",
     [string] $GuestPassword = ""
@@ -30,12 +34,6 @@ $resolvedVmRoot = [System.IO.Path]::GetFullPath($VmRoot)
 $resolvedInstaller = [System.IO.Path]::GetFullPath($InstallerPath)
 $resolvedPortable = [System.IO.Path]::GetFullPath($PortablePath)
 $resolvedModels = [System.IO.Path]::GetFullPath($ModelSource)
-$expectedVmRoot = [System.IO.Path]::GetFullPath("H:\Vms\Buddy-Test")
-if (-not $resolvedVmRoot.Equals(
-        $expectedVmRoot,
-        [System.StringComparison]::OrdinalIgnoreCase)) {
-    throw "Refusing to update an unexpected VM root: $resolvedVmRoot"
-}
 foreach ($requiredFile in @($resolvedInstaller, $resolvedPortable)) {
     if (-not (Test-Path -LiteralPath $requiredFile -PathType Leaf)) {
         throw "Required release file is missing: $requiredFile"
@@ -62,7 +60,7 @@ $vmConfigurationRoot = [System.IO.Path]::GetFullPath($vm.ConfigurationLocation)
 if (-not $vmConfigurationRoot.StartsWith(
         $resolvedVmRoot + [System.IO.Path]::DirectorySeparatorChar,
         [System.StringComparison]::OrdinalIgnoreCase)) {
-    throw "The VM configuration is outside the approved H: root: $vmConfigurationRoot"
+    throw "The VM configuration is outside the requested VM root: $vmConfigurationRoot"
 }
 if ($vm.State -ne 'Running') {
     Start-VM -Name $VmName | Out-Null

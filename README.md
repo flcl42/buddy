@@ -272,13 +272,13 @@ binaries are unsigned, so Windows may still show a SmartScreen warning. Run
 
 On first launch, .NET extracts the versioned native speech runtime into its
 per-user bundle cache; the portable app needs no companion files beside
-`Buddy.exe`. On Windows, personal recordings and speech models remain in
-`H:\Buddy` when `H:` is available, or `%LOCALAPPDATA%\Buddy` on other PCs;
-`BUDDY_DATA_ROOT` overrides that choice. Whisper, Silero, and Kokoro are fetched
-only when needed with resumable verified downloads. Selecting local Qwen starts
-its approximately 21.5 GB verified model/runtime setup. Qwen lives under
-`H:\BuddyAI` when `H:` is available; set `BUDDY_AI_ROOT` before launch to use
-another root.
+`Buddy.exe`. Personal recordings, settings, and speech models remain in Buddy's
+operating-system per-user application-data directory by default;
+`BUDDY_DATA_ROOT` can explicitly redirect that location. Whisper, Silero, and
+Kokoro are fetched only when needed with resumable verified downloads. Selecting
+local Qwen starts its approximately 21.5 GB verified model/runtime setup under
+the configured application-data root; `BUDDY_AI_ROOT` can explicitly redirect
+the Qwen model and runtime.
 
 Tagged releases also build `Buddy-macOS-arm64-beta.zip`,
 `Buddy-Linux-x64-preview.deb`, and

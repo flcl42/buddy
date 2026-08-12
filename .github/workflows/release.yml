@@ -24,6 +24,10 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Validate machine-neutral paths
+        shell: pwsh
+        run: .\scripts\validate-machine-neutral-paths.ps1
+
       - name: Install .NET SDK
         uses: actions/setup-dotnet@v4
         with:

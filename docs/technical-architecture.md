@@ -257,11 +257,11 @@ GPU offload keeps 24 target-model layers on CUDA while the DFlash draft remains
 CPU-resident; this preserves target-model quality and reserves VRAM for Whisper.
 Quantized KV cache and a 32,768-token context bound memory. The server remains warm for two
 minutes so adjacent dialog turns can reuse the loaded model and prompt cache,
-then sleeps after idle time; Settings can warm or unload it explicitly. The GGUF and runtime live
-outside the single-file application under `H:\BuddyAI` when that drive is
-available, with `BUDDY_AI_ROOT` as an explicit override and a per-user fallback
-on other PCs. Recordings and speech models similarly prefer `H:\Buddy` on this
-machine and can be redirected with `BUDDY_DATA_ROOT`.
+then sleeps after idle time; Settings can warm or unload it explicitly. The GGUF
+and runtime live outside the single-file application under the operating
+system's per-user application-data root. `BUDDY_AI_ROOT` can explicitly redirect
+them. Recordings and speech models use the same per-user root by default and can
+be redirected with `BUDDY_DATA_ROOT`.
 
 The Buddy proxy is a separate ASP.NET Core service. Its SQLite catalog stores
 hashed client keys, key state, limits, aggregate prompt/completion counters, and

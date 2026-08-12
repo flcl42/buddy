@@ -13,9 +13,11 @@ $portablePath = Join-Path $releaseRoot "Buddy.exe"
 $installerPath = Join-Path $releaseRoot "Buddy-Setup.exe"
 $scriptPath = Join-Path $repositoryRoot "installer\Buddy.iss"
 $policyScript = Join-Path $PSScriptRoot "validate-installer-policy.ps1"
+$pathPolicyScript = Join-Path $PSScriptRoot "validate-machine-neutral-paths.ps1"
 
 [System.IO.Directory]::CreateDirectory($releaseRoot) | Out-Null
 
+& $pathPolicyScript
 & $policyScript
 
 if (-not $SkipPublish) {

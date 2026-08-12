@@ -22,6 +22,8 @@
              Link="Services\BuddyFeedbackClient.cs" />
     <Compile Include="..\..\src\Buddy.App\Services\BuddyProxyClientConfiguration.cs"
              Link="Services\BuddyProxyClientConfiguration.cs" />
+    <Compile Include="..\..\src\Buddy.App\Services\BuddyStorageRootResolver.cs"
+             Link="Services\BuddyStorageRootResolver.cs" />
     <Compile Include="..\..\src\Buddy.App\Services\DialogAnswerDocumentStore.cs"
              Link="Services\DialogAnswerDocumentStore.cs" />
     <Compile Include="..\..\src\Buddy.App\ViewModels\DialogMessageCollectionReconciler.cs"

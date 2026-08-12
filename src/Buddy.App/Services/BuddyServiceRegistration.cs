@@ -26,20 +26,12 @@ public static class BuddyServiceRegistration
         string localAppDataRoot = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "Buddy");
-#if WINDOWS
-        bool hasHeavyDataDrive = Directory.Exists(@"H:\");
-        string dataRoot = Environment.GetEnvironmentVariable("BUDDY_DATA_ROOT")
-            ?? (hasHeavyDataDrive ? @"H:\Buddy" : localAppDataRoot);
-        string languageRoot = Environment.GetEnvironmentVariable("BUDDY_AI_ROOT")
-            ?? (hasHeavyDataDrive
-                ? @"H:\BuddyAI"
-                : Path.Combine(dataRoot, "language-models"));
-#else
-        string dataRoot = Environment.GetEnvironmentVariable("BUDDY_DATA_ROOT")
-            ?? localAppDataRoot;
-        string languageRoot = Environment.GetEnvironmentVariable("BUDDY_AI_ROOT")
-            ?? Path.Combine(dataRoot, "language-models");
-#endif
+        BuddyStorageRoots storageRoots = BuddyStorageRootResolver.Resolve(
+            localAppDataRoot,
+            Environment.GetEnvironmentVariable("BUDDY_DATA_ROOT"),
+            Environment.GetEnvironmentVariable("BUDDY_AI_ROOT"));
+        string dataRoot = storageRoots.DataRoot;
+        string languageRoot = storageRoots.LanguageRoot;
 
         services.AddSingleton(new BuddyDataPaths(dataRoot));
         services.AddSingleton<SqliteConnectionFactory>();

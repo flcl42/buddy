@@ -18,9 +18,9 @@ broader product specification.
   changed language in place, a lowercase trial code normalized to the required
   `AAAAAA-BBBBBB` shape, and the UI stayed responsive while 1,624,555,275-byte
   Whisper, 885,098-byte Silero, and 325,508,342-byte Kokoro artifacts downloaded
-  to `H:\Buddy\models` and received verification stamps. The localized party
-  completion screen opened the default Speak chooser with a selected
-  three-second pause.
+  to the configured test data root and received verification stamps. The
+  localized party completion screen opened the default Speak chooser with a
+  selected three-second pause.
 - The welcome screen performs no model download or model-status network work
   before the explicit Download and set up action. Its editable pickers and key
   fields use one rounded native Windows frame with clear normal, hover, focus,
