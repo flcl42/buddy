@@ -7,6 +7,7 @@
     <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/" />
     <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/" />
     <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="__SITE_BASE_URL__/ru/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/" />
   </url>
   <url>
@@ -15,6 +16,7 @@
     <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/" />
     <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/" />
     <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="__SITE_BASE_URL__/ru/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/" />
   </url>
   <url>
@@ -23,6 +25,7 @@
     <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/" />
     <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/" />
     <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="__SITE_BASE_URL__/ru/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/" />
   </url>
   <url>
@@ -31,6 +34,7 @@
     <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/" />
     <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/" />
     <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="__SITE_BASE_URL__/ru/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/" />
   </url>
   <url>
@@ -39,6 +43,7 @@
     <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/deepseek-api-key/" />
     <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/deepseek-api-key/" />
     <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="__SITE_BASE_URL__/ru/deepseek-api-key/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/deepseek-api-key/" />
   </url>
   <url>
@@ -47,6 +52,7 @@
     <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/deepseek-api-key/" />
     <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/deepseek-api-key/" />
     <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="__SITE_BASE_URL__/ru/deepseek-api-key/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/deepseek-api-key/" />
   </url>
   <url>
@@ -55,6 +61,7 @@
     <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/deepseek-api-key/" />
     <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/deepseek-api-key/" />
     <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="__SITE_BASE_URL__/ru/deepseek-api-key/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/deepseek-api-key/" />
   </url>
   <url>
@@ -63,6 +70,7 @@
     <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/deepseek-api-key/" />
     <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/deepseek-api-key/" />
     <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="__SITE_BASE_URL__/ru/deepseek-api-key/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/deepseek-api-key/" />
   </url>
   <url>
@@ -71,6 +79,7 @@
     <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/privacy/" />
     <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/privacy/" />
     <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/privacy/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="__SITE_BASE_URL__/ru/privacy/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/privacy/" />
   </url>
   <url>
@@ -79,6 +88,7 @@
     <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/privacy/" />
     <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/privacy/" />
     <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/privacy/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="__SITE_BASE_URL__/ru/privacy/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/privacy/" />
   </url>
   <url>
@@ -87,6 +97,7 @@
     <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/privacy/" />
     <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/privacy/" />
     <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/privacy/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="__SITE_BASE_URL__/ru/privacy/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/privacy/" />
   </url>
   <url>
@@ -95,6 +106,34 @@
     <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/privacy/" />
     <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/privacy/" />
     <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/privacy/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="__SITE_BASE_URL__/ru/privacy/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/privacy/" />
+  </url>
+  <url>
+    <loc>__SITE_BASE_URL__/ru/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="__SITE_BASE_URL__/" />
+    <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/" />
+    <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/" />
+    <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="__SITE_BASE_URL__/ru/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/" />
+  </url>
+  <url>
+    <loc>__SITE_BASE_URL__/ru/deepseek-api-key/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="__SITE_BASE_URL__/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="__SITE_BASE_URL__/ru/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/deepseek-api-key/" />
+  </url>
+  <url>
+    <loc>__SITE_BASE_URL__/ru/privacy/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="__SITE_BASE_URL__/privacy/" />
+    <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/privacy/" />
+    <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/privacy/" />
+    <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/privacy/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="__SITE_BASE_URL__/ru/privacy/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/privacy/" />
   </url>
 </urlset>

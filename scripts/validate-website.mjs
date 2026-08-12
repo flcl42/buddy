@@ -18,6 +18,10 @@ class FakeClassList {
     return this.classes.has(name);
   }
 
+  add(...names) {
+    names.forEach((name) => this.classes.add(name));
+  }
+
   toggle(name, force) {
     const enabled = force === undefined ? !this.classes.has(name) : Boolean(force);
     if (enabled) {
@@ -63,6 +67,14 @@ class FakeElement {
 function createCarousel() {
   const slides = Array.from({ length: 4 }, (_, index) =>
     new FakeElement({ classes: index === 0 ? ["is-active"] : [] }));
+  const zoomTargets = Array.from({ length: 4 }, () => new FakeElement());
+  const images = Array.from({ length: 4 }, (_, index) => {
+    const image = new FakeElement();
+    image.alt = `Screenshot ${index + 1}`;
+    image.closest = () => zoomTargets[index];
+    slides[index].querySelector = (selector) => selector === "img" ? image : null;
+    return image;
+  });
   slides.slice(1).forEach((slide) => { slide.hidden = true; });
   const dots = Array.from({ length: 4 }, (_, index) =>
     new FakeElement({ classes: index === 0 ? ["is-active"] : [], dataset: { carouselIndex: String(index) } }));
@@ -79,7 +91,7 @@ function createCarousel() {
     "[data-carousel-current]": current
   })[selector] || null;
 
-  return { carousel, slides, dots, previous, next, current };
+  return { carousel, slides, dots, previous, next, current, zoomTargets, images };
 }
 
 function runApp({ locale = "en", languages = ["en-US"], savedLocale = "", search = "", route = "", withCarousel = false } = {}) {
@@ -124,18 +136,20 @@ function pngDimensions(filePath) {
   return { width: header.readUInt32BE(16), height: header.readUInt32BE(20) };
 }
 
-const pages = ["index.html", "es/index.html", "de/index.html", "be/index.html"];
+const pages = ["index.html", "es/index.html", "de/index.html", "be/index.html", "ru/index.html"];
 const guidePages = [
   "deepseek-api-key/index.html",
   "es/deepseek-api-key/index.html",
   "de/deepseek-api-key/index.html",
-  "be/deepseek-api-key/index.html"
+  "be/deepseek-api-key/index.html",
+  "ru/deepseek-api-key/index.html"
 ];
 const privacyPages = [
   "privacy/index.html",
   "es/privacy/index.html",
   "de/privacy/index.html",
-  "be/privacy/index.html"
+  "be/privacy/index.html",
+  "ru/privacy/index.html"
 ];
 const releaseAssets = [
   "Buddy-Setup.exe",
@@ -148,7 +162,8 @@ const recordingCopy = {
   "index.html": /Pause-cut playback, seeking, and transcription/,
   "es/index.html": /Reproducción, búsqueda y transcripción sobre audio sin pausas/,
   "de/index.html": /Wiedergabe, Suche und Transkription mit entfernten Pausen/,
-  "be/index.html": /Прайграванне, пошук і распазнаванне па аўдыя без паўз/
+  "be/index.html": /Прайграванне, пошук і распазнаванне па аўдыя без паўз/,
+  "ru/index.html": /Воспроизведение, поиск и транскрипция аудио без пауз/
 };
 const heroCopy = {
   "index.html": {
@@ -166,11 +181,15 @@ const heroCopy = {
   "be/index.html": {
     title: "Гаварыце лепш.<br><span>Размаўляйце ўпэўнена.</span>",
     description: "Buddy дапамагае практыкаваць размовы, аналізаваць вымаўленне і манеру маўлення, удасканальваць слоўнікавы запас і граматыку"
+  },
+  "ru/index.html": {
+    title: "Говорите лучше.<br><span>Общайтесь увереннее.</span>",
+    description: "Buddy помогает практиковать общение, анализировать произношение и подачу, улучшать словарный запас и грамматику"
   }
 };
 const walkthroughVideo = path.join(siteDirectory, "video", "buddy-walkthrough.mp4");
 const walkthroughPoster = path.join(siteDirectory, "video", "buddy-walkthrough-poster.jpg");
-const walkthroughLocales = ["en", "es", "de", "be"];
+const walkthroughLocales = ["en", "es", "de", "be", "ru"];
 assert.ok(fs.statSync(walkthroughVideo).size > 1_000_000, "walkthrough video is unexpectedly small");
 assert.equal(fs.readFileSync(walkthroughVideo).subarray(4, 8).toString("ascii"), "ftyp", "walkthrough is not an MP4");
 assert.ok(fs.statSync(walkthroughPoster).size > 50_000, "walkthrough poster is unexpectedly small");
@@ -191,7 +210,9 @@ for (const relativePage of pages) {
   assert.match(html, recordingCopy[relativePage], `${relativePage} does not explain pause-cut recording transcription`);
   assert.ok(html.includes(`<h1>${heroCopy[relativePage].title}</h1>`), `${relativePage} has stale hero positioning`);
   assert.ok(html.includes(heroCopy[relativePage].description), `${relativePage} has stale hero supporting copy`);
-  assert.doesNotMatch(html, /Remember your words|Recuerda tus palabras|Erinnere dich an deine Worte|Памятайце свае словы/, `${relativePage} retains the discarded recall headline`);
+  assert.doesNotMatch(html, /Remember your words|Recuerda tus palabras|Erinnere dich an deine Worte|Памятайце свае словы|Помните свои слова/, `${relativePage} retains the discarded recall headline`);
+  assert.equal((html.match(/rel="alternate" hreflang=/g) || []).length, 6, `${relativePage} needs complete language alternates`);
+  assert.match(html, /<option value="ru"(?: selected)?>Русский<\/option>/, `${relativePage} needs the Russian language choice`);
   assert.equal((html.match(/<video\b/g) || []).length, 1, `${relativePage} must include one walkthrough video`);
   assert.match(html, /<video[^>]+\bcontrols\b[^>]+\bpreload="metadata"/, `${relativePage} needs accessible native video controls`);
   assert.doesNotMatch(html, /<video[^>]+\bautoplay\b/, `${relativePage} must not autoplay the walkthrough`);
@@ -237,7 +258,8 @@ for (const relativePage of guidePages) {
   assert.match(html, /<meta name="robots" content="index, follow, max-image-preview:large">/, `${relativePage} must be indexable`);
   assert.match(html, /"@type": "HowTo"/, `${relativePage} needs HowTo structured data`);
   assert.doesNotMatch(html, /zero data retention[^<]*(enabled|guaranteed)/i, `${relativePage} must not promise zero data retention`);
-  assert.equal((html.match(/rel="alternate" hreflang=/g) || []).length, 5, `${relativePage} needs complete language alternates`);
+  assert.equal((html.match(/rel="alternate" hreflang=/g) || []).length, 6, `${relativePage} needs complete language alternates`);
+  assert.match(html, /<option value="ru"(?: selected)?>Русский<\/option>/, `${relativePage} needs the Russian language choice`);
   assert.match(html, /href="\.\.\/privacy\/"/, `${relativePage} must link to its localized privacy policy`);
 
   const documentHeader = html.match(/<header class="site-header document-header">([\s\S]*?)<\/header>/)?.[1];
@@ -276,7 +298,8 @@ for (const relativePage of privacyPages) {
   assert.match(html, /https:\/\/docs\.github\.com\/en\/site-policy\/privacy-policies\/github-general-privacy-statement/, `${relativePage} needs GitHub's privacy statement`);
   assert.match(html, /<meta name="robots" content="index, follow, max-image-preview:large">/, `${relativePage} must be indexable`);
   assert.match(html, /"@type":"?\s*"?WebPage"?/, `${relativePage} needs WebPage structured data`);
-  assert.equal((html.match(/rel="alternate" hreflang=/g) || []).length, 5, `${relativePage} needs complete language alternates`);
+  assert.equal((html.match(/rel="alternate" hreflang=/g) || []).length, 6, `${relativePage} needs complete language alternates`);
+  assert.match(html, /<option value="ru"(?: selected)?>Русский<\/option>/, `${relativePage} needs the Russian language choice`);
 
   const documentHeader = html.match(/<header class="site-header document-header">([\s\S]*?)<\/header>/)?.[1];
   assert.ok(documentHeader, `${relativePage} needs the compact document header`);
@@ -301,7 +324,15 @@ for (const relativePage of privacyPages) {
 
 {
   const sitemap = fs.readFileSync(path.join(siteDirectory, "sitemap.xml"), "utf8");
-  for (const route of ["privacy/", "es/privacy/", "de/privacy/", "be/privacy/"]) {
+  for (const route of [
+    "ru/",
+    "ru/deepseek-api-key/",
+    "privacy/",
+    "es/privacy/",
+    "de/privacy/",
+    "be/privacy/",
+    "ru/privacy/"
+  ]) {
     assert.ok(sitemap.includes(`__SITE_BASE_URL__/${route}`), `sitemap is missing ${route}`);
   }
 }
@@ -324,12 +355,17 @@ assert.deepEqual(
 
 {
   const result = runApp({ languages: ["ru-RU"] });
-  assert.deepEqual(result.redirects, []);
-  assert.equal(result.storage.get("buddy-language"), "en");
+  assert.deepEqual(result.redirects, [{ kind: "replace", url: "./ru/" }]);
+  assert.equal(result.storage.get("buddy-language"), "ru");
 }
 
 {
   const result = runApp({ languages: ["ru-RU", "be-BY"] });
+  assert.deepEqual(result.redirects, [{ kind: "replace", url: "./ru/" }]);
+}
+
+{
+  const result = runApp({ languages: ["be-BY", "ru-RU"] });
   assert.deepEqual(result.redirects, [{ kind: "replace", url: "./be/" }]);
 }
 
@@ -360,8 +396,21 @@ assert.deepEqual(
 }
 
 {
+  const result = runApp({ locale: "ru", languages: ["ru-RU"], savedLocale: "ru", route: "privacy/" });
+  assert.deepEqual(result.redirects, []);
+}
+
+{
   const { carouselState } = runApp({ locale: "de", withCarousel: true });
-  const { carousel, slides, dots, previous, next, current } = carouselState;
+  const { carousel, slides, dots, previous, next, current, zoomTargets } = carouselState;
+  zoomTargets.forEach((target) => {
+    assert.equal(target.classList.contains("carousel-zoom-target"), true);
+    assert.equal(target.attributes.get("role"), "button");
+    assert.equal(target.attributes.get("tabindex"), "0");
+    assert.match(target.attributes.get("aria-label"), /^Screenshot vergrößert öffnen:/);
+    assert.equal((target.listeners.get("click") || []).length, 1);
+    assert.equal((target.listeners.get("keydown") || []).length, 1);
+  });
   next.dispatch("click");
   assert.equal(current.textContent, "2");
   assert.equal(slides[1].hidden, false);
@@ -379,4 +428,7 @@ assert.deepEqual(
   assert.equal(current.textContent, "1");
 }
 
-console.log("Buddy website validation passed: localized product, DeepSeek key-guide, and privacy-policy pages, routing, model FAQ, release assets, controls, screenshots, and an accessible captioned walkthrough video.");
+assert.match(appSource, /dialog\.showModal\(\)/, "carousel zoom must use a modal image viewer");
+assert.match(appSource, /Math\.min\(3, Math\.max\(1, nextZoom\)\)/, "carousel zoom must support bounded magnification");
+
+console.log("Buddy website validation passed: five localized product, DeepSeek key-guide, and privacy-policy pages, Russian routing and captions, release assets, carousel zoom controls, screenshots, and an accessible walkthrough video.");

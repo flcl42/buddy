@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chitchat Buddy — приватный ИИ-помощник для речи на компьютере</title>
+  <meta name="description" content="Практикуйте общение, анализируйте произношение и подачу, улучшайте словарный запас и грамматику и учитесь в голосовых диалогах с ИИ.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="theme-color" content="#5b46d8">
+  <meta name="color-scheme" content="light">
+  <link rel="canonical" href="__SITE_BASE_URL__/ru/">
+  <link rel="alternate" hreflang="en" href="__SITE_BASE_URL__/">
+  <link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/">
+  <link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/">
+  <link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/">
+  <link rel="alternate" hreflang="ru" href="__SITE_BASE_URL__/ru/">
+  <link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Chitchat Buddy">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:title" content="Chitchat Buddy — Говорите лучше. Общайтесь увереннее.">
+  <meta property="og:description" content="Практикуйте общение, анализируйте свою речь, улучшайте словарный запас и грамматику и учитесь в контекстных диалогах с ИИ.">
+  <meta property="og:url" content="__SITE_BASE_URL__/ru/">
+  <meta property="og:image" content="__SITE_BASE_URL__/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Buddy с голосовым диалогом и звуковой волной">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chitchat Buddy — приватный помощник для речи на компьютере">
+  <meta name="twitter:description" content="Практикуйте общение, анализируйте свою речь и развивайте уверенность с локальной обработкой и контекстным ИИ.">
+  <meta name="twitter:image" content="__SITE_BASE_URL__/og.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+  <link rel="manifest" href="../site.webmanifest">
+  <link rel="stylesheet" href="../styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Chitchat Buddy",
+    "alternateName": "Buddy",
+    "description": "Приватный настольный помощник для практики общения, анализа речи, улучшения словарного запаса и грамматики и обучения в диалогах с ИИ.",
+    "url": "__SITE_BASE_URL__/ru/",
+    "downloadUrl": "https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": ["Windows 10/11 x64", "macOS 13+", "Ubuntu 24.04+ x64"],
+    "softwareVersion": "0.4.1",
+    "isAccessibleForFree": true,
+    "inLanguage": "ru",
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+    "featureList": ["Локальная запись микрофона", "Воспроизведение без длинных пауз", "Умная редактируемая транскрипция по запросу", "Живая транскрипция речи", "Подсказки по произношению с МФА", "Улучшение грамматики и лексики", "Голосовой диалог с ИИ и сохранением контекста", "Локальный синтез речи"]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    "name": "Полный обзор Chitchat Buddy",
+    "description": "Реальная сессия Buddy с контекстным диалогом с ИИ, произношением и значением слова, воспроизведением без длинных пауз, поиском по звуковой волне и более ясным монологом.",
+    "thumbnailUrl": "__SITE_BASE_URL__/video/buddy-walkthrough-poster.jpg",
+    "contentUrl": "__SITE_BASE_URL__/video/buddy-walkthrough.mp4",
+    "embedUrl": "__SITE_BASE_URL__/ru/#demo",
+    "uploadDate": "2026-08-12",
+    "duration": "PT58S",
+    "inLanguage": "en"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type": "Question", "name": "Buddy записывает всех участников встречи?", "acceptedAnswer": {"@type": "Answer", "text": "Нет. Buddy записывает выбранный вами микрофон и предназначен для сохранения ваших собственных реплик, а не голосов удалённых участников или системного звука."}},
+      {"@type": "Question", "name": "Покидает ли моя аудиозапись компьютер?", "acceptedAnswer": {"@type": "Answer", "text": "Нет. Запись, распознавание, анализ произношения и синтез речи выполняются локально. Языковые задачи по умолчанию используют ограниченный доступ Buddy к DeepSeek и отправляют только необходимый текст; локальный Qwen оставляет на компьютере и этот текст."}},
+      {"@type": "Question", "name": "Может ли Buddy работать без интернета?", "acceptedAnswer": {"@type": "Answer", "text": "Да. После установки дополнительных локальных моделей запись, транскрипция, улучшение текста через Qwen и озвучивание могут работать без облачной учётной записи."}},
+      {"@type": "Question", "name": "Какие модели ИИ отвечают в диалоге?", "acceptedAnswer": {"@type": "Answer", "text": "Buddy Trial и прямой DeepSeek используют DeepSeek V4 Flash в облаке. Пробный доступ ограничен 1 000 ответами или 1 000 000 токенов; прямой доступ использует ваш API-ключ DeepSeek и оплату вашей учётной записи. В Windows дополнительная модель Qwen 3.6 27B работает локально с ускорением DFlash и оставляет текст диалога на вашем компьютере."}}
+    ]
+  }
+  </script>
+</head>
+<body data-locale="ru" data-root="..">
+  <a class="skip-link" href="#main">Перейти к основному содержанию</a>
+  <header class="site-header">
+    <div class="nav-shell">
+      <a class="brand" href="../" aria-label="Главная страница Chitchat Buddy"><span class="brand-mark" aria-hidden="true">b</span><span>Chitchat Buddy</span></a>
+      <nav class="main-nav" aria-label="Основная навигация"><a href="#demo">Демонстрация</a><a href="#features">Возможности</a><a href="#how-it-works">Как это работает</a><a href="#privacy">Приватность</a><a href="#faq">Вопросы</a></nav>
+      <div class="nav-actions">
+        <label class="language-label" for="language-select">Язык</label>
+        <select id="language-select" class="language-select" aria-label="Выбрать язык"><option value="en">English</option><option value="es">Español</option><option value="de">Deutsch</option><option value="be">Беларуская</option><option value="ru" selected>Русский</option></select>
+        <a class="button button-small" href="#download">Скачать</a>
+      </div>
+    </div>
+    <noscript><nav class="noscript-languages" aria-label="Языки"><strong>Язык:</strong> <a href="../">English</a> · <a href="../es/">Español</a> · <a href="../de/">Deutsch</a> · <a href="../be/">Беларуская</a> · <a href="../ru/">Русский</a></nav></noscript>
+  </header>
+
+  <main id="main">
+    <section class="hero section-shell">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Windows стабильная · macOS бета · Linux предварительная</p>
+        <h1>Говорите лучше.<br><span>Общайтесь увереннее.</span></h1>
+        <p class="hero-lede">Buddy помогает практиковать общение, анализировать произношение и подачу, улучшать словарный запас и грамматику и учиться в голосовых диалогах с ИИ, сохраняющих контекст, — при этом звук микрофона и основная обработка речи остаются на вашем компьютере.</p>
+        <div class="hero-actions"><a class="button button-primary" data-download-asset="Buddy-Setup.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe">Установщик для Windows</a><a class="button button-secondary" href="#download">Другие платформы</a></div>
+        <p class="release-status" id="release-status" aria-live="polite">Windows стабильная · macOS бета · Linux предварительная</p>
+        <ul class="hero-trust" aria-label="Основные преимущества"><li><span aria-hidden="true">✓</span> Основные функции без регистрации</li><li><span aria-hidden="true">✓</span> Локальная обработка звука</li><li><span aria-hidden="true">✓</span> Восстанавливаемые записи</li></ul>
+      </div>
+      <div class="product-preview">
+        <div class="preview-glow" aria-hidden="true"></div>
+        <section class="screenshot-carousel" data-carousel tabindex="0" aria-roledescription="carousel" aria-label="Обзор возможностей Buddy">
+          <div class="carousel-viewport">
+            <figure class="carousel-slide is-active" data-carousel-slide role="group" aria-roledescription="slide" aria-label="1 из 4">
+              <div class="screenshot-image screenshot-watermark-mask"><img src="../screenshots/00-welcome-setup.png" width="1284" height="842" alt="Экран приветствия Chitchat Buddy с редактируемыми полями языка интерфейса, языка разговора, поставщика ИИ и пробного кода" fetchpriority="high"></div>
+              <figcaption><span class="carousel-kicker">Настройка</span><strong>Настройте Buddy под себя</strong><span>Выберите язык интерфейса, язык разговора и поставщика ИИ до начала загрузки.</span></figcaption>
+            </figure>
+            <figure class="carousel-slide" data-carousel-slide role="group" aria-roledescription="slide" aria-label="2 из 4" hidden>
+              <img src="../screenshots/01-choose-mode.png" width="1284" height="842" alt="Экран Buddy с большими панелями выбора диалога с ИИ и монолога" loading="lazy">
+              <figcaption><span class="carousel-kicker">Выбор</span><strong>Выберите формат практики</strong><span>Начните продолжительный диалог с ИИ или поработайте над отдельным монологом.</span></figcaption>
+            </figure>
+            <figure class="carousel-slide" data-carousel-slide role="group" aria-roledescription="slide" aria-label="3 из 4" hidden>
+              <img src="../screenshots/02-dialog-word-guide.png" width="1284" height="842" alt="Короткий диалог на английском с оценкой произношения и выбранным словом nuance, для которого показаны транскрипция и значение" loading="lazy">
+              <figcaption><span class="carousel-kicker">Диалог</span><strong>Говорите, понимайте, продолжайте</strong><span>Живой диалог на английском, произношение и значение слова по запросу — в одном месте.</span></figcaption>
+            </figure>
+            <figure class="carousel-slide" data-carousel-slide role="group" aria-roledescription="slide" aria-label="4 из 4" hidden>
+              <img src="../screenshots/03-monologue-improvement.png" width="1284" height="842" alt="Тренер монолога Buddy с редактируемым исходным текстом и более ясной улучшенной версией" loading="lazy">
+              <figcaption><span class="carousel-kicker">Монолог</span><strong>Скажите яснее</strong><span>Отредактируйте расшифровку, проверьте произношение и сравните свою фразу с улучшенной версией.</span></figcaption>
+            </figure>
+          </div>
+          <div class="carousel-controls">
+            <button class="carousel-arrow" type="button" data-carousel-prev aria-label="Предыдущий снимок"><span aria-hidden="true">←</span></button>
+            <div class="carousel-dots" role="group" aria-label="Выбрать снимок"><button class="carousel-dot is-active" type="button" data-carousel-index="0" aria-label="Показать экран настройки" aria-current="true"></button><button class="carousel-dot" type="button" data-carousel-index="1" aria-label="Показать выбор диалога или монолога"></button><button class="carousel-dot" type="button" data-carousel-index="2" aria-label="Показать английский диалог и справку о слове"></button><button class="carousel-dot" type="button" data-carousel-index="3" aria-label="Показать улучшенный монолог"></button></div>
+            <span class="carousel-count" aria-live="polite"><span data-carousel-current>1</span><span aria-hidden="true"> / </span>4</span>
+            <button class="carousel-arrow" type="button" data-carousel-next aria-label="Следующий снимок"><span aria-hidden="true">→</span></button>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="proof-strip" aria-label="Возможности Buddy"><div class="section-shell proof-grid"><div><strong>Локально</strong><span>распознавание Whisper</span></div><div><strong>Редактируется</strong><span>транскрипты и версии</span></div><div><strong>Сохраняется</strong><span>записи и диалоги</span></div><div><strong>Естественно</strong><span>локальное озвучивание</span></div></div></section>
+
+    <section class="demo-section section-shell" id="demo">
+      <div class="section-heading"><p class="eyebrow">Buddy в действии</p><h2>Полный речевой цикл меньше чем за минуту.</h2><p>Посмотрите реальную сессию Buddy: диалог, произношение и значение слова по запросу, воспроизведение без длинных пауз и улучшенный монолог.</p></div>
+      <div class="demo-video-shell">
+        <video controls preload="metadata" playsinline width="1284" height="842" poster="../video/buddy-walkthrough-poster.jpg" aria-label="Обзор Chitchat Buddy">
+          <source src="../video/buddy-walkthrough.mp4" type="video/mp4">
+          <track kind="captions" srclang="en" label="English" src="../video/buddy-walkthrough.en.vtt">
+          <track kind="subtitles" srclang="es" label="Español" src="../video/buddy-walkthrough.es.vtt">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../video/buddy-walkthrough.de.vtt">
+          <track kind="subtitles" srclang="be" label="Беларуская" src="../video/buddy-walkthrough.be.vtt">
+          <track kind="subtitles" srclang="ru" label="Русский" src="../video/buddy-walkthrough.ru.vtt" default>
+          Ваш браузер не может воспроизвести это видео. <a href="../video/buddy-walkthrough.mp4">Скачать обзор</a>.
+        </video>
+        <div class="demo-chapters" aria-label="Разделы обзора"><span>Диалог с ИИ</span><span>Справка о слове</span><span>Записи</span><span>Улучшенная версия</span></div>
+        <p class="demo-language-note">Английская озвучка · субтитры на английском, испанском, немецком, белорусском и русском</p>
+      </div>
+    </section>
+
+    <section class="features-section section-shell" id="features">
+      <div class="section-heading"><p class="eyebrow">Три способа помочь</p><h2>От первого слова до той версии, которую вы хотели сказать.</h2><p>Единое спокойное пространство объединяет живое общение, осознанную практику и доступную для поиска историю вашей речи.</p></div>
+      <div class="feature-grid">
+        <article class="feature-card feature-dialog"><div class="feature-number">01</div><div class="feature-icon icon-dialog" aria-hidden="true"><span></span><span></span></div><h3>Голосовой диалог с ИИ</h3><p>Говорите свободно, следите за живой транскрипцией и автоматически слушайте каждый ответ. Buddy сохраняет весь контекст сессии и ждёт столько, сколько вы зададите.</p><ul><li>Форматированные ответы и естественное озвучивание</li><li>Настраиваемая пауза перед отправкой реплики</li><li>Ограниченный DeepSeek от Buddy по умолчанию, ваш ключ или локальный Qwen</li></ul></article>
+        <article class="feature-card feature-coach"><div class="feature-number">02</div><div class="feature-icon icon-coach" aria-hidden="true"><span>Aa</span></div><h3>Тренер речи</h3><p>Исправьте ошибки распознавания, прежде чем просить о помощи. Улучшайте грамматику, лексику, ясность и тон, сохраняя свою мысль.</p><ul><li>МФА и уровень уверенности для каждого слова</li><li>Режимы исправления, естественности и краткости</li><li>Сравнение исходной и улучшенной версий на слух</li></ul></article>
+        <article class="feature-card feature-record"><div class="feature-number">03</div><div class="feature-icon icon-record" aria-hidden="true"><span>r</span></div><h3>Память встреч</h3><p>Записывайте выбранный микрофон, слушайте только полезную речь без длинных пауз и запрашивайте умную локальную транскрипцию, когда она понадобится.</p><ul><li>Аудиофрагменты восстанавливаются после сбоя</li><li>Редактируемая повторная транскрипция каждой записи</li><li>Воспроизведение, поиск и транскрипция аудио без пауз</li></ul></article>
+      </div>
+    </section>
+
+    <section class="how-section" id="how-it-works"><div class="section-shell how-layout">
+      <div class="section-heading left-heading"><p class="eyebrow">Создан для ежедневной работы</p><h2>Начните говорить.<br>Остальное сделает Buddy.</h2><p>Установите версию для своей системы. Дополнительные пакеты локального ИИ загружаются только при необходимости, с понятным индикатором прогресса и уведомлениями.</p></div>
+      <ol class="steps-list"><li><span class="step-index">1</span><div><h3>Выберите режим</h3><p>Начните диалог с ИИ, запишите тренировочный монолог или включите запись с микрофона через трей.</p></div></li><li><span class="step-index">2</span><div><h3>Говорите естественно</h3><p>Локальный детектор голоса и Whisper превращают звук микрофона в надёжный редактируемый текст.</p></div></li><li><span class="step-index">3</span><div><h3>Проверяйте, улучшайте, слушайте</h3><p>Исправьте слово, посмотрите его МФА и значение, послушайте более ясную версию или вернитесь к сохранённому моменту.</p></div></li></ol>
+    </div></section>
+
+    <section class="privacy-section section-shell" id="privacy"><div class="privacy-panel">
+      <div class="privacy-copy"><p class="eyebrow eyebrow-light">Приватность в самой архитектуре</p><h2>Ваш голос не должен быть платой за доступ.</h2><p>Звук микрофона, распознавание, анализ произношения, удаление тишины и синтез речи остаются на вашем компьютере. Языковые задачи по умолчанию используют ограниченный доступ Buddy к DeepSeek и отправляют только необходимый текст — никогда не запись микрофона. Шлюз хранит хеши ключей и числовые данные об использовании, а не текст диалога. С локальным Qwen необходимый текст тоже остаётся на вашем компьютере.</p><div class="privacy-guide-links"><a href="./privacy/" class="text-link">Политика конфиденциальности <span aria-hidden="true">→</span></a><a href="./deepseek-api-key/" class="text-link">Ключ DeepSeek и хранение данных <span aria-hidden="true">→</span></a></div></div>
+      <div class="privacy-facts"><div><span class="fact-mark" aria-hidden="true">01</span><strong>Локальный звук</strong><p>Записи остаются в профиле вашей операционной системы.</p></div><div><span class="fact-mark" aria-hidden="true">02</span><strong>Защищённые ключи</strong><p>Учётные данные хранятся в защищённом хранилище системы.</p></div><div><span class="fact-mark" aria-hidden="true">03</span><strong>Выбор за вами</strong><p>Используйте облачный ИИ или Qwen в Windows.</p></div></div>
+    </div></section>
+
+    <section class="detail-section section-shell"><div class="detail-grid">
+      <div class="section-heading left-heading"><p class="eyebrow">Небольшие элементы, настоящий контроль</p><h2>Не мешает вашей работе.</h2></div>
+      <div class="detail-list">
+        <article><span class="detail-dot"></span><div><h3>Всегда в трее</h3><p>Видимая буква <strong>b</strong> означает готовность, а красная <strong>r</strong> однозначно показывает активную запись.</p></div></article>
+        <article><span class="detail-dot"></span><div><h3>Играет с нужного момента</h3><p>Нажмите в любом месте звуковой шкалы, приостановите, продолжите или начните сначала.</p></div></article>
+        <article><span class="detail-dot"></span><div><h3>Текст остаётся текстом</h3><p>Выделяйте и копируйте форматированные сообщения. Нажимайте слово, только когда нужны МФА и значение.</p></div></article>
+        <article><span class="detail-dot"></span><div><h3>Переживает перерывы</h3><p>Короткие контрольные записи и надёжный локальный каталог защищают незавершённую работу.</p></div></article>
+      </div>
+    </div></section>
+
+    <section class="faq-section section-shell" id="faq">
+      <div class="section-heading"><p class="eyebrow">Ответы на вопросы</p><h2>Точно знайте, что Buddy делает, а чего не делает.</h2></div>
+      <div class="faq-list">
+        <details><summary>Buddy записывает всех участников встречи?</summary><p>Нет. Buddy записывает выбранный вами микрофон. Он предназначен для сохранения ваших собственных реплик, а не голосов удалённых участников или системного звука Windows. Наушники дают лучший результат.</p></details>
+        <details><summary>Покидает ли моя аудиозапись компьютер?</summary><p>Нет. Запись, Whisper, анализ произношения и синтез речи выполняются локально. Поставщик с ограниченным доступом по умолчанию отправляет в DeepSeek только необходимый для задачи текст. Локальный Qwen оставляет и этот текст на вашем компьютере.</p></details>
+        <details><summary>Можно ли пользоваться Buddy без облачной учётной записи?</summary><p>Да. Запись, воспроизведение, транскрипция и локальное озвучивание не требуют её. Выпуск содержит до 1 000 ответов или 1 000 000 токенов ограниченного доступа к DeepSeek — в зависимости от того, какой предел будет достигнут раньше. Загрузите локальный Qwen, чтобы ответы и улучшения тоже оставались на вашем компьютере.</p></details>
+        <details><summary>Какие модели ИИ отвечают в диалоге?</summary><p><strong>Buddy Trial</strong> использует DeepSeek V4 Flash через ограниченный шлюз Buddy и даёт до 1 000 ответов или 1 000 000 токенов. <strong>Прямой DeepSeek</strong> использует ту же облачную модель с <a href="./deepseek-api-key/">вашим собственным API-ключом DeepSeek</a> и оплатой учётной записи. В Windows <strong>локальный Qwen</strong> запускает квантованную модель Qwen 3.6 27B с ускорением DFlash; загрузка размером около 21,5 ГБ и работа модели медленнее, зато текст диалога остаётся на вашем компьютере.</p></details>
+        <details><summary>Что загружает установщик?</summary><p>Сама программа автономна. Крупные речевые и локальные ИИ-модели устанавливаются по мере необходимости, с индикатором прогресса и уведомлением о завершении. Поэтому не придётся ждать компонентов, которыми вы можете не пользоваться.</p></details>
+        <details><summary>Какие настольные платформы поддерживаются?</summary><p>Для Windows 10/11 x64 доступна стабильная версия. Бета-сборка для macOS 13+ работает на Apple Silicon и пока использует Dock. Оценка уверенности слов и фонетика по запросу там работают; полная локальная строка МФА пока доступна только в Windows и Linux. Ubuntu 24.04+ x64 — экспериментальная предварительная версия на GTK4; значок в трее требует среды, совместимой со StatusNotifier. Локальный Qwen пока доступен только для Windows.</p></details>
+        <details><summary>Анализ произношения оценивает акцент?</summary><p>Нет. Buddy использует временные метки слов и уверенность распознавания, чтобы отметить места, которые стоит проверить. МФА — это подсказка, а не оценка вашего акцента или личности.</p></details>
+      </div>
+    </section>
+
+    <section class="download-section" id="download"><div class="section-shell download-panel">
+      <div><p class="eyebrow eyebrow-light">Chitchat Buddy 0.4.1 · три настольные системы</p><h2>Ваша следующая мысль заслуживает лучшей второй попытки.</h2><p>Установите Buddy, выберите микрофон и начните с функций, которые работают локально с первого дня.</p></div>
+      <div class="download-options">
+        <a class="download-card primary-download" data-download-asset="Buddy-Setup.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Setup.exe"><span class="download-copy"><strong>Установщик для Windows</strong><small>Стабильная · x64 · пошаговая настройка</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card" data-download-asset="Buddy.exe" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy.exe"><span class="download-copy"><strong>Переносная версия Windows</strong><small>Стабильная · x64 · один EXE-файл</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card" data-download-asset="Buddy-macOS-arm64-beta.zip" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-macOS-arm64-beta.zip"><span class="download-copy"><strong>macOS Apple Silicon</strong><small>Бета · arm64 · временная подпись</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card" data-download-asset="Buddy-Linux-x64-preview.deb" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Linux-x64-preview.deb"><span class="download-copy"><strong>Пакет Debian для Linux</strong><small>Предварительная · Ubuntu 24.04+ x64</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card" data-download-asset="Buddy-Linux-x64-preview.tar.gz" aria-describedby="release-note" href="https://github.com/__BUDDY_REPOSITORY__/releases/latest/download/Buddy-Linux-x64-preview.tar.gz"><span class="download-copy"><strong>Переносной пакет Linux</strong><small>Предварительная · GTK4 · x64</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="release-link" data-release-link href="https://github.com/__BUDDY_REPOSITORY__/releases/latest">Примечания к выпуску и контрольные суммы <span aria-hidden="true">↗</span></a>
+        <p class="download-note" id="release-note" data-release-note>Ссылки ведут на последний выпуск GitHub. Первые версии могут быть без цифровой подписи; сверяйте опубликованные контрольные суммы.</p>
+      </div>
+    </div></section>
+  </main>
+
+  <footer class="site-footer"><div class="section-shell footer-grid">
+    <div><a class="brand footer-brand" href="../"><span class="brand-mark" aria-hidden="true">b</span><span>Chitchat Buddy</span></a><p>Продуманный помощник для речи в Windows, macOS и Linux.</p></div>
+    <div class="footer-links"><a href="#features">Возможности</a><a href="#privacy">Приватность</a><a href="./privacy/">Политика конфиденциальности</a><a href="./deepseek-api-key/">API-ключ DeepSeek</a><a data-release-link href="https://github.com/__BUDDY_REPOSITORY__/releases/latest">Выпуски на GitHub</a></div>
+    <p class="footer-note">Windows стабильная, macOS бета, Linux GTK4 предварительная. Перед распространением ознакомьтесь с уведомлениями о сторонних компонентах.</p>
+  </div></footer>
+  <script src="../config.js"></script><script src="../app.js"></script>
+</body>
+</html>

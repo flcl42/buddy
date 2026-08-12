@@ -5,7 +5,7 @@
   const locale = body.dataset.locale || "en";
   const root = body.dataset.root || ".";
   const route = body.dataset.route || "";
-  const supportedLocales = new Set(["en", "es", "de", "be"]);
+  const supportedLocales = new Set(["en", "es", "de", "be", "ru"]);
   const copy = {
     en: {
       latest: "Windows stable · macOS beta · Linux preview",
@@ -38,8 +38,24 @@
       pendingNote: "Першая спампоўка рыхтуецца. Сачыце за даступнасцю на старонцы выпускаў GitHub.",
       incompleteNote: "Апошні выпуск ужо апублікаваны, але адзін або некалькі чаканых файлаў для платформ яшчэ не далучаны. Падрабязнасці ёсць у заўвагах да выпуску.",
       unavailable: "Настольныя зборкі · Праверце даступнасць на GitHub"
+    },
+    ru: {
+      latest: "Windows стабильная · macOS бета · Linux предварительная",
+      release: (tag, date) => `${tag} · Windows стабильная · macOS бета · Linux предварительная${date ? ` · ${date}` : ""}`,
+      pending: "Версии для компьютера · Первый публичный выпуск скоро",
+      pendingNote: "Первая загрузка готовится. Следите за доступностью на странице выпусков GitHub.",
+      incompleteNote: "Последняя версия опубликована, но одного или нескольких ожидаемых файлов для платформ пока нет. Подробности — в примечаниях к выпуску.",
+      unavailable: "Версии для компьютера · Проверьте доступность на GitHub"
     }
   }[locale];
+
+  const lightboxCopy = {
+    en: { open: "Open larger screenshot", close: "Close image", zoomIn: "Zoom in", zoomOut: "Zoom out", reset: "Reset zoom", dialog: "Enlarged Buddy screenshot" },
+    es: { open: "Abrir captura ampliada", close: "Cerrar imagen", zoomIn: "Ampliar", zoomOut: "Reducir", reset: "Restablecer zoom", dialog: "Captura ampliada de Buddy" },
+    de: { open: "Screenshot vergrößert öffnen", close: "Bild schließen", zoomIn: "Vergrößern", zoomOut: "Verkleinern", reset: "Zoom zurücksetzen", dialog: "Vergrößerter Buddy-Screenshot" },
+    be: { open: "Адкрыць павялічаны здымак", close: "Закрыць выяву", zoomIn: "Павялічыць", zoomOut: "Паменшыць", reset: "Скінуць маштаб", dialog: "Павялічаны здымак Buddy" },
+    ru: { open: "Открыть увеличенный снимок", close: "Закрыть изображение", zoomIn: "Увеличить", zoomOut: "Уменьшить", reset: "Сбросить масштаб", dialog: "Увеличенный снимок Buddy" }
+  }[locale] || null;
 
   function localeUrl(nextLocale) {
     return nextLocale === "en"
@@ -113,6 +129,91 @@
     }
   }
 
+  let lightbox = null;
+
+  function ensureLightbox() {
+    if (lightbox || !lightboxCopy || typeof document.createElement !== "function") {
+      return lightbox;
+    }
+
+    const dialog = document.createElement("dialog");
+    dialog.className = "screenshot-lightbox";
+    dialog.setAttribute("aria-label", lightboxCopy.dialog);
+    dialog.innerHTML = `
+      <div class="lightbox-panel">
+        <div class="lightbox-toolbar">
+          <span class="lightbox-title"></span>
+          <div class="lightbox-actions">
+            <button type="button" data-lightbox-zoom-out aria-label="${lightboxCopy.zoomOut}"><span aria-hidden="true">−</span></button>
+            <button type="button" data-lightbox-reset aria-label="${lightboxCopy.reset}"><span data-lightbox-scale>100%</span></button>
+            <button type="button" data-lightbox-zoom-in aria-label="${lightboxCopy.zoomIn}"><span aria-hidden="true">+</span></button>
+            <button class="lightbox-close" type="button" data-lightbox-close aria-label="${lightboxCopy.close}"><span aria-hidden="true">×</span></button>
+          </div>
+        </div>
+        <div class="lightbox-stage"><div class="lightbox-image-frame"><img alt=""></div></div>
+      </div>`;
+    document.body.appendChild(dialog);
+
+    const stage = dialog.querySelector(".lightbox-stage");
+    const imageFrame = stage.querySelector(".lightbox-image-frame");
+    const image = imageFrame.querySelector("img");
+    const title = dialog.querySelector(".lightbox-title");
+    const scaleLabel = dialog.querySelector("[data-lightbox-scale]");
+    const zoomOut = dialog.querySelector("[data-lightbox-zoom-out]");
+    const zoomIn = dialog.querySelector("[data-lightbox-zoom-in]");
+    let zoom = 1;
+
+    function renderZoom() {
+      if (!image.naturalWidth || !image.naturalHeight) {
+        return;
+      }
+
+      const fitWidth = Math.max(1, stage.clientWidth - 24) / image.naturalWidth;
+      const fitHeight = Math.max(1, stage.clientHeight - 24) / image.naturalHeight;
+      const fit = Math.min(1, fitWidth, fitHeight);
+      imageFrame.style.width = `${Math.round(image.naturalWidth * fit * zoom)}px`;
+      scaleLabel.textContent = `${Math.round(zoom * 100)}%`;
+      zoomOut.disabled = zoom <= 1;
+      zoomIn.disabled = zoom >= 3;
+    }
+
+    function setZoom(nextZoom) {
+      zoom = Math.min(3, Math.max(1, nextZoom));
+      renderZoom();
+    }
+
+    dialog.querySelector("[data-lightbox-close]").addEventListener("click", () => dialog.close());
+    dialog.querySelector("[data-lightbox-reset]").addEventListener("click", () => setZoom(1));
+    zoomOut.addEventListener("click", () => setZoom(zoom - 0.25));
+    zoomIn.addEventListener("click", () => setZoom(zoom + 0.25));
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) {
+        dialog.close();
+      }
+    });
+    dialog.addEventListener("close", () => {
+      image.onload = null;
+      image.removeAttribute("src");
+      imageFrame.style.removeProperty("width");
+      imageFrame.classList.remove("screenshot-watermark-mask");
+      zoom = 1;
+    });
+    window.addEventListener?.("resize", renderZoom);
+
+    lightbox = {
+      open(sourceImage) {
+        zoom = 1;
+        image.alt = sourceImage.alt || "";
+        title.textContent = sourceImage.alt || lightboxCopy.dialog;
+        imageFrame.classList.toggle("screenshot-watermark-mask", Boolean(sourceImage.closest?.(".screenshot-watermark-mask")));
+        image.onload = renderZoom;
+        image.src = sourceImage.currentSrc || sourceImage.src;
+        dialog.showModal();
+      }
+    };
+    return lightbox;
+  }
+
   document.querySelectorAll("[data-carousel]").forEach((carousel) => {
     const slides = Array.from(carousel.querySelectorAll("[data-carousel-slide]"));
     const dots = Array.from(carousel.querySelectorAll("[data-carousel-index]"));
@@ -126,7 +227,34 @@
       return;
     }
 
-    function showSlide(requestedIndex) {
+    slides.forEach((slide) => {
+      const image = slide.querySelector?.("img");
+      if (!image) {
+        return;
+      }
+
+      let target = image.closest?.(".screenshot-image");
+      if (!target && image.parentNode && typeof document.createElement === "function") {
+        target = document.createElement("div");
+        target.className = "screenshot-image";
+        image.parentNode.insertBefore(target, image);
+        target.appendChild(image);
+      }
+      target ||= image;
+      target.classList.add("carousel-zoom-target");
+      target.setAttribute("role", "button");
+      target.setAttribute("tabindex", "0");
+      target.setAttribute("aria-label", `${lightboxCopy.open}: ${image.alt}`);
+      target.addEventListener("click", () => ensureLightbox()?.open(image));
+      target.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          ensureLightbox()?.open(image);
+        }
+      });
+    });
+
+    function showSlide(requestedIndex, focusZoomTarget = false) {
       activeIndex = (requestedIndex + slides.length) % slides.length;
       slides.forEach((slide, index) => {
         const isActive = index === activeIndex;
@@ -145,6 +273,9 @@
       if (current) {
         current.textContent = String(activeIndex + 1);
       }
+      if (focusZoomTarget) {
+        slides[activeIndex].querySelector?.(".carousel-zoom-target")?.focus();
+      }
     }
 
     previous?.addEventListener("click", () => showSlide(activeIndex - 1));
@@ -154,18 +285,19 @@
     });
 
     carousel.addEventListener("keydown", (event) => {
+      const focusZoomTarget = Boolean(event.target?.closest?.(".carousel-zoom-target"));
       if (event.key === "ArrowLeft") {
         event.preventDefault();
-        showSlide(activeIndex - 1);
+        showSlide(activeIndex - 1, focusZoomTarget);
       } else if (event.key === "ArrowRight") {
         event.preventDefault();
-        showSlide(activeIndex + 1);
+        showSlide(activeIndex + 1, focusZoomTarget);
       } else if (event.key === "Home") {
         event.preventDefault();
-        showSlide(0);
+        showSlide(0, focusZoomTarget);
       } else if (event.key === "End") {
         event.preventDefault();
-        showSlide(slides.length - 1);
+        showSlide(slides.length - 1, focusZoomTarget);
       }
     });
 
