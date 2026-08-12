@@ -333,6 +333,12 @@ commands and the no-system-changes boundary are documented in
 [deploy/buddy-proxy/README.md](deploy/buddy-proxy/README.md). The localized
 project website lives in [site](site).
 
+## License
+
+Buddy's original source code is available under the
+[MIT License](LICENSE). Bundled third-party components remain under their
+respective licenses.
+
 ## Distribution note
 
 The personal build contains eSpeak NG, used by Kokoro's phonemizer and licensed

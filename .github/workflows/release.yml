@@ -182,6 +182,8 @@ jobs:
         shell: bash
         run: |
           test -x "${{ runner.temp }}/buddy-linux/Buddy"
+          test -f "${{ runner.temp }}/buddy-linux/LICENSE"
+          test -f "${{ runner.temp }}/buddy-linux/THIRD-PARTY-NOTICES.md"
           test -f "${{ runner.temp }}/buddy-linux/espeak/espeak-ng-linux-amd64.dll"
           test -f "${{ runner.temp }}/buddy-linux/voices/af_heart.npy"
           test -f "${{ runner.temp }}/buddy-linux/runtimes/linux-x64/libwhisper.so"
@@ -282,6 +284,7 @@ jobs:
           app="$(find "$search_root" -type d -name 'Chitchat Buddy.app' -print -quit)"
           test -n "$app"
           test -f "$app/Contents/MacOS/Buddy"
+          test -f "$app/Contents/Resources/LICENSE"
           test -f "$app/Contents/Resources/THIRD-PARTY-NOTICES.md"
           file "$app/Contents/MacOS/Buddy" | grep -q 'arm64'
           test -f "$(find "$app" -type f -name ggml-metal.metal -print -quit)"

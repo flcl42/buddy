@@ -115,6 +115,10 @@
   </ItemGroup>
 
   <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'maccatalyst'">
+    <None Include="..\..\LICENSE"
+          Link="LICENSE"
+          CopyToOutputDirectory="PreserveNewest"
+          CopyToPublishDirectory="PreserveNewest" />
     <None Include="..\..\THIRD-PARTY-NOTICES.md"
           Link="THIRD-PARTY-NOTICES.md"
           CopyToOutputDirectory="PreserveNewest"
@@ -122,6 +126,8 @@
   </ItemGroup>
 
   <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+    <BundleResource Include="..\..\LICENSE"
+                    LogicalName="LICENSE" />
     <BundleResource Include="..\..\THIRD-PARTY-NOTICES.md"
                     LogicalName="THIRD-PARTY-NOTICES.md" />
   </ItemGroup>

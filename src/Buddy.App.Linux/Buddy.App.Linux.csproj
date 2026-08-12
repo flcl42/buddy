@@ -8,9 +8,7 @@
     <ApplicationTitle>Chitchat Buddy</ApplicationTitle>
     <ApplicationDisplayVersion>0.4.0-preview</ApplicationDisplayVersion>
     <ApplicationVersion>4</ApplicationVersion>
-    <Authors>Buddy</Authors>
     <Description>Private microphone recorder, speech trainer, and AI dialog companion</Description>
-    <PackageProjectUrl>https://github.com/flcl42/buddy</PackageProjectUrl>
     <DebMaintainer>Buddy</DebMaintainer>
     <DebDescription>Chitchat Buddy local-first speech companion</DebDescription>
     <DebCategories>AudioVideo;Utility;</DebCategories>
@@ -101,6 +99,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\LICENSE"
+          Link="LICENSE"
+          CopyToOutputDirectory="PreserveNewest"
+          CopyToPublishDirectory="PreserveNewest" />
     <None Include="..\..\THIRD-PARTY-NOTICES.md"
           Link="THIRD-PARTY-NOTICES.md"
           CopyToOutputDirectory="PreserveNewest"
