@@ -33,4 +33,36 @@
     <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/" />
   </url>
+  <url>
+    <loc>__SITE_BASE_URL__/deepseek-api-key/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="__SITE_BASE_URL__/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/deepseek-api-key/" />
+  </url>
+  <url>
+    <loc>__SITE_BASE_URL__/es/deepseek-api-key/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="__SITE_BASE_URL__/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/deepseek-api-key/" />
+  </url>
+  <url>
+    <loc>__SITE_BASE_URL__/de/deepseek-api-key/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="__SITE_BASE_URL__/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/deepseek-api-key/" />
+  </url>
+  <url>
+    <loc>__SITE_BASE_URL__/be/deepseek-api-key/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="__SITE_BASE_URL__/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/deepseek-api-key/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/deepseek-api-key/" />
+  </url>
 </urlset>

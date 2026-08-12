@@ -4,6 +4,7 @@
   const body = document.body;
   const locale = body.dataset.locale || "en";
   const root = body.dataset.root || ".";
+  const route = body.dataset.route || "";
   const supportedLocales = new Set(["en", "es", "de", "be"]);
   const copy = {
     en: {
@@ -41,7 +42,9 @@
   }[locale];
 
   function localeUrl(nextLocale) {
-    return nextLocale === "en" ? `${root}/` : `${root}/${nextLocale}/`;
+    return nextLocale === "en"
+      ? `${root}/${route}`
+      : `${root}/${nextLocale}/${route}`;
   }
 
   function normalizedLocale(localeTag) {
