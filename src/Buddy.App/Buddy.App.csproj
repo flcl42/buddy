@@ -14,8 +14,8 @@
     <Description>Private microphone recorder, speech trainer, and AI dialog companion</Description>
     <Company>Buddy</Company>
     <ApplicationId>com.flcl.buddy</ApplicationId>
-    <ApplicationDisplayVersion>0.4.0</ApplicationDisplayVersion>
-    <ApplicationVersion>4</ApplicationVersion>
+    <ApplicationDisplayVersion>0.4.1</ApplicationDisplayVersion>
+    <ApplicationVersion>5</ApplicationVersion>
     <PublishReadyToRun>false</PublishReadyToRun>
     <PublishReadyToRunComposite>false</PublishReadyToRunComposite>
     <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
@@ -47,7 +47,7 @@
   <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
     <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
     <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">maccatalyst-arm64</RuntimeIdentifier>
-    <ApplicationVersion>4</ApplicationVersion>
+    <ApplicationVersion>5</ApplicationVersion>
     <CodesignEntitlements>Platforms\MacCatalyst\Entitlements.plist</CodesignEntitlements>
     <CreatePackage>false</CreatePackage>
     <MtouchLink>None</MtouchLink>

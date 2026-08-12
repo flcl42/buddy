@@ -260,7 +260,7 @@ the installed executable. To create both distributable assets, install Inno
 Setup 6 and run:
 
 ```powershell
-.\scripts\build-installer.ps1 -Version 0.4.0
+.\scripts\build-installer.ps1 -Version 0.4.1
 ```
 
 This produces `artifacts\release\Buddy-Setup.exe` and the portable

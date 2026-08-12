@@ -156,7 +156,7 @@ for (const relativePage of pages) {
   assert.equal((html.match(/data-carousel-index/g) || []).length, 4, `${relativePage} must have four slide selectors`);
   assert.match(html, /data-carousel tabindex="0" aria-roledescription="carousel"/, `${relativePage} needs a keyboard-focusable carousel`);
   assert.doesNotMatch(html, /class="app-window"/, `${relativePage} still contains the old mock preview`);
-  assert.match(html, /"softwareVersion": "0\.4\.0"/, `${relativePage} has stale release metadata`);
+  assert.match(html, /"softwareVersion": "0\.4\.1"/, `${relativePage} has stale release metadata`);
   assert.match(html, /"operatingSystem": \["Windows 10\/11 x64", "macOS 13\+", "Ubuntu 24\.04\+ x64"\]/, `${relativePage} needs all desktop hosts in structured data`);
   assert.match(html, recordingCopy[relativePage], `${relativePage} does not explain pause-cut recording transcription`);
   assert.equal((html.match(/<video\b/g) || []).length, 1, `${relativePage} must include one walkthrough video`);

@@ -9,7 +9,7 @@ on:
       version:
         description: Three-part release version, without a leading v
         required: true
-        default: "0.4.0"
+        default: "0.4.1"
 
 permissions:
   contents: write
@@ -273,7 +273,7 @@ jobs:
             --self-contained true \
             --no-restore \
             -p:ApplicationDisplayVersion="$BUDDY_RELEASE_VERSION" \
-            -p:ApplicationVersion=4 \
+            -p:ApplicationVersion=5 \
             -p:CreatePackage=false \
             -p:EnableCodeSigning=false
 
@@ -318,6 +318,9 @@ jobs:
     timeout-minutes: 15
 
     steps:
+      - name: Check out tagged source
+        uses: actions/checkout@v4
+
       - name: Download packaged assets
         uses: actions/download-artifact@v4
         with:
@@ -341,9 +344,20 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: |
           tag="$GITHUB_REF_NAME"
+          notes_file="docs/release-notes-${tag#v}.md"
           if ! gh release view "$tag" >/dev/null 2>&1; then
-            gh release create "$tag" \
+            if [ -f "$notes_file" ]; then
+              gh release create "$tag" \
+                --title "Chitchat Buddy ${tag#v}" \
+                --notes-file "$notes_file"
+            else
+              gh release create "$tag" \
+                --title "Chitchat Buddy ${tag#v}" \
+                --notes "Windows x64 is the stable release. The Apple Silicon macOS Catalyst build is beta and Linux x64 is a GTK4 preview. All builds keep microphone audio and speech recognition local."
+            fi
+          elif [ -f "$notes_file" ]; then
+            gh release edit "$tag" \
               --title "Chitchat Buddy ${tag#v}" \
-              --notes "Windows x64 is the stable release. The Apple Silicon macOS Catalyst build is beta and currently uses the Dock instead of a menu-bar status item. Linux x64 is a GTK4 preview and needs a StatusNotifier-compatible desktop for the tray icon. All builds keep microphone audio and speech recognition local."
+              --notes-file "$notes_file"
           fi
           gh release upload "$tag" release-assets/* --clobber
