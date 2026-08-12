@@ -821,6 +821,72 @@ h1 span {
   font-size: 13px;
 }
 
+.demo-section {
+  padding-block: 112px 18px;
+}
+
+.demo-section .section-heading {
+  margin-bottom: 42px;
+}
+
+.demo-video-shell {
+  max-width: 1120px;
+  margin-inline: auto;
+  padding: 10px;
+  border: 1px solid rgba(30, 27, 56, 0.15);
+  border-radius: 28px;
+  background: #171a27;
+  box-shadow: 0 34px 90px rgba(35, 29, 78, 0.2);
+}
+
+.demo-video-shell video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1284 / 842;
+  border-radius: 19px;
+  background: #0d0f18;
+}
+
+.demo-video-shell video:focus-visible {
+  outline: 4px solid var(--mint);
+  outline-offset: 4px;
+}
+
+.demo-video-shell video::cue {
+  color: #fff;
+  background: rgba(18, 22, 38, 0.92);
+  font: 600 18px/1.35 "Segoe UI", sans-serif;
+}
+
+.demo-chapters {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 14px 6px 0;
+}
+
+.demo-chapters span {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 11px;
+  color: #dedff0;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.demo-language-note {
+  margin: 13px 8px 8px;
+  color: #aaaec3;
+  font-size: 13px;
+  text-align: center;
+}
+
 .features-section,
 .faq-section {
   padding-block: 120px;
@@ -1489,6 +1555,27 @@ h1 span {
   .features-section,
   .faq-section {
     padding-block: 78px;
+  }
+
+  .demo-section {
+    padding-block: 78px 0;
+  }
+
+  .demo-section .section-heading {
+    margin-bottom: 30px;
+  }
+
+  .demo-video-shell {
+    padding: 6px;
+    border-radius: 19px;
+  }
+
+  .demo-video-shell video {
+    border-radius: 14px;
+  }
+
+  .demo-chapters {
+    grid-template-columns: 1fr 1fr;
   }
 
   .section-heading {

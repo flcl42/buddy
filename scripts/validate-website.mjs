@@ -138,6 +138,17 @@ const recordingCopy = {
   "de/index.html": /Wiedergabe, Suche und Transkription mit entfernten Pausen/,
   "be/index.html": /Прайграванне, пошук і распазнаванне па аўдыя без паўз/
 };
+const walkthroughVideo = path.join(siteDirectory, "video", "buddy-walkthrough.mp4");
+const walkthroughPoster = path.join(siteDirectory, "video", "buddy-walkthrough-poster.jpg");
+const walkthroughLocales = ["en", "es", "de", "be"];
+assert.ok(fs.statSync(walkthroughVideo).size > 1_000_000, "walkthrough video is unexpectedly small");
+assert.equal(fs.readFileSync(walkthroughVideo).subarray(4, 8).toString("ascii"), "ftyp", "walkthrough is not an MP4");
+assert.ok(fs.statSync(walkthroughPoster).size > 50_000, "walkthrough poster is unexpectedly small");
+for (const locale of walkthroughLocales) {
+  const captions = fs.readFileSync(path.join(siteDirectory, "video", `buddy-walkthrough.${locale}.vtt`), "utf8");
+  assert.match(captions, /^WEBVTT\r?\n/, `${locale} captions are not WebVTT`);
+  assert.equal((captions.match(/-->/g) || []).length, 5, `${locale} captions need all five spoken passages`);
+}
 for (const relativePage of pages) {
   const pagePath = path.join(siteDirectory, relativePage);
   const html = fs.readFileSync(pagePath, "utf8");
@@ -148,6 +159,19 @@ for (const relativePage of pages) {
   assert.match(html, /"softwareVersion": "0\.4\.0"/, `${relativePage} has stale release metadata`);
   assert.match(html, /"operatingSystem": \["Windows 10\/11 x64", "macOS 13\+", "Ubuntu 24\.04\+ x64"\]/, `${relativePage} needs all desktop hosts in structured data`);
   assert.match(html, recordingCopy[relativePage], `${relativePage} does not explain pause-cut recording transcription`);
+  assert.equal((html.match(/<video\b/g) || []).length, 1, `${relativePage} must include one walkthrough video`);
+  assert.match(html, /<video[^>]+\bcontrols\b[^>]+\bpreload="metadata"/, `${relativePage} needs accessible native video controls`);
+  assert.doesNotMatch(html, /<video[^>]+\bautoplay\b/, `${relativePage} must not autoplay the walkthrough`);
+  assert.match(html, /"@type": "VideoObject"/, `${relativePage} needs VideoObject structured data`);
+  assert.match(html, /"duration": "PT58S"/, `${relativePage} has stale walkthrough duration metadata`);
+
+  const mediaRoot = relativePage === "index.html" ? "./video" : "../video";
+  assert.ok(html.includes(`poster="${mediaRoot}/buddy-walkthrough-poster.jpg"`), `${relativePage} has the wrong poster path`);
+  assert.ok(html.includes(`<source src="${mediaRoot}/buddy-walkthrough.mp4" type="video/mp4">`), `${relativePage} has the wrong video path`);
+  for (const locale of walkthroughLocales) {
+    assert.ok(html.includes(`src="${mediaRoot}/buddy-walkthrough.${locale}.vtt"`), `${relativePage} is missing ${locale} captions`);
+  }
+  assert.equal((html.match(/<track[^>]+\bdefault\b/g) || []).length, 1, `${relativePage} must select exactly one default caption track`);
 
   const linkedAssets = [...new Set(
     [...html.matchAll(/data-download-asset="([^"]+)"/g)].map((match) => match[1]))
@@ -211,4 +235,4 @@ for (const relativePage of pages) {
   assert.equal(current.textContent, "1");
 }
 
-console.log("Buddy website validation passed: four localized carousels, desktop tiers, five release assets, recording copy, language routing, controls, and 1284x842 screenshots.");
+console.log("Buddy website validation passed: four localized pages and carousels, five release assets, recording copy, language routing, controls, screenshots, and an accessible captioned walkthrough video.");
