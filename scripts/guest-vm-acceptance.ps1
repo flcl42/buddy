@@ -6,7 +6,8 @@ $installer = '\\tsclient\D\apps\buddy\artifacts\release\Buddy-Setup.exe'
 $portable = '\\tsclient\D\apps\buddy\artifacts\release\Buddy.exe'
 $modelSource = '\\tsclient\H\Buddy\models'
 $hostResult = '\\tsclient\H\Vms\Buddy-Test\rdp-update-result.json'
-$buddyPath = 'C:\Programs\Buddy.exe'
+$installRoot = Join-Path $env:LOCALAPPDATA 'Programs\Chitchat Buddy'
+$buddyPath = Join-Path $installRoot 'Buddy.exe'
 $result = [ordered]@{
     Success = $false
     StartedAt = (Get-Date).ToString('o')
@@ -45,7 +46,6 @@ try {
         '/VERYSILENT',
         '/SUPPRESSMSGBOXES',
         '/NORESTART',
-        '/DIR=C:\Programs',
         '/MERGETASKS=!launch'
     ) -Wait -PassThru
     if ($install.ExitCode -notin @(0, 3010)) {

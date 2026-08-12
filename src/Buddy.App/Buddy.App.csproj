@@ -40,7 +40,7 @@
     <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <UseAppHost>true</UseAppHost>
-    <PublishDir Condition="'$(PublishDir)' == ''">C:\Programs\</PublishDir>
+    <PublishDir Condition="'$(PublishDir)' == ''">$(LOCALAPPDATA)\Programs\Chitchat Buddy\</PublishDir>
     <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
   </PropertyGroup>
 

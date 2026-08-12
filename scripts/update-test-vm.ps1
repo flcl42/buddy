@@ -110,7 +110,8 @@ try {
 
         $ErrorActionPreference = 'Stop'
         $installer = Join-Path $staging 'Buddy-Setup.exe'
-        $buddyPath = 'C:\Programs\Buddy.exe'
+        $installRoot = Join-Path $env:LOCALAPPDATA 'Programs\Chitchat Buddy'
+        $buddyPath = Join-Path $installRoot 'Buddy.exe'
         $actualInstallerHash = (
             Get-FileHash -LiteralPath $installer -Algorithm SHA256).Hash
         if ($actualInstallerHash -ne $expectedInstallerHash) {
@@ -140,7 +141,6 @@ try {
             '/VERYSILENT',
             '/SUPPRESSMSGBOXES',
             '/NORESTART',
-            '/DIR=C:\Programs',
             '/MERGETASKS=!launch'
         ) -Wait -PassThru
         if ($install.ExitCode -notin @(0, 3010)) {

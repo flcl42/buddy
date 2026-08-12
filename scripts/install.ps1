@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [string] $ExecutablePath = "C:\Programs\Buddy.exe",
+    [string] $ExecutablePath = (Join-Path $env:LOCALAPPDATA "Programs\Chitchat Buddy\Buddy.exe"),
     [switch] $NoLaunch
 )
 

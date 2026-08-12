@@ -56,8 +56,8 @@ broader product specification.
   acceptance keys were disabled afterward.
 - Release packaging produces exactly `Buddy.exe` as the portable single-file
   app and `Buddy-Setup.exe` as the guided installer. The installer compiles with
-  Inno Setup 6.7.3, defaults to `C:\Programs`, and blocks replacement while the
-  tray process is running.
+  Inno Setup 6.7.3, installs for the current user without elevation, and blocks
+  replacement while the tray process is running.
 - Qwen 3.6 27B Q4_K_M was the prior default and remains fully selectable.
 - The official 19,095,766,304-byte GGUF at pinned revision
   `4c8d89a3b10d66695ded02bacee44f9dcf64848b` matches SHA-256
@@ -337,12 +337,12 @@ broader product specification.
 - Provider keys are DPAPI-protected and private content is absent from startup
   diagnostics.
 - The 270.3 MiB self-contained x64 publish contains exactly one file, installs
-  atomically to `C:\Programs\Buddy.exe`, includes exactly four curated Kokoro
-  voices, excludes foreign Whisper runtimes, and launches through its Start
-  Menu shortcut without relying on the machine-wide .NET runtime.
-- The installed single-file build was launched directly from `C:\Programs`,
-  generated a local Kokoro WAV in 5.5 seconds, entered playback, returned to its
-  ready state, hid to the tray, and restored from the tray.
+  atomically to the current user's local application directory, includes exactly
+  four curated Kokoro voices, excludes foreign Whisper runtimes, and launches
+  through its Start Menu shortcut without relying on the machine-wide .NET runtime.
+- The installed single-file build was launched directly from its per-user
+  directory, generated a local Kokoro WAV in 5.5 seconds, entered playback,
+  returned to its ready state, hid to the tray, and restored from the tray.
 - A reboot-interrupted 13-minute Dialog was recovered from 398 durable chunks:
   its original and compact Opus files, all 16 messages, and all eight existing
   answer WAVs were preserved; SQLite integrity remained `ok`, and terminal

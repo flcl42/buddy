@@ -248,8 +248,8 @@ Build the default Release configuration:
 ```
 
 The result is exactly one self-contained executable at
-`C:\Programs\Buddy.exe`. The same defaults are stored in the MAUI project, so
-this command also writes the single executable there:
+the current user's standard local application directory. The same default is
+stored in the MAUI project, so this command writes the single executable there:
 
 ```powershell
 dotnet publish .\src\Buddy.App\Buddy.App.csproj -c Release
@@ -264,10 +264,10 @@ Setup 6 and run:
 ```
 
 This produces `artifacts\release\Buddy-Setup.exe` and the portable
-`artifacts\release\Buddy.exe`. The installer defaults to `C:\Programs`, adds a
-Start Menu shortcut, offers a desktop shortcut, refuses to overwrite a running
-tray instance, and preserves personal data. The current binaries are unsigned,
-so Windows may show an unknown-publisher warning. Run
+`artifacts\release\Buddy.exe`. The installer is per-user, needs no administrator
+approval, adds a Start Menu shortcut, offers a desktop shortcut, refuses to
+overwrite a running tray instance, and preserves personal data. The current
+binaries are unsigned, so Windows may still show a SmartScreen warning. Run
 `.\scripts\install.ps1` for the original direct single-file installation flow.
 
 On first launch, .NET extracts the versioned native speech runtime into its

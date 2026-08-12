@@ -12,8 +12,11 @@ $releaseRoot = Join-Path $repositoryRoot "artifacts\release"
 $portablePath = Join-Path $releaseRoot "Buddy.exe"
 $installerPath = Join-Path $releaseRoot "Buddy-Setup.exe"
 $scriptPath = Join-Path $repositoryRoot "installer\Buddy.iss"
+$policyScript = Join-Path $PSScriptRoot "validate-installer-policy.ps1"
 
 [System.IO.Directory]::CreateDirectory($releaseRoot) | Out-Null
+
+& $policyScript
 
 if (-not $SkipPublish) {
     & (Join-Path $PSScriptRoot "publish.ps1") `
@@ -55,6 +58,8 @@ if ($LASTEXITCODE -ne 0) {
 if (-not (Test-Path -LiteralPath $installerPath -PathType Leaf)) {
     throw "Installer compilation completed without producing $installerPath"
 }
+
+& $policyScript -InstallerPath $installerPath
 
 $portableHash = (Get-FileHash -LiteralPath $portablePath -Algorithm SHA256).Hash
 $installerHash = (Get-FileHash -LiteralPath $installerPath -Algorithm SHA256).Hash

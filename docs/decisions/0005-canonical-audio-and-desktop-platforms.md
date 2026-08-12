@@ -102,8 +102,8 @@ future retry provider.
 2. Waveform seeking and manual transcription use that same artifact.
 3. Every recording card can request, display, edit, save, and copy a transcript.
 4. Re-recognition preserves the prior revisions.
-5. Windows release acceptance remains green and the default single-file publish
-   path remains `C:\Programs`.
+5. Windows release acceptance remains green and the default installer remains
+   a non-elevated per-user installation.
 6. macOS and Linux heads restore and compile on native CI runners.
 7. Platform download links are published only after their artifacts exist; the
    site labels beta/preview status and Linux prerequisites plainly.

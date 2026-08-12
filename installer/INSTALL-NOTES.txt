@@ -1,6 +1,6 @@
 Buddy is a Windows 10/11 microphone recorder, speech trainer, and persistent AI dialog companion.
 
-The installed application is one self-contained executable at C:\Programs\Buddy.exe. Your recordings, transcripts, settings, and protected keys stay in your Windows user profile and are not removed by an application update.
+The application installs for your Windows account only and does not need administrator access. Your recordings, transcripts, settings, and protected keys stay in your Windows user profile and are not removed by an application update.
 
 Local AI files are not bundled into this installer. Buddy downloads them only when the matching feature is activated, shows progress, resumes interrupted downloads, and verifies pinned file sizes and SHA-256 hashes before use:
 

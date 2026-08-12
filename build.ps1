@@ -2,7 +2,7 @@
 param(
     [string] $Configuration = "Release",
     [string] $RuntimeIdentifier = "win-x64",
-    [string] $OutputPath = "C:\Programs\Buddy.exe"
+    [string] $OutputPath = (Join-Path $env:LOCALAPPDATA "Programs\Chitchat Buddy\Buddy.exe")
 )
 
 $ErrorActionPreference = "Stop"
