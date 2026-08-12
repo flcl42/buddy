@@ -705,6 +705,14 @@ public sealed partial class SettingsViewModel : ObservableObject
     }
 
     [RelayCommand]
+    public Task OpenDeepSeekApiKeyGuideAsync() =>
+        OpenExternalLinkAsync(BuddyWebLinks.DeepSeekApiKeyGuide);
+
+    [RelayCommand]
+    public Task OpenPrivacyPolicyAsync() =>
+        OpenExternalLinkAsync(BuddyWebLinks.PrivacyPolicy);
+
+    [RelayCommand]
     public async Task RemoveProxyKeyAsync()
     {
         await _secrets.RemoveAsync(ProxySecretKey).ConfigureAwait(true);
@@ -870,6 +878,22 @@ public sealed partial class SettingsViewModel : ObservableObject
         if (!string.IsNullOrWhiteSpace(value))
         {
             await _secrets.SetAsync(key, value.Trim()).ConfigureAwait(false);
+        }
+    }
+
+    private async Task OpenExternalLinkAsync(Uri link)
+    {
+        try
+        {
+            bool opened = await Launcher.Default.TryOpenAsync(link);
+            if (!opened)
+            {
+                SaveStatus = _localization.Get("ExternalLinkFailed");
+            }
+        }
+        catch (Exception)
+        {
+            SaveStatus = _localization.Get("ExternalLinkFailed");
         }
     }
 

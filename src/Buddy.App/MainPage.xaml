@@ -2061,7 +2061,6 @@
                                     Text="{Binding Settings.ProxyStatus}"
                                     TextColor="#6D7285" />
                             </Grid>
-
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
                                 <controls:FramedEntry
                                     IsPassword="True"
@@ -2079,6 +2078,13 @@
                                     Text="{Binding Settings.DeepSeekStatus}"
                                     TextColor="#6D7285" />
                             </Grid>
+                            <Button
+                                AutomationId="DeepSeekApiKeyGuideButton"
+                                Command="{Binding Settings.OpenDeepSeekApiKeyGuideCommand}"
+                                HorizontalOptions="Start"
+                                SemanticProperties.Description="{DynamicResource DeepSeekKeyGuide}"
+                                Style="{StaticResource QuietButton}"
+                                Text="{DynamicResource DeepSeekKeyGuide}" />
 
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
                                 <controls:FramedEntry
@@ -2124,6 +2130,13 @@
                                 FontSize="11"
                                 Text="{Binding Settings.SaveStatus}"
                                 TextColor="#327C5A" />
+                            <Button
+                                AutomationId="PrivacyPolicyButton"
+                                Command="{Binding Settings.OpenPrivacyPolicyCommand}"
+                                HorizontalOptions="Start"
+                                SemanticProperties.Description="{DynamicResource PrivacyPolicy}"
+                                Style="{StaticResource QuietButton}"
+                                Text="{DynamicResource PrivacyPolicy}" />
                         </VerticalStackLayout>
 
                         <BoxView HeightRequest="1" BackgroundColor="#E7E9EF" />
@@ -2559,6 +2572,13 @@
                                 IsPassword="True"
                                 Style="{StaticResource OnboardingEntry}"
                                 Text="{Binding Onboarding.DeepSeekApiKey}" />
+                            <Button
+                                AutomationId="OnboardingDeepSeekApiKeyGuideButton"
+                                Command="{Binding Settings.OpenDeepSeekApiKeyGuideCommand}"
+                                HorizontalOptions="Start"
+                                SemanticProperties.Description="{DynamicResource DeepSeekKeyGuide}"
+                                Style="{StaticResource QuietButton}"
+                                Text="{DynamicResource DeepSeekKeyGuide}" />
                         </VerticalStackLayout>
 
                         <Border

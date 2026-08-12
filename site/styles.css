@@ -1387,6 +1387,7 @@ h1 span {
 
 .footer-links {
   display: flex;
+  flex-wrap: wrap;
   gap: 22px;
 }
 
@@ -1990,6 +1991,34 @@ h1 span {
   margin: 0;
   color: var(--ink-soft);
   font-size: 13px;
+}
+
+/* Privacy policy */
+.policy-page .guide-reviewed a,
+.policy-page .guide-section > p a,
+.policy-page .guide-note a,
+.policy-page .policy-contact a {
+  color: var(--purple-deep);
+  font-weight: 700;
+  text-underline-offset: 4px;
+}
+
+.policy-page .guide-privacy .guide-note a {
+  color: var(--mint);
+}
+
+.policy-page .guide-section h3 {
+  margin: 28px 0 0;
+  font-size: 18px;
+}
+
+.policy-page .policy-contact {
+  border-color: rgba(91, 70, 216, 0.3);
+  background: linear-gradient(135deg, #fff 0%, #f4f1ff 100%);
+}
+
+.policy-page .guide-toc a {
+  padding-block: 5px;
 }
 
 @media (max-width: 900px) {

@@ -20,6 +20,8 @@
   <ItemGroup>
     <Compile Include="..\..\src\Buddy.App\Services\BuddyFeedbackClient.cs"
              Link="Services\BuddyFeedbackClient.cs" />
+    <Compile Include="..\..\src\Buddy.App\Services\BuddyWebLinks.cs"
+             Link="Services\BuddyWebLinks.cs" />
     <Compile Include="..\..\src\Buddy.App\Services\BuddyProxyClientConfiguration.cs"
              Link="Services\BuddyProxyClientConfiguration.cs" />
     <Compile Include="..\..\src\Buddy.App\Services\BuddyStorageRootResolver.cs"

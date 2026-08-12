@@ -65,4 +65,36 @@
     <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/deepseek-api-key/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/deepseek-api-key/" />
   </url>
+  <url>
+    <loc>__SITE_BASE_URL__/privacy/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="__SITE_BASE_URL__/privacy/" />
+    <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/privacy/" />
+    <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/privacy/" />
+    <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/privacy/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/privacy/" />
+  </url>
+  <url>
+    <loc>__SITE_BASE_URL__/es/privacy/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="__SITE_BASE_URL__/privacy/" />
+    <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/privacy/" />
+    <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/privacy/" />
+    <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/privacy/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/privacy/" />
+  </url>
+  <url>
+    <loc>__SITE_BASE_URL__/de/privacy/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="__SITE_BASE_URL__/privacy/" />
+    <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/privacy/" />
+    <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/privacy/" />
+    <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/privacy/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/privacy/" />
+  </url>
+  <url>
+    <loc>__SITE_BASE_URL__/be/privacy/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="__SITE_BASE_URL__/privacy/" />
+    <xhtml:link rel="alternate" hreflang="es" href="__SITE_BASE_URL__/es/privacy/" />
+    <xhtml:link rel="alternate" hreflang="de" href="__SITE_BASE_URL__/de/privacy/" />
+    <xhtml:link rel="alternate" hreflang="be" href="__SITE_BASE_URL__/be/privacy/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="__SITE_BASE_URL__/privacy/" />
+  </url>
 </urlset>

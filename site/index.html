@@ -95,6 +95,11 @@
         "@type": "Question",
         "name": "Can Buddy work offline?",
         "acceptedAnswer": {"@type": "Answer", "text": "Yes. Once the optional local models are installed, recording, transcription, coaching with local Qwen, and voice playback can work without a cloud account."}
+      },
+      {
+        "@type": "Question",
+        "name": "Which AI models can answer a dialog?",
+        "acceptedAnswer": {"@type": "Answer", "text": "Buddy Trial and direct DeepSeek use DeepSeek V4 Flash in the cloud. Trial access is capped at 1,000 replies or 1,000,000 tokens; direct access uses your own DeepSeek API key and billing. On Windows, optional Qwen 3.6 27B runs locally with DFlash acceleration and keeps dialog text on your computer."}
       }
     ]
   }
@@ -289,7 +294,7 @@
           <p class="eyebrow eyebrow-light">Privacy by architecture</p>
           <h2>Your voice is not the price of admission.</h2>
           <p>Microphone audio, recognition, pronunciation analysis, silence removal, and voice synthesis stay on your computer. Language tasks use capped Buddy access to DeepSeek by default and send only the requested text — never your microphone recording. The gateway stores key hashes and numerical usage, not dialog text. Choose local Qwen to keep the requested text on your PC too.</p>
-          <div class="privacy-guide-links"><a href="#faq" class="text-link">Read the privacy answers <span aria-hidden="true">→</span></a><a href="./deepseek-api-key/" class="text-link">DeepSeek key and retention guide <span aria-hidden="true">→</span></a></div>
+          <div class="privacy-guide-links"><a href="./privacy/" class="text-link">Read the privacy policy <span aria-hidden="true">→</span></a><a href="./deepseek-api-key/" class="text-link">DeepSeek key and retention guide <span aria-hidden="true">→</span></a></div>
         </div>
         <div class="privacy-facts">
           <div><span class="fact-mark" aria-hidden="true">01</span><strong>Local audio</strong><p>Your recordings remain in your operating-system profile.</p></div>
@@ -331,6 +336,10 @@
         <details>
           <summary>Can I use Buddy without a cloud account?</summary>
           <p>Yes. Recording, playback, transcription, and local voice need no account. Releases include up to 1,000 replies or 1,000,000 tokens of capped Buddy DeepSeek access, whichever limit is reached first. Download optional local Qwen to keep AI answers and text improvement on your PC.</p>
+        </details>
+        <details>
+          <summary>Which AI models can answer a dialog?</summary>
+          <p><strong>Buddy Trial</strong> uses DeepSeek V4 Flash through Buddy's limited gateway and includes up to 1,000 replies or 1,000,000 tokens. <strong>Direct DeepSeek</strong> uses the same cloud model with <a href="./deepseek-api-key/">your own DeepSeek API key</a> and account billing. On Windows, <strong>local Qwen</strong> runs the quantized Qwen 3.6 27B model with DFlash acceleration; its roughly 21.5 GB download is slower but keeps dialog text on your computer.</p>
         </details>
         <details>
           <summary>What does the installer download?</summary>
@@ -391,6 +400,7 @@
       <div class="footer-links">
         <a href="#features">Features</a>
         <a href="#privacy">Privacy</a>
+        <a href="./privacy/">Privacy policy</a>
         <a href="./deepseek-api-key/">DeepSeek API key guide</a>
         <a data-release-link href="https://github.com/__BUDDY_REPOSITORY__/releases/latest">GitHub releases</a>
       </div>

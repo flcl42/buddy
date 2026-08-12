@@ -131,6 +131,12 @@ const guidePages = [
   "de/deepseek-api-key/index.html",
   "be/deepseek-api-key/index.html"
 ];
+const privacyPages = [
+  "privacy/index.html",
+  "es/privacy/index.html",
+  "de/privacy/index.html",
+  "be/privacy/index.html"
+];
 const releaseAssets = [
   "Buddy-Setup.exe",
   "Buddy.exe",
@@ -179,6 +185,10 @@ for (const relativePage of pages) {
   }
   assert.equal((html.match(/<track[^>]+\bdefault\b/g) || []).length, 1, `${relativePage} must select exactly one default caption track`);
   assert.match(html, /href="\.\/deepseek-api-key\/"/, `${relativePage} must link to its localized DeepSeek guide`);
+  assert.match(html, /href="\.\/privacy\/"/, `${relativePage} must link to its localized privacy policy`);
+  assert.match(html, /DeepSeek V4 Flash/, `${relativePage} must identify the hosted dialog model`);
+  assert.match(html, /Qwen 3\.6 27B/, `${relativePage} must identify the local dialog model`);
+  assert.match(html, /DFlash/, `${relativePage} must explain local-model acceleration`);
 
   const linkedAssets = [...new Set(
     [...html.matchAll(/data-download-asset="([^"]+)"/g)].map((match) => match[1]))
@@ -207,6 +217,7 @@ for (const relativePage of guidePages) {
   assert.match(html, /"@type": "HowTo"/, `${relativePage} needs HowTo structured data`);
   assert.doesNotMatch(html, /zero data retention[^<]*(enabled|guaranteed)/i, `${relativePage} must not promise zero data retention`);
   assert.equal((html.match(/rel="alternate" hreflang=/g) || []).length, 5, `${relativePage} needs complete language alternates`);
+  assert.match(html, /href="\.\.\/privacy\/"/, `${relativePage} must link to its localized privacy policy`);
 
   const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
   assert.equal(new Set(ids).size, ids.length, `${relativePage} has duplicate element IDs`);
@@ -223,6 +234,47 @@ for (const relativePage of guidePages) {
   localResources.forEach((resource) => {
     assert.ok(fs.existsSync(path.resolve(path.dirname(pagePath), resource)), `${relativePage} references missing local resource ${resource}`);
   });
+}
+
+for (const relativePage of privacyPages) {
+  const pagePath = path.join(siteDirectory, relativePage);
+  const html = fs.readFileSync(pagePath, "utf8");
+  assert.match(html, /data-route="privacy\/"/, `${relativePage} must retain privacy routing across languages`);
+  assert.equal((html.match(/class="guide-section(?:\s[^"]*)?"/g) || []).length, 12, `${relativePage} needs all twelve policy sections`);
+  assert.match(html, /Aliaksei Osipau/, `${relativePage} needs the responsible person's current name`);
+  assert.ok((html.match(/buddy@flcl\.me/g) || []).length >= 3, `${relativePage} needs the privacy contact address`);
+  assert.doesNotMatch(html, /Alexey Osipov|me@flcl\.me/, `${relativePage} contains stale contact details`);
+  assert.match(html, /https:\/\/cdn\.deepseek\.com\/policies\/en-US\/deepseek-privacy-policy\.html/, `${relativePage} needs DeepSeek's privacy policy`);
+  assert.match(html, /https:\/\/cdn\.deepseek\.com\/policies\/en-US\/deepseek-open-platform-terms-of-service\.html/, `${relativePage} needs DeepSeek's platform terms`);
+  assert.match(html, /https:\/\/telegram\.org\/privacy/, `${relativePage} needs Telegram's privacy policy`);
+  assert.match(html, /https:\/\/huggingface\.co\/privacy/, `${relativePage} needs Hugging Face's privacy policy`);
+  assert.match(html, /https:\/\/docs\.github\.com\/en\/site-policy\/privacy-policies\/github-general-privacy-statement/, `${relativePage} needs GitHub's privacy statement`);
+  assert.match(html, /<meta name="robots" content="index, follow, max-image-preview:large">/, `${relativePage} must be indexable`);
+  assert.match(html, /"@type":"?\s*"?WebPage"?/, `${relativePage} needs WebPage structured data`);
+  assert.equal((html.match(/rel="alternate" hreflang=/g) || []).length, 5, `${relativePage} needs complete language alternates`);
+
+  const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
+  assert.equal(new Set(ids).size, ids.length, `${relativePage} has duplicate element IDs`);
+
+  const externalTabs = [...html.matchAll(/<a\b[^>]*\btarget="_blank"[^>]*>/g)].map((match) => match[0]);
+  assert.ok(externalTabs.length >= 5, `${relativePage} is missing third-party policy links`);
+  externalTabs.forEach((tag) => {
+    assert.match(tag, /\brel="[^"]*noopener[^"]*noreferrer[^"]*"/, `${relativePage} has an unsafe external tab`);
+  });
+
+  const localResources = [...html.matchAll(/\b(?:href|src)="((?:\.\.\/|\.\/)[^"]*)"/g)]
+    .map((match) => match[1].split(/[?#]/, 1)[0])
+    .filter(Boolean);
+  localResources.forEach((resource) => {
+    assert.ok(fs.existsSync(path.resolve(path.dirname(pagePath), resource)), `${relativePage} references missing local resource ${resource}`);
+  });
+}
+
+{
+  const sitemap = fs.readFileSync(path.join(siteDirectory, "sitemap.xml"), "utf8");
+  for (const route of ["privacy/", "es/privacy/", "de/privacy/", "be/privacy/"]) {
+    assert.ok(sitemap.includes(`__SITE_BASE_URL__/${route}`), `sitemap is missing ${route}`);
+  }
 }
 
 {
@@ -259,6 +311,16 @@ for (const relativePage of guidePages) {
 }
 
 {
+  const result = runApp({ languages: ["de-DE"], route: "privacy/" });
+  assert.deepEqual(result.redirects, [{ kind: "replace", url: "../de/privacy/" }]);
+}
+
+{
+  const result = runApp({ locale: "be", languages: ["be-BY"], savedLocale: "be", route: "privacy/" });
+  assert.deepEqual(result.redirects, []);
+}
+
+{
   const result = runApp({ locale: "de", languages: ["de-DE"], savedLocale: "de", route: "deepseek-api-key/" });
   assert.deepEqual(result.redirects, []);
 }
@@ -283,4 +345,4 @@ for (const relativePage of guidePages) {
   assert.equal(current.textContent, "1");
 }
 
-console.log("Buddy website validation passed: localized product and DeepSeek key-guide pages, routing, release assets, controls, screenshots, and an accessible captioned walkthrough video.");
+console.log("Buddy website validation passed: localized product, DeepSeek key-guide, and privacy-policy pages, routing, model FAQ, release assets, controls, screenshots, and an accessible captioned walkthrough video.");
