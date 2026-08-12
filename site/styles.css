@@ -146,6 +146,25 @@ a {
   gap: 10px;
 }
 
+.document-header .nav-shell {
+  min-height: 64px;
+}
+
+.document-header .brand {
+  font-size: 18px;
+}
+
+.document-header .brand-mark {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  font-size: 20px;
+}
+
+.document-header .language-select {
+  min-height: 38px;
+}
+
 .language-label {
   position: absolute;
   width: 1px;

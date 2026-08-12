@@ -150,6 +150,24 @@ const recordingCopy = {
   "de/index.html": /Wiedergabe, Suche und Transkription mit entfernten Pausen/,
   "be/index.html": /Прайграванне, пошук і распазнаванне па аўдыя без паўз/
 };
+const heroCopy = {
+  "index.html": {
+    title: "Speak better.<br><span>Connect with confidence.</span>",
+    description: "Buddy helps you practise conversations, analyse your pronunciation and delivery, refine your vocabulary and grammar, and learn through contextual spoken AI dialogue"
+  },
+  "es/index.html": {
+    title: "Habla mejor.<br><span>Comunícate con confianza.</span>",
+    description: "Buddy te ayuda a practicar conversaciones, analizar tu pronunciación y tu forma de expresarte, mejorar tu vocabulario y gramática"
+  },
+  "de/index.html": {
+    title: "Besser sprechen.<br><span>Sicherer kommunizieren.</span>",
+    description: "Buddy hilft dir, Gespräche zu üben, Aussprache und Ausdruck zu analysieren, Wortschatz und Grammatik zu verbessern"
+  },
+  "be/index.html": {
+    title: "Гаварыце лепш.<br><span>Размаўляйце ўпэўнена.</span>",
+    description: "Buddy дапамагае практыкаваць размовы, аналізаваць вымаўленне і манеру маўлення, удасканальваць слоўнікавы запас і граматыку"
+  }
+};
 const walkthroughVideo = path.join(siteDirectory, "video", "buddy-walkthrough.mp4");
 const walkthroughPoster = path.join(siteDirectory, "video", "buddy-walkthrough-poster.jpg");
 const walkthroughLocales = ["en", "es", "de", "be"];
@@ -171,6 +189,9 @@ for (const relativePage of pages) {
   assert.match(html, /"softwareVersion": "0\.4\.1"/, `${relativePage} has stale release metadata`);
   assert.match(html, /"operatingSystem": \["Windows 10\/11 x64", "macOS 13\+", "Ubuntu 24\.04\+ x64"\]/, `${relativePage} needs all desktop hosts in structured data`);
   assert.match(html, recordingCopy[relativePage], `${relativePage} does not explain pause-cut recording transcription`);
+  assert.ok(html.includes(`<h1>${heroCopy[relativePage].title}</h1>`), `${relativePage} has stale hero positioning`);
+  assert.ok(html.includes(heroCopy[relativePage].description), `${relativePage} has stale hero supporting copy`);
+  assert.doesNotMatch(html, /Remember your words|Recuerda tus palabras|Erinnere dich an deine Worte|Памятайце свае словы/, `${relativePage} retains the discarded recall headline`);
   assert.equal((html.match(/<video\b/g) || []).length, 1, `${relativePage} must include one walkthrough video`);
   assert.match(html, /<video[^>]+\bcontrols\b[^>]+\bpreload="metadata"/, `${relativePage} needs accessible native video controls`);
   assert.doesNotMatch(html, /<video[^>]+\bautoplay\b/, `${relativePage} must not autoplay the walkthrough`);
@@ -219,6 +240,10 @@ for (const relativePage of guidePages) {
   assert.equal((html.match(/rel="alternate" hreflang=/g) || []).length, 5, `${relativePage} needs complete language alternates`);
   assert.match(html, /href="\.\.\/privacy\/"/, `${relativePage} must link to its localized privacy policy`);
 
+  const documentHeader = html.match(/<header class="site-header document-header">([\s\S]*?)<\/header>/)?.[1];
+  assert.ok(documentHeader, `${relativePage} needs the compact document header`);
+  assert.doesNotMatch(documentHeader, /class="main-nav"|class="button/, `${relativePage} must not use landing-page navigation or calls to action`);
+
   const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
   assert.equal(new Set(ids).size, ids.length, `${relativePage} has duplicate element IDs`);
 
@@ -253,6 +278,10 @@ for (const relativePage of privacyPages) {
   assert.match(html, /"@type":"?\s*"?WebPage"?/, `${relativePage} needs WebPage structured data`);
   assert.equal((html.match(/rel="alternate" hreflang=/g) || []).length, 5, `${relativePage} needs complete language alternates`);
 
+  const documentHeader = html.match(/<header class="site-header document-header">([\s\S]*?)<\/header>/)?.[1];
+  assert.ok(documentHeader, `${relativePage} needs the compact document header`);
+  assert.doesNotMatch(documentHeader, /class="main-nav"|class="button/, `${relativePage} must not use landing-page navigation or calls to action`);
+
   const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
   assert.equal(new Set(ids).size, ids.length, `${relativePage} has duplicate element IDs`);
 
@@ -276,6 +305,11 @@ for (const relativePage of privacyPages) {
     assert.ok(sitemap.includes(`__SITE_BASE_URL__/${route}`), `sitemap is missing ${route}`);
   }
 }
+
+assert.deepEqual(
+  pngDimensions(path.join(siteDirectory, "og.png")),
+  { width: 1200, height: 630 },
+  "social preview must remain 1200×630");
 
 {
   const result = runApp({ languages: ["es-MX", "en-US"] });
