@@ -50,11 +50,11 @@
   }[locale];
 
   const lightboxCopy = {
-    en: { open: "Open larger screenshot", close: "Close image", zoomIn: "Zoom in", zoomOut: "Zoom out", reset: "Reset zoom", dialog: "Enlarged Buddy screenshot" },
-    es: { open: "Abrir captura ampliada", close: "Cerrar imagen", zoomIn: "Ampliar", zoomOut: "Reducir", reset: "Restablecer zoom", dialog: "Captura ampliada de Buddy" },
-    de: { open: "Screenshot vergrößert öffnen", close: "Bild schließen", zoomIn: "Vergrößern", zoomOut: "Verkleinern", reset: "Zoom zurücksetzen", dialog: "Vergrößerter Buddy-Screenshot" },
-    be: { open: "Адкрыць павялічаны здымак", close: "Закрыць выяву", zoomIn: "Павялічыць", zoomOut: "Паменшыць", reset: "Скінуць маштаб", dialog: "Павялічаны здымак Buddy" },
-    ru: { open: "Открыть увеличенный снимок", close: "Закрыть изображение", zoomIn: "Увеличить", zoomOut: "Уменьшить", reset: "Сбросить масштаб", dialog: "Увеличенный снимок Buddy" }
+    en: { open: "Open larger screenshot", close: "Close image", previous: "Previous screenshot", next: "Next screenshot", dialog: "Enlarged Buddy screenshot" },
+    es: { open: "Abrir captura ampliada", close: "Cerrar imagen", previous: "Captura anterior", next: "Captura siguiente", dialog: "Captura ampliada de Buddy" },
+    de: { open: "Screenshot vergrößert öffnen", close: "Bild schließen", previous: "Vorheriger Screenshot", next: "Nächster Screenshot", dialog: "Vergrößerter Buddy-Screenshot" },
+    be: { open: "Адкрыць павялічаны здымак", close: "Закрыць выяву", previous: "Папярэдні здымак", next: "Наступны здымак", dialog: "Павялічаны здымак Buddy" },
+    ru: { open: "Открыть увеличенный снимок", close: "Закрыть изображение", previous: "Предыдущий снимок", next: "Следующий снимок", dialog: "Увеличенный снимок Buddy" }
   }[locale] || null;
 
   function localeUrl(nextLocale) {
@@ -143,14 +143,14 @@
       <div class="lightbox-panel">
         <div class="lightbox-toolbar">
           <span class="lightbox-title"></span>
-          <div class="lightbox-actions">
-            <button type="button" data-lightbox-zoom-out aria-label="${lightboxCopy.zoomOut}"><span aria-hidden="true">−</span></button>
-            <button type="button" data-lightbox-reset aria-label="${lightboxCopy.reset}"><span data-lightbox-scale>100%</span></button>
-            <button type="button" data-lightbox-zoom-in aria-label="${lightboxCopy.zoomIn}"><span aria-hidden="true">+</span></button>
-            <button class="lightbox-close" type="button" data-lightbox-close aria-label="${lightboxCopy.close}"><span aria-hidden="true">×</span></button>
-          </div>
+          <span class="lightbox-count" data-lightbox-count aria-live="polite"></span>
+          <button class="lightbox-close" type="button" data-lightbox-close aria-label="${lightboxCopy.close}"><span aria-hidden="true">×</span></button>
         </div>
-        <div class="lightbox-stage"><div class="lightbox-image-frame"><img alt=""></div></div>
+        <div class="lightbox-stage">
+          <button class="lightbox-nav lightbox-previous" type="button" data-lightbox-previous aria-label="${lightboxCopy.previous}"><span aria-hidden="true">←</span></button>
+          <div class="lightbox-image-frame"><img alt=""></div>
+          <button class="lightbox-nav lightbox-next" type="button" data-lightbox-next aria-label="${lightboxCopy.next}"><span aria-hidden="true">→</span></button>
+        </div>
       </div>`;
     document.body.appendChild(dialog);
 
@@ -158,34 +158,63 @@
     const imageFrame = stage.querySelector(".lightbox-image-frame");
     const image = imageFrame.querySelector("img");
     const title = dialog.querySelector(".lightbox-title");
-    const scaleLabel = dialog.querySelector("[data-lightbox-scale]");
-    const zoomOut = dialog.querySelector("[data-lightbox-zoom-out]");
-    const zoomIn = dialog.querySelector("[data-lightbox-zoom-in]");
-    let zoom = 1;
+    const count = dialog.querySelector("[data-lightbox-count]");
+    const previous = dialog.querySelector("[data-lightbox-previous]");
+    const next = dialog.querySelector("[data-lightbox-next]");
+    let images = [];
+    let activeIndex = 0;
+    let onChange = null;
 
-    function renderZoom() {
+    function renderImage() {
       if (!image.naturalWidth || !image.naturalHeight) {
         return;
       }
 
-      const fitWidth = Math.max(1, stage.clientWidth - 24) / image.naturalWidth;
-      const fitHeight = Math.max(1, stage.clientHeight - 24) / image.naturalHeight;
+      const horizontalReserve = stage.clientWidth <= 720 ? 24 : 144;
+      const fitWidth = Math.max(1, stage.clientWidth - horizontalReserve) / image.naturalWidth;
+      const fitHeight = Math.max(1, stage.clientHeight - 32) / image.naturalHeight;
       const fit = Math.min(1, fitWidth, fitHeight);
-      imageFrame.style.width = `${Math.round(image.naturalWidth * fit * zoom)}px`;
-      scaleLabel.textContent = `${Math.round(zoom * 100)}%`;
-      zoomOut.disabled = zoom <= 1;
-      zoomIn.disabled = zoom >= 3;
+      imageFrame.style.width = `${Math.round(image.naturalWidth * fit)}px`;
+      imageFrame.style.height = `${Math.round(image.naturalHeight * fit)}px`;
     }
 
-    function setZoom(nextZoom) {
-      zoom = Math.min(3, Math.max(1, nextZoom));
-      renderZoom();
+    function showImage(requestedIndex) {
+      if (!images.length) {
+        return;
+      }
+
+      activeIndex = (requestedIndex + images.length) % images.length;
+      const sourceImage = images[activeIndex];
+      image.alt = sourceImage.alt || "";
+      title.textContent = sourceImage.alt || lightboxCopy.dialog;
+      count.textContent = `${activeIndex + 1} / ${images.length}`;
+      imageFrame.classList.toggle("screenshot-watermark-mask", Boolean(sourceImage.closest?.(".screenshot-watermark-mask")));
+      image.onload = renderImage;
+      image.src = sourceImage.currentSrc || sourceImage.src;
+      const hasMultipleImages = images.length > 1;
+      previous.hidden = !hasMultipleImages;
+      next.hidden = !hasMultipleImages;
+      onChange?.(activeIndex);
     }
 
     dialog.querySelector("[data-lightbox-close]").addEventListener("click", () => dialog.close());
-    dialog.querySelector("[data-lightbox-reset]").addEventListener("click", () => setZoom(1));
-    zoomOut.addEventListener("click", () => setZoom(zoom - 0.25));
-    zoomIn.addEventListener("click", () => setZoom(zoom + 0.25));
+    previous.addEventListener("click", () => showImage(activeIndex - 1));
+    next.addEventListener("click", () => showImage(activeIndex + 1));
+    dialog.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        showImage(activeIndex - 1);
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        showImage(activeIndex + 1);
+      } else if (event.key === "Home") {
+        event.preventDefault();
+        showImage(0);
+      } else if (event.key === "End") {
+        event.preventDefault();
+        showImage(images.length - 1);
+      }
+    });
     dialog.addEventListener("click", (event) => {
       if (event.target === dialog) {
         dialog.close();
@@ -195,20 +224,20 @@
       image.onload = null;
       image.removeAttribute("src");
       imageFrame.style.removeProperty("width");
+      imageFrame.style.removeProperty("height");
       imageFrame.classList.remove("screenshot-watermark-mask");
-      zoom = 1;
+      images = [];
+      activeIndex = 0;
+      onChange = null;
     });
-    window.addEventListener?.("resize", renderZoom);
+    window.addEventListener?.("resize", renderImage);
 
     lightbox = {
-      open(sourceImage) {
-        zoom = 1;
-        image.alt = sourceImage.alt || "";
-        title.textContent = sourceImage.alt || lightboxCopy.dialog;
-        imageFrame.classList.toggle("screenshot-watermark-mask", Boolean(sourceImage.closest?.(".screenshot-watermark-mask")));
-        image.onload = renderZoom;
-        image.src = sourceImage.currentSrc || sourceImage.src;
+      open(sourceImages, requestedIndex, changeHandler) {
+        images = sourceImages;
+        onChange = changeHandler;
         dialog.showModal();
+        showImage(requestedIndex);
       }
     };
     return lightbox;
@@ -227,7 +256,8 @@
       return;
     }
 
-    slides.forEach((slide) => {
+    const carouselImages = slides.map((slide) => slide.querySelector?.("img")).filter(Boolean);
+    slides.forEach((slide, index) => {
       const image = slide.querySelector?.("img");
       if (!image) {
         return;
@@ -241,15 +271,15 @@
         target.appendChild(image);
       }
       target ||= image;
-      target.classList.add("carousel-zoom-target");
+      target.classList.add("carousel-expand-target");
       target.setAttribute("role", "button");
       target.setAttribute("tabindex", "0");
       target.setAttribute("aria-label", `${lightboxCopy.open}: ${image.alt}`);
-      target.addEventListener("click", () => ensureLightbox()?.open(image));
+      target.addEventListener("click", () => ensureLightbox()?.open(carouselImages, index, showSlide));
       target.addEventListener("keydown", (event) => {
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
-          ensureLightbox()?.open(image);
+          ensureLightbox()?.open(carouselImages, index, showSlide);
         }
       });
     });
@@ -274,7 +304,7 @@
         current.textContent = String(activeIndex + 1);
       }
       if (focusZoomTarget) {
-        slides[activeIndex].querySelector?.(".carousel-zoom-target")?.focus();
+        slides[activeIndex].querySelector?.(".carousel-expand-target")?.focus();
       }
     }
 
@@ -285,7 +315,7 @@
     });
 
     carousel.addEventListener("keydown", (event) => {
-      const focusZoomTarget = Boolean(event.target?.closest?.(".carousel-zoom-target"));
+      const focusZoomTarget = Boolean(event.target?.closest?.(".carousel-expand-target"));
       if (event.key === "ArrowLeft") {
         event.preventDefault();
         showSlide(activeIndex - 1, focusZoomTarget);

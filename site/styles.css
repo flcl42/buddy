@@ -413,43 +413,14 @@ h1 span {
   background: #f7f8fc;
 }
 
-.carousel-zoom-target {
+.carousel-expand-target {
   position: relative;
   display: block;
   cursor: zoom-in;
   outline: none;
 }
 
-.carousel-zoom-target::before {
-  position: absolute;
-  top: 13px;
-  right: 13px;
-  width: 36px;
-  height: 36px;
-  display: grid;
-  place-items: center;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  border-radius: 11px;
-  background: rgba(20, 21, 46, 0.76);
-  box-shadow: 0 8px 24px rgba(20, 21, 46, 0.18);
-  content: "+";
-  font-size: 22px;
-  font-weight: 500;
-  line-height: 1;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-3px);
-  transition: opacity 160ms ease, transform 160ms ease;
-}
-
-.carousel-zoom-target:hover::before,
-.carousel-zoom-target:focus-visible::before {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.carousel-zoom-target:focus-visible {
+.carousel-expand-target:focus-visible {
   box-shadow: inset 0 0 0 4px rgba(91, 70, 216, 0.6);
 }
 
@@ -498,81 +469,110 @@ h1 span {
   white-space: nowrap;
 }
 
-.lightbox-actions {
-  display: flex;
-  align-items: center;
-  gap: 7px;
+.lightbox-count {
+  min-width: 50px;
+  color: #b8b6ca;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
 }
 
-.lightbox-actions button {
-  min-width: 40px;
-  height: 40px;
-  padding: 0 10px;
+.lightbox-close,
+.lightbox-nav {
   display: grid;
   place-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
   color: #fff;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(18, 19, 43, 0.78);
   cursor: pointer;
   font: inherit;
-  font-weight: 750;
+  transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
 }
 
-.lightbox-actions button:hover:not(:disabled),
-.lightbox-actions button:focus-visible {
-  border-color: rgba(108, 226, 186, 0.7);
-  background: rgba(108, 226, 186, 0.14);
-  outline: none;
-}
-
-.lightbox-actions button:disabled {
-  cursor: default;
-  opacity: 0.38;
-}
-
-.lightbox-actions [data-lightbox-reset] {
-  min-width: 68px;
-  font-size: 12px;
-}
-
-.lightbox-actions .lightbox-close {
-  margin-left: 6px;
+.lightbox-close {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   color: #14152e;
   background: var(--mint);
   font-size: 24px;
   font-weight: 500;
 }
 
+.lightbox-close:hover,
+.lightbox-close:focus-visible,
+.lightbox-nav:hover,
+.lightbox-nav:focus-visible {
+  border-color: rgba(108, 226, 186, 0.7);
+  background: rgba(108, 226, 186, 0.14);
+  outline: none;
+}
+
+.lightbox-close:hover,
+.lightbox-close:focus-visible {
+  color: #14152e;
+  background: #8df0cf;
+}
+
 .lightbox-stage {
+  position: relative;
   min-width: 0;
   min-height: 0;
-  padding: 12px;
-  overflow: auto;
-  overscroll-behavior: contain;
+  padding: 16px 72px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
   background:
     radial-gradient(circle at 50% 10%, rgba(91, 70, 216, 0.22), transparent 42%),
     #090a18;
-  scrollbar-color: rgba(108, 226, 186, 0.65) rgba(255, 255, 255, 0.08);
+}
+
+.lightbox-nav {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  width: 52px;
+  height: 70px;
+  border-radius: 15px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+  font-size: 24px;
+  transform: translateY(-50%);
+}
+
+.lightbox-nav:hover,
+.lightbox-nav:focus-visible {
+  background: rgba(91, 70, 216, 0.86);
+  transform: translateY(-50%) scale(1.04);
+}
+
+.lightbox-nav[hidden] {
+  display: none;
+}
+
+.lightbox-previous {
+  left: 14px;
+}
+
+.lightbox-next {
+  right: 14px;
 }
 
 .lightbox-image-frame {
   position: relative;
   max-width: none;
-  margin: auto;
   display: block;
   overflow: hidden;
   border-radius: 8px;
   box-shadow: 0 16px 55px rgba(0, 0, 0, 0.42);
   line-height: 0;
-  transition: width 140ms ease;
 }
 
 .lightbox-stage img {
   width: 100%;
   max-width: none;
-  height: auto;
+  height: 100%;
   display: block;
+  object-fit: contain;
 }
 
 .carousel-slide figcaption {
@@ -1712,11 +1712,6 @@ h1 span {
     height: 44px;
   }
 
-  .carousel-zoom-target::before {
-    opacity: 1;
-    transform: none;
-  }
-
   .screenshot-lightbox {
     width: 100vw;
     height: 100dvh;
@@ -1725,6 +1720,24 @@ h1 span {
 
   .lightbox-toolbar {
     padding-left: 12px;
+  }
+
+  .lightbox-stage {
+    padding-inline: 12px;
+  }
+
+  .lightbox-nav {
+    width: 44px;
+    height: 58px;
+    border-radius: 13px;
+  }
+
+  .lightbox-previous {
+    left: 7px;
+  }
+
+  .lightbox-next {
+    right: 7px;
   }
 
   .lightbox-title {

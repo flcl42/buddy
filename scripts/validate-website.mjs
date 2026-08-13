@@ -67,11 +67,11 @@ class FakeElement {
 function createCarousel() {
   const slides = Array.from({ length: 4 }, (_, index) =>
     new FakeElement({ classes: index === 0 ? ["is-active"] : [] }));
-  const zoomTargets = Array.from({ length: 4 }, () => new FakeElement());
+  const expandTargets = Array.from({ length: 4 }, () => new FakeElement());
   const images = Array.from({ length: 4 }, (_, index) => {
     const image = new FakeElement();
     image.alt = `Screenshot ${index + 1}`;
-    image.closest = () => zoomTargets[index];
+    image.closest = () => expandTargets[index];
     slides[index].querySelector = (selector) => selector === "img" ? image : null;
     return image;
   });
@@ -91,7 +91,7 @@ function createCarousel() {
     "[data-carousel-current]": current
   })[selector] || null;
 
-  return { carousel, slides, dots, previous, next, current, zoomTargets, images };
+  return { carousel, slides, dots, previous, next, current, expandTargets, images };
 }
 
 function runApp({ locale = "en", languages = ["en-US"], savedLocale = "", search = "", route = "", withCarousel = false } = {}) {
@@ -402,9 +402,9 @@ assert.deepEqual(
 
 {
   const { carouselState } = runApp({ locale: "de", withCarousel: true });
-  const { carousel, slides, dots, previous, next, current, zoomTargets } = carouselState;
-  zoomTargets.forEach((target) => {
-    assert.equal(target.classList.contains("carousel-zoom-target"), true);
+  const { carousel, slides, dots, previous, next, current, expandTargets } = carouselState;
+  expandTargets.forEach((target) => {
+    assert.equal(target.classList.contains("carousel-expand-target"), true);
     assert.equal(target.attributes.get("role"), "button");
     assert.equal(target.attributes.get("tabindex"), "0");
     assert.match(target.attributes.get("aria-label"), /^Screenshot vergrößert öffnen:/);
@@ -428,7 +428,13 @@ assert.deepEqual(
   assert.equal(current.textContent, "1");
 }
 
-assert.match(appSource, /dialog\.showModal\(\)/, "carousel zoom must use a modal image viewer");
-assert.match(appSource, /Math\.min\(3, Math\.max\(1, nextZoom\)\)/, "carousel zoom must support bounded magnification");
+assert.match(appSource, /dialog\.showModal\(\)/, "carousel must use a modal image viewer");
+assert.match(appSource, /data-lightbox-previous/, "enlarged viewer needs a previous-image control");
+assert.match(appSource, /data-lightbox-next/, "enlarged viewer needs a next-image control");
+assert.match(appSource, /previous\.addEventListener\("click", \(\) => showImage\(activeIndex - 1\)\)/, "previous-image control must navigate without closing the viewer");
+assert.match(appSource, /next\.addEventListener\("click", \(\) => showImage\(activeIndex \+ 1\)\)/, "next-image control must navigate without closing the viewer");
+assert.match(appSource, /event\.key === "ArrowLeft"[\s\S]*showImage\(activeIndex - 1\)/, "enlarged viewer must support the left arrow key");
+assert.match(appSource, /event\.key === "ArrowRight"[\s\S]*showImage\(activeIndex \+ 1\)/, "enlarged viewer must support the right arrow key");
+assert.doesNotMatch(appSource, /data-lightbox-zoom|nextZoom|setZoom/, "enlarged viewer must not retain zoom controls");
 
-console.log("Buddy website validation passed: five localized product, DeepSeek key-guide, and privacy-policy pages, Russian routing and captions, release assets, carousel zoom controls, screenshots, and an accessible walkthrough video.");
+console.log("Buddy website validation passed: five localized product, DeepSeek key-guide, and privacy-policy pages, Russian routing and captions, release assets, a zoom-control-free enlarged carousel viewer with side navigation, screenshots, and an accessible walkthrough video.");
